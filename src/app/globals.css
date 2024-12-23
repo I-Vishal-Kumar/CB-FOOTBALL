@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    font-optical-sizing: auto;
+}
+
+body {
+    background: white;
+}
+
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: blue;
+}
+
+::-webkit-scrollbar-track{
+    background-color: #333;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    scroll-behavior: smooth;
+}
+
+
+input {
+    outline: none;
+}
+
+.react-tel-input {
+    background: #ffffff80;
+    padding: 0.2rem 0;
+    border: 2px solid #2885f6;
+    border-radius: 0.3rem;
+}
+.react-tel-input > input {
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+    --tw-ring-color: transparent !important;
+    min-width: 80%;
+}
+
+.react-tel-input > input:focus {
+    outline: none !important;
+    border: 0px solid !important;
+    --tw-ring-color: transparent !important;
+}
+
+@media screen and (max-width: 359px) {
+    html {
+        font-size: 14px;
+    }
+}
+@media screen and (max-width: 340px) {
+    html {
+        font-size: 13px;
+    }
+}
+
+.progress-ring__circle {
+    stroke-dasharray: 400, 400;
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.carousel .thumb img {
+    vertical-align: top;
+    display: none !important;
+}
+.carousel .thumb.selected,
+.carousel .thumb:hover {
+    border: 3px solid #333;
+    display: none !important;
+}
+.carousel-status {
+    display: none !important;
+}
+
+.carousel .thumb {
+    transition: border 0.15s ease-in;
+    display: inline-block;
+    margin-right: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    display: none !important;
+    border: 3px solid #fff;
+    padding: 2px;
+}
+
+.thumbs-wrapper {
+    display: none;
+}
+.carousel.carousel-slider .control-arrow {
+    top: 0;
+    color: #fff;
+    font-size: 26px;
+    bottom: 0;
+    margin-top: 0;
+    padding: 5px;
+    display: none !important;
+}
