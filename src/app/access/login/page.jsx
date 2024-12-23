@@ -1,12 +1,12 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Input from "@/app/components/Input";
 import { motion } from "framer-motion";
 import VerificationPopup from "@/app/components/VerificationPopup";
 import { AlertContext } from "@/app/helpers/AlertContext";
 import Modal from "@/app/components/Modal";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const containerVariant = {
     hidden: {
@@ -24,13 +24,13 @@ const itemVariant = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
 };
-const Login = () => {
+const LoginPage = () => {
     const { getAlert, isActive } = useContext(AlertContext);
     const searchParams = useSearchParams();
 
     const [credentials, updateCredentials] = useState({
-        UserName: searchParams.get('id') || '',
-        Password: searchParams.get('pass') || '',
+        UserName: '',
+        Password:  '',
     });
     const [resetPassword, toggleVerification] = useState(false);
 
@@ -58,6 +58,17 @@ const Login = () => {
             getAlert("opps", res?.message || "something went wrong");
         }
     };
+
+    useEffect(()=>{
+        const id = searchParams.get('id')
+        const pass = searchParams.get('pass')
+        if(id && pass){
+            updateCredentials({
+                UserName: id,
+                Password: pass
+            })
+        }
+    }, [searchParams]);
     
     return (
         <>
@@ -175,4 +186,10 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default function Login(){
+    return (
+        <Suspense fallback={<div className="h-full w-full grid place-content-center" >Loading</div>} >
+            <LoginPage/>
+        </Suspense>
+    )
+};
