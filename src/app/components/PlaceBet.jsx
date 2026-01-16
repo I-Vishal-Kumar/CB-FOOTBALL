@@ -75,7 +75,7 @@ const PlaceBet = ({ data, togglePopup }) => {
                 body: JSON.stringify(body),
             };
             if (!(await isValidMatch(data?.StartsAt))) {
-                getAlert('opps', 'match time out refresh the page.')
+                getAlert("opps", "match time out refresh the page.");
                 return;
             }
             let res = await fetch(`/api/match`, config);
@@ -86,7 +86,7 @@ const PlaceBet = ({ data, togglePopup }) => {
                 router.push("/stake");
             } else if (res?.status === 302) {
                 getAlert("opps", res.message);
-                router.push("/access/login");
+                // router.push("/access/login");
             } else {
                 getAlert("opps", res.message);
             }
@@ -270,7 +270,9 @@ function ScoreCards({
                             : setActive(cardDetails.idx)
                     }
                     className={`h-full w-[90%] py-1 px-1 text-center text-[0.6rem] rounded-md ${
-                        cardDetails.selected ? " bg-gray-600 " : " bg-[#11468F] "
+                        cardDetails.selected
+                            ? " bg-gray-600 "
+                            : " bg-[#11468F] "
                     }  text-white justify-center`}
                 >
                     Place stake

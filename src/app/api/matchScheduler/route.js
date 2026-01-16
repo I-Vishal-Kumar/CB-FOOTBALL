@@ -7,7 +7,6 @@
 */
 export const dynamic = "force-dynamic";
 
-
 import { NextResponse } from "next/server";
 import moment from "moment-timezone";
 import cron from "node-cron";
@@ -53,22 +52,24 @@ export async function GET(request, res) {
 
         // Indicate scheduler has started
         schedulerStarted = task.options.scheduled;
- 
+
         if (schedulerStarted) {
             console.info("Scheduler started successfully.");
         }
-        return NextResponse.json({
-            status: 200,
-            msg: "done",
-            data: test,
-            scheduler: schedulerStarted,
-        }, {
-            headers: {
-                        "Cache-Control": "no-store, max-age=0",
+        return NextResponse.json(
+            {
+                status: 200,
+                msg: "done",
+                data: test,
+                scheduler: schedulerStarted,
             },
-            cache: 'no-store'
-        })
-       
+            {
+                headers: {
+                    "Cache-Control": "no-store, max-age=0",
+                },
+                cache: "no-store",
+            }
+        );
     } catch (error) {
         console.error("Error in GET handler:", error);
         return NextResponse.json({
@@ -106,9 +107,9 @@ export async function scheduleMatches() {
         );
         if (res) {
             res = await res.json();
+            console.dir(res, { depth: null });
             if (!res?.response) return false;
             let data = [];
-
             res.response.forEach((element) => {
                 let SCORE = scores[Math.floor(Math.random() * scores.length)];
                 let match = {
@@ -125,11 +126,14 @@ export async function scheduleMatches() {
                     FixedPercent: (Math.random() * 6 + 1.5).toFixed(2),
                 };
                 for (let i = 0; i < 17; i++) {
-                    match["Percents"].push((Math.random() * (2.5 - 3) + 3).toFixed(2));
+                    match["Percents"].push(
+                        (Math.random() * (2.5 - 3) + 3).toFixed(2)
+                    );
                 }
                 data.push(match);
             });
             let stringData = JSON.stringify(data);
+            console.log({ stringData });
             if (!data) return false;
             let isCreated = await MATCH.findOneAndUpdate(
                 { _id: process.env.NEXT_PUBLIC_MATCH_ID },

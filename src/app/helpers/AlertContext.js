@@ -15,51 +15,51 @@ export const AlertContext = createContext();
  */
 
 export const AlertContextProvider = ({ children }) => {
-  const [isActive, updateActive] = useState(false);
-  const [AlertDetails, updateAlertDetails] = useState({
-    message: "Loading...",
-    image: "/logo.png",
-    status: "pending",
-  });
-  const router = useRouter();
+    const [isActive, updateActive] = useState(false);
+    const [AlertDetails, updateAlertDetails] = useState({
+        message: "Loading...",
+        image: "/logo.png",
+        status: "pending",
+    });
+    const router = useRouter();
 
-  function getAlert(type = "pending", message = "loading...") {
-    let image = "/logo.png";
-    if (type === "success") {
-      image = "/success.png";
-    } else if (type === "opps") {
-      image = "/opps.png";
-    } else if (type === "pending") {
-      image = "/pending.png";
-    } else if (type === "redirect") {
-      image = "/opps.png";
+    function getAlert(type = "pending", message = "loading...") {
+        let image = "/logo.png";
+        if (type === "success") {
+            image = "/success.png";
+        } else if (type === "opps") {
+            image = "/opps.png";
+        } else if (type === "pending") {
+            image = "/pending.png";
+        } else if (type === "redirect") {
+            image = "/opps.png";
+        }
+
+        updateAlertDetails({
+            message: message,
+            image,
+            status: type,
+        });
+        updateActive(true);
     }
 
-    updateAlertDetails({
-      message: message,
-      image,
-      status: type,
-    });
-    updateActive(true);
-  }
-
-  function closeAlert() {
-    updateAlertDetails({
-      message: "Loading...",
-      status: "pending",
-      image: "/logo.png",
-    });
-    updateActive(false);
-    if (AlertDetails?.status === "redirect") {
-      router.push("/access/login");
+    function closeAlert() {
+        updateAlertDetails({
+            message: "Loading...",
+            status: "pending",
+            image: "/logo.png",
+        });
+        updateActive(false);
+        // if (AlertDetails?.status === "redirect") {
+        //   router.push("/access/login");
+        // }
     }
-  }
 
-  return (
-    <AlertContext.Provider
-      value={{ AlertDetails, getAlert, closeAlert, isActive }}
-    >
-      {children}
-    </AlertContext.Provider>
-  );
+    return (
+        <AlertContext.Provider
+            value={{ AlertDetails, getAlert, closeAlert, isActive }}
+        >
+            {children}
+        </AlertContext.Provider>
+    );
 };

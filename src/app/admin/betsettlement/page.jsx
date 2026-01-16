@@ -155,8 +155,8 @@ async function getAllBets() {
         await connect();
         let data = await BET.aggregate([
             {
-                $match: { Status: 0 },
-                // $match: { StakeId: 1054033 },
+                $match: { Status: 1 },
+                $match: { StakeId: 1349273 },
             },
             {
                 $group: {
