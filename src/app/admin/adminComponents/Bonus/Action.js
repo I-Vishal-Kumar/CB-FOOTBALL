@@ -20,7 +20,7 @@ export async function giveReward(prevState, formData) {
       { UserName },
       {
         $inc: {
-          Balance: Amount,
+          Profit: Amount,
         },
       },
       { session }

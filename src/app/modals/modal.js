@@ -19,6 +19,7 @@ const UserSchema = new Schema(
         ParentInv: { type: Number, default: 0 },
         Parent: { type: String, default: "" },
         Balance: { type: Number, default: 0 }, // balance * 100 is being stored
+        Profit: { type: Number, default: 0 }, // Profit * 100 is being stored - withdrawable earnings from bets, commissions, referrals
         ValidAmount: { type: Number, default: 0 }, // * 100
         ValidDeposit: { type: Number, default: 0 }, // * 100
         Deposited: { type: Number, default: 0 },

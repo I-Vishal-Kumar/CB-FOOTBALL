@@ -22,7 +22,11 @@ export async function GET(req) {
         return NextResponse.json({
             status: 200,
             message: "data fetched",
-            data: { Balance: Number(res?.Balance) / 100, Other: res },
+            data: { 
+                Balance: Number(res?.Balance) / 100, 
+                Profit: Number(res?.Profit || 0) / 100,
+                Other: res 
+            },
         });
     } catch (error) {
         return NextResponse.json({

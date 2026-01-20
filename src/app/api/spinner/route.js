@@ -418,7 +418,7 @@ export async function GETsdfsd() {
             updateUsers.push({
                 updateOne: {
                     filter: { UserName: element.UserName },
-                    update: { $inc: { Balance: Number(element.BetAmount) } },
+                    update: { $inc: { Profit: Number(element.BetAmount) } },
                 },
             });
         });

@@ -82,7 +82,7 @@ export async function POST(request, response) {
           { UserName: isFirstDeposit?.Parent },
           {
               $inc: {
-                  Balance: amm_updated * 0.06,
+                  Profit: amm_updated * 0.06,
                   Members: 1,
               },
           },

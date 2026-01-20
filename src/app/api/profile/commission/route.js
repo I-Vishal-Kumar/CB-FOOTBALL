@@ -328,12 +328,12 @@ async function claimBonusFor(UserName, dates) {
             return true;
         }
 
-        // Update user's balance and commission
+        // Update user's profit and commission
         let isUserUpdated = await USER.findOneAndUpdate(
             { UserName },
             {
                 $inc: {
-                    Balance: totalCommission,
+                    Profit: totalCommission,
                     Commission: totalCommission,
                 },
             },

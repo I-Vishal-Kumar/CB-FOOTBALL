@@ -191,17 +191,23 @@ export async function POST(request) {
 async function updateUser(UserName, Amount, Session, Bank, WithdrawCode) {
     await connect();
     try {
+        // Withdraw from Profit only - check Profit has enough funds
         let user = await USER.findOneAndUpdate(
-            { UserName, [Bank]: true, Balance: { $gte: Number(Amount) }, 'LocalBank.WithdrawCode': WithdrawCode },
+            { 
+                UserName, 
+                [Bank]: true, 
+                Profit: { $gte: Number(Amount) }, 
+                'LocalBank.WithdrawCode': WithdrawCode 
+            },
             {
                 $inc: {
-                    Balance: -Amount,
+                    Profit: -Amount,
                     Withdrawal: Amount,
                 },
             },
             { session: Session }
         );
-        if (!user) throw Error("Low balance or wrong withdrawal code");
+        if (!user) throw Error("Insufficient profit or wrong withdrawal code");
         parent = user?.Parent;
         return true;
     } catch (error) {
@@ -210,7 +216,7 @@ async function updateUser(UserName, Amount, Session, Bank, WithdrawCode) {
             ErrorReport(error);
         }
         parent = "";
-        throw new CustomError(705, "Low balance or wrong withdrawal code");
+        throw new CustomError(705, error?.message || "Insufficient profit or wrong withdrawal code");
     }
 }
 

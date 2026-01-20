@@ -175,43 +175,66 @@ function Page() {
                             </p>
                         </div>
                     </div>
-                    {/* reacharge and balance section */}
-                    <div
-                        onClick={() => router.push("/profile/recharge")}
-                        className="py-6 h-[20%] px-4"
-                    >
-                        <div className="bg-white py-2 relative ring-1 flex justify-between ring-gray-200 rounded-full p-1">
-                            <div className="flex pl-1 justify-center items-center space-x-1">
+                    {/* balance and profit section */}
+                    <div className="py-4 px-4 space-y-3">
+                        {/* Balance and Recharge Section */}
+                        <div className="bg-white py-2 ring-1 flex justify-between items-center ring-gray-200 rounded-2xl px-4 shadow-sm">
+                            <div className="flex items-center space-x-3">
                                 <span
-                                    className=" h-full aspect-square rounded-full text-white 
-             bg-[#333333] flex text-[0.8rem] p-1 justify-center items-center"
+                                    className="h-10 w-10 rounded-full text-white bg-[#333333] flex text-base justify-center items-center shadow-md"
                                 >
                                     <FaRupeeSign />
                                 </span>
-
-                                <span className="text-sm font-bold pl-3">
-                                    {new Intl.NumberFormat("en-US", {
-                                        style: "decimal",
-                                        maximumFractionDigits: 2,
-                                    }).format(userBalance || 0)}
-                                </span>
+                                <div className="flex flex-col">
+                                    <span className="text-[0.7rem] text-gray-500 font-medium">
+                                        Current Balance
+                                    </span>
+                                    <span className="text-lg font-bold text-gray-800">
+                                        ₹{new Intl.NumberFormat("en-US", {
+                                            style: "decimal",
+                                            maximumFractionDigits: 2,
+                                        }).format(userBalance || 0)}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="flex pl-1 justify-center flex-row-reverse items-center space-x-1">
-                                <span
-                                    className=" h-full aspect-square rounded-full  
-              text-gray-600 flex text-[0.8rem] p-1 justify-center items-center"
-                                >
-                                    <LiaAngleRightSolid />
-                                </span>
-
-                                <span className="text-sm font-bold pr-3">
+                            <div
+                                onClick={() => router.push("/profile/recharge")}
+                                className="flex items-center space-x-2 bg-gradient-to-r from-[#11468F] to-[#2885F6] px-4 py-2 rounded-full cursor-pointer hover:shadow-lg transition-all"
+                            >
+                                <FaPlus className="text-white text-sm" />
+                                <span className="text-sm font-semibold text-white">
                                     Recharge
                                 </span>
                             </div>
+                        </div>
 
-                            <div className=" absolute h-[140%] bg-[#333333] rounded-full text-white left-[50%] translate-x-[-50%] top-[50%] translate-y-[-50%] aspect-square flex text-lg justify-center items-center">
-                                <FaPlus />
+                        {/* Profit Section */}
+                        <div className="bg-gradient-to-r from-green-500 to-emerald-500 py-2 ring-1 flex justify-between items-center ring-green-200 rounded-2xl px-4 shadow-md">
+                            <div className="flex items-center space-x-3">
+                                <span
+                                    className="h-10 w-10 rounded-full text-white 
+             bg-white/25 backdrop-blur-sm flex justify-center items-center ring-2 ring-white/40 shadow-lg"
+                                >
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" fillOpacity="0.3"/>
+                                        <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" fillOpacity="0.3"/>
+                                        <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" fillOpacity="0.3"/>
+                                    </svg>
+                                </span>
+                                <div className="flex flex-col">
+                                    <span className="text-[0.7rem] text-white/90 font-medium">
+                                        Withdrawable Profit
+                                    </span>
+                                    <span className="text-lg font-bold text-white">
+                                        ₹{new Intl.NumberFormat("en-US", {
+                                            style: "decimal",
+                                            maximumFractionDigits: 2,
+                                        }).format(
+                                            (userOtherData?.Profit || 0) / 100
+                                        )}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

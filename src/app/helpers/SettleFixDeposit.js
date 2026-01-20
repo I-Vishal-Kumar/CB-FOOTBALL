@@ -66,7 +66,7 @@ export const settleFixDeposit = async (UserName) => {
                     { UserName },
                     {
                         $inc: {
-                            Balance: finalAmount,
+                            Profit: finalAmount * 100, // Fixed deposit interest goes to Profit (earnings)
                         },
                     },
                     { session: Session }

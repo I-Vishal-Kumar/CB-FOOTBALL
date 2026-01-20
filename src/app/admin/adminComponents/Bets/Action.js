@@ -247,9 +247,8 @@ async function initiateParallelProcess(
                             ValidAmount: Number(
                                 (Number(match?.BetAmount) * 0.2).toFixed(2)
                             ),
-                            Balance: Number(
-                                Number((BetAmount + Profit).toFixed(2)) * 100
-                            ),
+                            Balance: Number(BetAmount.toFixed(2) * 100), // Return bet amount to Balance
+                            Profit: Number(Profit.toFixed(2) * 100), // Add profit to Profit field
                         },
                     },
                 },
