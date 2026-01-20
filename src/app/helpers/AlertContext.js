@@ -50,9 +50,9 @@ export const AlertContextProvider = ({ children }) => {
             image: "/logo.png",
         });
         updateActive(false);
-        // if (AlertDetails?.status === "redirect") {
-        //   router.push("/access/login");
-        // }
+        if (AlertDetails?.status === "redirect") {
+          router.push("/access/login");
+        }
     }
 
     return (

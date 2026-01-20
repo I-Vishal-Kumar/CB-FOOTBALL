@@ -42,7 +42,7 @@ export function Matches() {
                 throw new Error("Somethign went wrong");
             }
         } catch (error) {
-            // router.push("/access/login");
+            router.push("/access/login");
         }
     }
 

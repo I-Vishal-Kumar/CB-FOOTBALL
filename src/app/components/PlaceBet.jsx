@@ -86,7 +86,7 @@ const PlaceBet = ({ data, togglePopup }) => {
                 router.push("/stake");
             } else if (res?.status === 302) {
                 getAlert("opps", res.message);
-                // router.push("/access/login");
+                router.push("/access/login");
             } else {
                 getAlert("opps", res.message);
             }

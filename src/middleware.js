@@ -3,8 +3,7 @@ import { jwtVerify } from "jose";
 const secretKey = process.env.NEXT_PUBLIC_JWT_SECRET;
 
 export async function middleware(NextRequest) {
-    const response = NextResponse.next();
-    return response;
+
     const { pathname } = NextRequest.nextUrl;
 
     const isPublic =

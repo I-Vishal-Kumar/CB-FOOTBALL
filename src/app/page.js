@@ -54,7 +54,7 @@ export default function Home() {
             }
         } catch (error) {
             setLoading(false); // Handle errors and set loading to false
-            // router.push("/access/login");
+            router.push("/access/login");
         }
     }
 

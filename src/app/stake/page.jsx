@@ -119,9 +119,9 @@ function Page() {
                 );
                 setAmounts(totalBettingAmount);
             }
-            // if (res?.status === 302) router.push("/access/login");
+            if (res?.status === 302) router.push("/access/login");
         } catch (error) {
-            // router.push("/access/login");
+            router.push("/access/login");
         }
     }
 
