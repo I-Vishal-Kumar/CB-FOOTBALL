@@ -30,7 +30,7 @@ export async function GET(request) {
         await connect();
         let userData = await USER.findOne({ UserName }, { _id: 0, Balance: 1 });
         let matches = await getLiveBets();
-        console.log(matches);
+
         if (!userData || !matches)
             throw new CustomError(703, "Login again", {});
 

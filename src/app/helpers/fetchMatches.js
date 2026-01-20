@@ -635,8 +635,11 @@ export function getHardcodedMatches(limit = 20) {
             const SCORE = scores[Math.floor(random() * scores.length)];
             const league = leagues[Math.floor(random() * leagues.length)];
             
+            // Generate numeric StakeId: YYYYMMDD + matchIndex (ensures uniqueness and determinism)
+            const numericStakeId = parseInt(`${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}${(matchIndex + 1).toString().padStart(3, '0')}`);
+            
             const match = {
-                StakeId: `match_${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}_${matchIndex + 1}_${matchIndex}`,
+                StakeId: numericStakeId,
                 Team_a: teamA.name,
                 Team_b: teamB.name,
                 Team_a_logo: teamA.logo,
@@ -690,8 +693,11 @@ export function getHardcodedMatches(limit = 20) {
             const SCORE = scores[Math.floor(random() * scores.length)];
             const league = leagues[Math.floor(random() * leagues.length)];
             
+            // Generate numeric StakeId: YYYYMMDD + matchIndex (ensures uniqueness and determinism)
+            const numericStakeId = parseInt(`${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}${(matchIndex + 1).toString().padStart(3, '0')}`);
+            
             const match = {
-                StakeId: `match_${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}_${matchIndex + 1}_${matchIndex}`,
+                StakeId: numericStakeId,
                 Team_a: teamA.name,
                 Team_b: teamB.name,
                 Team_a_logo: teamA.logo,

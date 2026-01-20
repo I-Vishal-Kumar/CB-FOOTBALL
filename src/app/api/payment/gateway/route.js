@@ -77,13 +77,13 @@ export async function POST(request, response) {
 
     let isFirstDeposit = await USER.findOne({ UserName: isTransactionUpdated?.UserName });
 
-    if (isFirstDeposit?.Parent !== "") {
+    if (isFirstDeposit?.Parent !== "" && isFirstDeposit?.FirstDeposit) {
       let isParentUpdated = await USER.findOneAndUpdate(
           { UserName: isFirstDeposit?.Parent },
           {
               $inc: {
                   Balance: amm_updated * 0.06,
-                  Members: isFirstDeposit?.FirstDeposit ? 1 : 0,
+                  Members: 1,
               },
           },
           { session: Session }
@@ -117,11 +117,14 @@ export async function POST(request, response) {
       if (!createBonusReward) throw Error("Failed To Update Parent");
     }
 
+    // Calculate bonus: 5% for first deposit, 4% for subsequent deposits
+    const bonusPercentage = isFirstDeposit?.FirstDeposit ? 0.05 : 0;
+    
     let userUpdated = await USER.findOneAndUpdate(
       { UserName: isFirstDeposit?.UserName },
         {
             $inc: {
-                Balance: amm_updated + amm_updated * 0.04,
+                Balance: amm_updated + amm_updated * bonusPercentage,
                 Deposited: amm_updated,
                 ValidDeposit: amm_updated,
             },

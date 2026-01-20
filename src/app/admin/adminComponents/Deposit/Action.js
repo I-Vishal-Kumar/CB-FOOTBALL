@@ -129,11 +129,14 @@ async function settleDeposit(data) {
                 if (!createBonusReward) throw Error("Failed To Update Parent");
             }
 
+            // Calculate bonus: 5% for first deposit, 4% for subsequent deposits
+            const bonusPercentage = isFirstDeposit.FirstDeposit ? 0.05 : 0  ;
+            
             let userUpdated = await USER.findOneAndUpdate(
                 { UserName: data?.UserName },
                 {
                     $inc: {
-                        Balance: amm_updated + amm_updated * 0.04,
+                        Balance: amm_updated + amm_updated * bonusPercentage,
                         Deposited: amm_updated,
                         ValidDeposit: amm_updated,
                     },

@@ -1,14 +1,9 @@
 "use server";
 import CustomError from "@/app/helpers/Error";
-import { bulkWrite } from "mongoose";
 import { mongoose } from "mongoose";
-import { performance } from "perf_hooks";
 import { USER, BET, COMMISSION } from "@/app/modals/modal";
 import { connect } from "@/app/modals/dbConfig";
 import { revalidatePath } from "next/cache";
-import ErrorReport from "@/app/helpers/ErrorReport";
-import { IoFastFood } from "react-icons/io5";
-import { promises as fs } from "fs";
 
 const CHUNK_SIZE = 100;
 
@@ -341,7 +336,7 @@ async function give_parent_bonus(
         })
     );
     let LEVEL = 1;
-    let REBADE_PERCENT = [10, 6, 4];
+    let REBADE_PERCENT = [4, 2, 1];
     try {
         while (LEVEL <= 3 && Parent !== false) {
             let parent_user = await USER.findOne({ UserName: Parent });

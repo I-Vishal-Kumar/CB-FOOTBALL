@@ -186,6 +186,12 @@ export async function POST(request) {
         )
             throw new CustomError(700, "please fill all the details", {});
 
+        // Ensure StakeId is a number (convert string to number if needed)
+        StakeId = typeof StakeId === 'string' ? parseInt(StakeId.replace(/\D/g, '')) : Number(StakeId);
+        if (isNaN(StakeId) || StakeId <= 0) {
+            throw new CustomError(700, "Invalid StakeId format", {});
+        }
+
         // check for existing bet on this match
         const isBetExists = await BET.findOne({
             UserName,
