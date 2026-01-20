@@ -143,8 +143,8 @@ function Page() {
     if (disabled == false) {
       if (!inputValue) {
         getAlert("opps", "please enter the deposit amount");
-      } else if (inputValue < 250  ){
-        getAlert("opps", "Minimum deposit amount 250");
+      } else if (inputValue < 500  ){
+        getAlert("opps", "Minimum deposit amount 500");
       } else {
         if (selectedOption === "option1") {
           // router.push(
@@ -217,7 +217,7 @@ function Page() {
                 className="h-[2.2rem] w-[23%] bg-[#11468F] text-white text-center  grid place-items-center rounded-2xl "
                 id="div1"
               >
-                250
+                500
               </div>
 
               <div

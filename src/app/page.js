@@ -230,22 +230,22 @@ export default function Home() {
                     landingPopup && (
                         <section onClick={()=>setLandingPopup(false)} className="h-full w-full flex justify-center items-center bg-gray-600/50 absolute top-0 left-0 z-20" >
                              <div onClick={(e)=>e.stopPropagation()} className="bg-white rounded-md py-20 w-[90%] flex flex-col items-center justify-center space-y-4 p-4">
-                                <Link href={'https://t.me/+hinxahjeFTcxNTk1'}>
+                                <Link href={'https://t.me/Bharat_Goal'}>
                                     <button
                                         className="flex items-center justify-center w-full py-2 px-4 rounded-md text-white bg-[#0088cc] hover:bg-[#0078b5] transition duration-200">
                                         <FaTelegramPlane className="mr-2" size={20} />
                                         Join Telegram
                                     </button>
                                 </Link>
-                                <Link href={'https://chat.whatsapp.com/E3l8JJ9ThPb781Yo086IE2'}>
+                                <Link href={'https://chat.whatsapp.com/KEpfmtfDaN46mvbxScdGWT'}>
                                     <button className="flex items-center justify-center w-full py-2 px-4 rounded-md text-white bg-[#25D366] hover:bg-[#1ebc5c] transition duration-200">
                                         <FaWhatsapp className="mr-2" size={20} />
                                         Join WhatsApp
                                     </button>
                                 </Link>
                                 <a
-                                    download={"cb-football.apk"}
-                                    href={"/downloads/cb-football.apk"}
+                                    // download={"cb-football.apk"}
+                                    // href={"/downloads/cb-football.apk"}
                                     style={{
                                         boxShadow: "0px 2px 8px 1px rgb(0,0,0,0.1) ",
                                     }}

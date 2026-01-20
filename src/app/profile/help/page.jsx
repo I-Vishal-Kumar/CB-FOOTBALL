@@ -40,7 +40,7 @@ const Page = () => {
                             </div>
                             <div className="flex-[2] flex justify-end items-center">
                                 <Link
-                                    href={"https://t.me/+hinxahjeFTcxNTk1"}
+                                    href={"https://t.me/Bharat_Goal"}
                                     className="h-full rounded-xl bg-[#11468F] text-white px-8 py-2"
                                 >
                                     join
@@ -74,7 +74,7 @@ const Page = () => {
                         </div>
 
                         <div
-                            onClick={()=>window.location.href = 'https://t.me/Cbfootballhelp'}
+                            onClick={()=>window.location.href = 'https://t.me/Bharat_Goal'}
                             style={{
                                 boxShadow: "0 10px 10px rgba(0,0,0,0.04) ",
                             }}

@@ -121,7 +121,7 @@ function Page() {
             if (!isValidTime) {
                 getAlert(
                     "opps",
-                    "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Saturday."
+                    "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Friday. Withdrawals are not available on Saturday and Sunday."
                 );
                 return;
             }
@@ -133,8 +133,8 @@ function Page() {
                 getAlert("opps", "Low valid amount .");
                 return;
             }
-            if (Amount < 500) {
-                getAlert("opps", "minimum withdrawal amount is 500");
+            if (Amount < 600) {
+                getAlert("opps", "minimum withdrawal amount is 600");
                 return;
             }else if(!withdrawPass){
                 getAlert("opps", "Withdrawal password is required");
@@ -860,8 +860,13 @@ async function validateTime() {
     const currentDay = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
     const currentHour = currentDate.getHours();
 
-    // Check if it's Sunday or outside the working hours (10 am to 5 pm)
-    if (currentDay === 0 || currentHour < 10 || currentHour >= 16) {
+    // Check if it's Saturday (6) or Sunday (0) - withdrawals are off on weekends
+    if (currentDay === 0 || currentDay === 6) {
+        return false;
+    }
+
+    // Check if outside the working hours (10 am to 4 pm)
+    if (currentHour < 10 || currentHour >= 16) {
         return false;
     }
 

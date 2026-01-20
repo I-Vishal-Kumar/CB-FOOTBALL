@@ -45,11 +45,19 @@ export async function POST(request) {
         if (!(await validateTime()))
             throw new CustomError(
                 705,
-                "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Saturday."
+                "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Friday. Withdrawals are not available on Saturday and Sunday."
             );
 
         if (!Amount) throw new CustomError(705, "Enter a valid amount", {});
         Amount = Number(Amount);
+
+        // Check minimum withdrawal amount
+        if (Amount < 600) {
+            throw new CustomError(
+                705,
+                "minimum withdrawal amount is 600"
+            );
+        }
 
         // if (!(await vipVerified(UserName, body?.Amount)))
         //     throw new CustomError(705, "Your vip level is low", {});
@@ -57,7 +65,7 @@ export async function POST(request) {
             if (!Amount) throw new CustomError(705, "Missing Fields", {});
         Amount = Amount * 100;
 
-        // check if the transaction already exists;
+        // check if the transaction already exists for today
         let today = new Date(
             new Date().toLocaleString("en-US", {
                 timeZone: "Asia/Calcutta",
@@ -76,6 +84,30 @@ export async function POST(request) {
                 "you have reached withdrawal limit for today",
                 {}
             );
+
+        // Check monthly withdrawal limit (4 successful withdrawals per month)
+        const currentMonth = today.getMonth() + 1; // 1-12 (no leading zero)
+        const currentYear = today.getFullYear();
+        
+        // Count successful withdrawals (Status = 1) in current month
+        // Date format is "DD/MM/YYYY" (e.g., "15/1/2024" or "5/12/2024")
+        // Match pattern: "/MM/YYYY" or "/M/YYYY" at end of string
+        const monthlyWithdrawals = await TRANSACTION.countDocuments({
+            UserName,
+            Type: "withdrawal",
+            Status: 1, // Only count successful withdrawals
+            Date: {
+                $regex: `/${currentMonth}/${currentYear}$` // Match current month/year at end of date string
+            }
+        });
+
+        if (monthlyWithdrawals >= 4) {
+            throw new CustomError(
+                705,
+                "You have reached the monthly withdrawal limit of 4 successful withdrawals. Please try again next month.",
+                {}
+            );
+        }
         
         if (body?.isLocalBank) {
             let updatedUser = await updateUser(
@@ -232,8 +264,13 @@ async function validateTime() {
     const currentDay = Number(currentDate.getDay()); // Sunday is 0, Monday is 1, ..., Saturday is 6
     const currentHour = Number(currentDate.getHours());
 
-    // Check if it's Sunday or outside the working hours (10 am to 4 pm)
-    if (currentDay === 0 || currentHour < 10 || currentHour >= 16) {
+    // Check if it's Saturday (6) or Sunday (0) - withdrawals are off on weekends
+    if (currentDay === 0 || currentDay === 6) {
+        return false;
+    }
+
+    // Check if outside the working hours (10 am to 4 pm)
+    if (currentHour < 10 || currentHour >= 16) {
         return false;
     }
 

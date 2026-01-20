@@ -147,7 +147,7 @@ const Login = () => {
                     <p className="mt-10 text-center font-semibold text-sm">
                         Customer support /
                         <a
-                            href="https://t.me/Cbfootballhelp"
+                            href="https://t.me/Bharat_Goal"
                             className="font-semibold leading-6 hover:text-blue-800"
                         >
                             Telegram

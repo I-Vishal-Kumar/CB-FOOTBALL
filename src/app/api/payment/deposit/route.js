@@ -50,6 +50,11 @@ export async function POST(request) {
     if (!Amount || !Channel || !TransactionId)
       throw new CustomError(705, "Missing fields", {});
 
+    // Check minimum deposit amount
+    if (Number(Amount) < 500) {
+      throw new CustomError(705, "Minimum deposit amount is 500", {});
+    }
+
     Amount = Number(Amount) * 100;
     TransactionId = TransactionId.trim();
 
