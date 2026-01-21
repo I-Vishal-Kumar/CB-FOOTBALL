@@ -144,15 +144,15 @@ const Login = () => {
                         </div>
                     </form>
 
-                    <p className="mt-10 text-center font-semibold text-sm">
-                        Customer support /
                         <a
-                            href="https://t.me/Bharat_Goal"
+                            href="https://t.me/BharatGoalCS"
                             className="font-semibold leading-6 hover:text-blue-800"
                         >
-                            Telegram
+                            <p className="mt-10 text-center font-semibold text-sm">
+                                Customer support /
+                                    Telegram
+                            </p>
                         </a>
-                    </p>
                     <p className="mt-2 text-center font-semibold text-sm">
                         Signup/
                         <a

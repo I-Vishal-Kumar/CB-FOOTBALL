@@ -74,7 +74,7 @@ const Page = () => {
                         </div>
 
                         <div
-                            onClick={()=>window.location.href = 'https://t.me/Bharat_Goal'}
+                            onClick={()=>window.location.href = 'https://t.me/BharatGoalCS'}
                             style={{
                                 boxShadow: "0 10px 10px rgba(0,0,0,0.04) ",
                             }}
@@ -100,84 +100,6 @@ const Page = () => {
                                     </span>
                                 </div>
                             </div>
-                            {false && (
-                                <motion.div
-                                    initial={{ y: -30, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="mt-2 flex space-y-2 flex-col items-center"
-                                >
-                                    <div className="w-[90%] flex items-center space-x-2">
-                                        <div className="w-[10%]">
-                                            <p
-                                                style={{
-                                                    background:
-                                                        "url('/agents/alok.jpg') center no-repeat",
-                                                    backgroundSize: "cover",
-                                                }}
-                                                className="size-6 rounded-full"
-                                            ></p>
-                                        </div>
-                                        <div className="w-[30%] text-[0.5rem] text-gray-600 ">
-                                            <p>Alok</p>
-                                        </div>
-                                        <div className="w-[60%]">
-                                            <a
-                                                href="https://t.me/AlokRaj05"
-                                                className="bg-blue-500 h-full w-[100%] py-1 px-2 rounded-xl text-center text-[0.6rem] text-white font-bold "
-                                            >
-                                                connect to Alok
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div className="w-[90%] flex items-center space-x-2">
-                                        <div className="w-[10%]">
-                                            <p
-                                                style={{
-                                                    background:
-                                                        "url('/agents/anthony.jpg') center no-repeat",
-                                                    backgroundSize: "cover",
-                                                }}
-                                                className="size-6 rounded-full"
-                                            ></p>
-                                        </div>
-                                        <div className="w-[30%] text-[0.5rem] text-gray-600 ">
-                                            <p>Anthony</p>
-                                        </div>
-                                        <div className="w-[60%]">
-                                            <a
-                                                href="https://t.me/Anthony_8892"
-                                                className="bg-blue-500 h-full w-full py-1 px-2 rounded-xl text-center text-[0.6rem] text-white font-bold "
-                                            >
-                                                connect to Anthony
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div className="w-[90%] flex items-center space-x-2">
-                                        <div className="w-[10%]">
-                                            <p
-                                                style={{
-                                                    background:
-                                                        "url('/agents/ruhi.jpg') center no-repeat",
-                                                    backgroundSize: "cover",
-                                                }}
-                                                className="size-6 rounded-full"
-                                            ></p>
-                                        </div>
-                                        <div className="w-[30%] text-[0.5rem] text-gray-600 ">
-                                            <p>Ruhi</p>
-                                        </div>
-                                        <div className="w-[60%]">
-                                            <a
-                                                href="https://t.me/Aryarhi"
-                                                className="bg-blue-500 h-full w-full py-1 px-2 rounded-xl text-center text-[0.6rem] text-white font-bold "
-                                            >
-                                                connect to Ruhi
-                                            </a>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
                         </div>
 
                         <div

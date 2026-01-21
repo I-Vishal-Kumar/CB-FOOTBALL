@@ -224,7 +224,7 @@ function Page() {
                                 </span>
                                 <div className="flex flex-col">
                                     <span className="text-[0.7rem] text-white/90 font-medium">
-                                        Withdrawable Profit
+                                        Cashout profit
                                     </span>
                                     <span className="text-lg font-bold text-white">
                                         ₹{new Intl.NumberFormat("en-US", {
