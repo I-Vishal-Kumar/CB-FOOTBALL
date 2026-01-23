@@ -8,10 +8,6 @@ import { revalidatePath } from "next/cache";
 const CHUNK_SIZE = 100;
 
 // function is responsible to settle the unsettled bets placed by the user's
-let update_user = [];
-let update_bet = [];
-let create_commission = [];
-let give_commission = {};
 
 export async function settle(prevState, formData) {
     try {
@@ -55,9 +51,11 @@ async function betParser({
     membership,
 }) {
     await connect();
-    create_commission = [];
-    update_bet = [];
-    update_user = [];
+    // Declare state variables in function scope to avoid leaks between concurrent requests
+    let update_user = [];
+    let update_bet = [];
+    let create_commission = [];
+    let give_commission = {};
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
@@ -65,7 +63,7 @@ async function betParser({
         let totalUpdatedUsers = { matchedCount: 0, modifiedCount: 0 };
         let totalUpdatedBets = { matchedCount: 0, modifiedCount: 0 };
         let totalInsertedCommissions = { insertedCount: 0 };
-        let totoalGivenCommissionCount = {count: 0}
+        let totalGivenCommissionCount = {count: 0}
         // S_first , s_second resembles the actual scores of the live match.
         // g_first ,g_second resembles the score given by the admin to the users.
 
@@ -85,7 +83,7 @@ async function betParser({
             throw new CustomError(
                 705,
                 "No matches exists with StakeId " + StakeId,
-                {}
+                {unsettledBets}
             );
         
         for (let i = 0; i < unsettledBets.length; i += CHUNK_SIZE) {
@@ -99,7 +97,11 @@ async function betParser({
                 s_second,
                 g_first,
                 g_second,
-                membership
+                membership,
+                update_user,
+                update_bet,
+                create_commission,
+                give_commission
             );
 
             let userResults = await USER.bulkWrite(update_user, { session });
@@ -126,8 +128,8 @@ async function betParser({
                             filter: { UserName: user },
                             update: {
                                 $inc: {
-                                    Balance: Number(give_commission[user]).toFixed(2),
-                                    Commission: Number(give_commission[user]).toFixed(2),
+                                    Profit: Number(give_commission[user]),
+                                    Commission: Number(give_commission[user]),
                                 },
                             },
                         },
@@ -142,7 +144,7 @@ async function betParser({
                 // }
                 // console.log(commissionToEdision);
                 // console.log(isUpdated);
-                totoalGivenCommissionCount.count += commissionResult.modifiedCount
+                totalGivenCommissionCount.count += commissionResult.modifiedCount
             }
 
             update_user = [];
@@ -177,7 +179,11 @@ async function __init(
     s_second,
     g_first,
     g_second,
-    membership
+    membership,
+    update_user,
+    update_bet,
+    create_commission,
+    give_commission
 ) {
     try {
         await Promise.all(
@@ -188,12 +194,16 @@ async function __init(
                     s_second,
                     g_first,
                     g_second,
-                    membership
+                    membership,
+                    update_user,
+                    update_bet,
+                    create_commission,
+                    give_commission
                 )
             )
         );
     } catch (error) {
-        throw new Error("something went wrong while processing the error");
+        throw error;
     }
 }
 
@@ -203,7 +213,11 @@ async function initiateParallelProcess(
     s_second,
     g_first,
     g_second,
-    membership
+    membership,
+    update_user,
+    update_bet,
+    create_commission,
+    give_commission
 ) {
     // Asynchronously perform operations in settle_bet
     try {
@@ -218,7 +232,11 @@ async function initiateParallelProcess(
             s_second,
             g_first,
             g_second,
-            membership
+            membership,
+            update_user,
+            update_bet,
+            create_commission,
+            give_commission
         );
         if (!res) {
             update_bet.push({
@@ -244,11 +262,9 @@ async function initiateParallelProcess(
                     filter: { UserName: match?.UserName },
                     update: {
                         $inc: {
-                            ValidAmount: Number(
-                                (Number(match?.BetAmount) * 0.2).toFixed(2)
-                            ),
-                            Balance: Number(BetAmount.toFixed(2) * 100), // Return bet amount to Balance
-                            Profit: Number(Profit.toFixed(2) * 100), // Add profit to Profit field
+                            ValidAmount: Math.round(Number(match?.BetAmount) * 0.2),
+                            Balance: Math.round(BetAmount * 100), // Return bet amount to Balance
+                            Profit: Math.round(Profit * 100), // Add profit to Profit field
                         },
                     },
                 },
@@ -282,7 +298,11 @@ async function settle_bet(
     s_second,
     g_first,
     g_second,
-    membership
+    membership,
+    update_user,
+    update_bet,
+    create_commission,
+    give_commission
 ) {
     try {
         let win = false;
@@ -305,7 +325,9 @@ async function settle_bet(
                 match?.StakeId,
                 Profit,
                 Number(match?.BetAmount) / 100,
-                win
+                win,
+                create_commission,
+                give_commission
             );
 
             if (!isBonusGiven)
@@ -326,9 +348,10 @@ async function give_parent_bonus(
     StakeId,
     Profit,
     BetAmount,
-    win
+    win,
+    create_commission,
+    give_commission
 ) {
-    await connect();
     let today = new Date(
         new Date().toLocaleString("en-US", {
             timeZone: "Asia/Calcutta",
@@ -447,10 +470,13 @@ async function cancelBet({ StakeId }) {
             received: true,
         };
     } catch (error) {
+        await Session.abortTransaction();
         return {
             message: JSON.stringify(error),
             received: true,
         };
+    } finally {
+        Session.endSession();
     }
 }
 

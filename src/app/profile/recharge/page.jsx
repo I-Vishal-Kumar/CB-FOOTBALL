@@ -153,7 +153,7 @@ function Page() {
           //   )}`
           // );
           // okPay(100, 123);
-          initiatePayment(inputValue);
+          // initiatePayment(inputValue);
         } else if (selectedOption === "option2") {
           router.push(
             `/profile/recharge/paymentChannelTwo?data=${encodeURIComponent(
@@ -284,7 +284,7 @@ function Page() {
                   className=" py-2 w-[80%] ml-2 bg-transparent outline-none focus-within text-[.65rem] "
                 />{" "}
               </div>
-              <div
+              {/* <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
               >
@@ -297,7 +297,7 @@ function Page() {
                   checked={selectedOption === "option1"}
                   onChange={handleOptionChange}
                 />
-            </div>
+            </div> */}
             {
               selectedOption === "option1" &&
               (
@@ -306,7 +306,7 @@ function Page() {
             }
 
 
-              {/* <div
+              <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between  px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white "
               >
@@ -333,9 +333,9 @@ function Page() {
                   checked={selectedOption === "option3"}
                   onChange={handleOptionChange}
                 />
-              </div> */}
+              </div>
 
-              {/* <div
+              <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
               >
@@ -348,7 +348,7 @@ function Page() {
                   checked={selectedOption === "option4"}
                   onChange={handleOptionChange}
                 />
-              </div> */}
+              </div>
 
               <div
                 onClick={handleRedirect}

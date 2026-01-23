@@ -37,13 +37,13 @@ export async function GET(request) {
         if (!userData || !matches)
             throw new CustomError(703, "Login again", {});
 
-        let ExtractedMatches = await getExtractedMatches(matches);
+        const apiMatches = getHardcodedMatches(20);
         await settleFixDeposit(UserName);
 
         return NextResponse.json({
             status: 200,
             message: "",
-            data: { userData, matches: ExtractedMatches },
+            data: { userData, matches: apiMatches },
         });
     } catch (error) {
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
