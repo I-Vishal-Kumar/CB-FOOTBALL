@@ -156,7 +156,6 @@ async function getAllBets() {
         let data = await BET.aggregate([
             {
                 $match: { Status: 1 },
-                $match: { StakeId: 1349273 },
             },
             {
                 $group: {
@@ -197,11 +196,14 @@ async function getAdminDetails() {
     "use server";
     try {
         await connect();
-        let data = ADMIN.findOne({ _id: "673822ba4b425f2f3f2cef22" });
-        return data || [];
+        let data = await ADMIN.findOne({});
+        if (!data) {
+            data = await ADMIN.create({});
+        }
+        return data;
     } catch (error) {
         console.log(error);
-        return [];
+        return null;
     }
 }
 

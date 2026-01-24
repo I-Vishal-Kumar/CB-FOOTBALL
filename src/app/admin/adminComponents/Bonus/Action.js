@@ -5,43 +5,48 @@ import { REWARD, USER } from "@/app/modals/modal";
 import { mongoose } from "mongoose";
 
 export async function giveReward(prevState, formData) {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  let session = null;
+  let transactionStarted = false;
   try {
     await connect();
 
-    const UserName = formData?.get("UserName") || "";
-    let Amount = formData?.get("Amount") * 100 || 0;
-    let Remark = formData?.get("Remark") || "";
-    if (!UserName || !Amount || !Remark)
-      throw new Error("each field is required");
+    const UserName = String(formData?.get("UserName") || "").trim();
+    const rawAmount = formData?.get("Amount");
+    const Amount = Math.round(Number(rawAmount) * 100) || 0;
+    const Remark = String(formData?.get("Remark") || "").trim();
+    if (!UserName || !Amount || !Remark) {
+      return { message: "Each field is required (UserName, Amount, Remark)." };
+    }
 
-    let isUserFound = await USER.findOneAndUpdate(
+    session = await mongoose.startSession();
+    session.startTransaction();
+    transactionStarted = true;
+
+    const isUserFound = await USER.findOneAndUpdate(
       { UserName },
-      {
-        $inc: {
-          Balance: Amount,
-        },
-      },
+      { $inc: { Profit: Amount } },
       { session }
     );
-    let isRewardCreated = await REWARD.create(
+    if (!isUserFound) {
+      throw new Error("User not found. Check the username.");
+    }
+
+    await REWARD.create(
       [
         {
-          UserName: UserName,
+          UserName,
           Type: "Manual reward",
-          Remark: Remark,
-          Amount: Amount,
+          Remark,
+          Amount,
           Status: 1,
         },
       ],
       { session }
     );
-    if (!isUserFound || !isRewardCreated) throw new Error("invalid user id");
+
     await session.commitTransaction();
-    return {
-      message: `reward given to -> ${UserName}`,
-    };
+    transactionStarted = false;
+    return { message: `Reward given to ${UserName}` };
   } catch (error) {
     if (
       error?.code === 500 ||
@@ -51,9 +56,25 @@ export async function giveReward(prevState, formData) {
     ) {
       ErrorReport(error);
     }
-    await session.abortTransaction();
+    if (transactionStarted && session) {
+      try {
+        await session.abortTransaction();
+      } catch (abortErr) {
+        ErrorReport(abortErr);
+      }
+    }
     return {
-      message: error?.message || "something went wrong",
+      message: error?.message && typeof error.message === "string"
+        ? error.message
+        : "Something went wrong. Check username and try again.",
     };
+  } finally {
+    if (session) {
+      try {
+        await session.endSession();
+      } catch (endErr) {
+        ErrorReport(endErr);
+      }
+    }
   }
 }

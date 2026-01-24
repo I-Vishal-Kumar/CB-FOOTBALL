@@ -19,10 +19,10 @@ export async function GET(req) {
       }
     );
     if (!res) throw new CustomError(703, "somthing went wrong", {});
-    let paymentDetails = await ADMIN.findOne({
-      _id: "673822ba4b425f2f3f2cef22",
-    });
-    if (!paymentDetails) throw new CustomError(302, "something went wrong");
+    let paymentDetails = await ADMIN.findOne({});
+    if (!paymentDetails) {
+      paymentDetails = await ADMIN.create({});
+    }
     return NextResponse.json({
       status: 200,
       message: "data fetched",

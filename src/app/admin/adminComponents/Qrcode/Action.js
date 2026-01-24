@@ -4,6 +4,14 @@ import { connect } from "@/app/modals/dbConfig";
 import { ADMIN } from "@/app/modals/modal";
 import { revalidatePath } from "next/cache";
 
+async function ensureAdminDoc() {
+  let doc = await ADMIN.findOne({});
+  if (!doc) {
+    doc = await ADMIN.create({});
+  }
+  return doc;
+}
+
 export async function updateQr(prevState, formData) {
   try {
     await connect();
@@ -11,12 +19,10 @@ export async function updateQr(prevState, formData) {
     let qrFile = formData.get("qrCode") || "";
     let channel = formData.get("channel") || 1;
     let updateChannelFor = `QrChannel${channel}`;
-    let isUpdated = await ADMIN.findOneAndUpdate(
-      { _id: "673822ba4b425f2f3f2cef22" },
-      {
-        [updateChannelFor]: qrFile,
-      }
-    );
+    let doc = await ensureAdminDoc();
+    let isUpdated = await ADMIN.findByIdAndUpdate(doc._id, {
+      [updateChannelFor]: qrFile,
+    });
     if (isUpdated) {
       revalidatePath("/admin/betsettlement");
       return {
