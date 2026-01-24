@@ -63,7 +63,7 @@ const Login = () => {
         <>
             <div className="flex text-white relative min-h-screen  flex-col justify-center px-6 pb-[8rem] lg:px-8">
                 <div className="absolute blur-[2px] top-0 left-0 z-[-1]  h-full w-full">
-                    <Image fill alt="company logo" src={"/login_bg.jpg"} />
+                    <Image fill alt="company logo" src={"/login_bg.png"} />
                 </div>
                 <div className="sm:mx-auto pt-0 sm:w-full sm:max-w-sm">
                     <Image

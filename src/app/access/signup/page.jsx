@@ -297,11 +297,7 @@ const Signup = () => {
     return (
         <div className="flex relative min-h-[100dvh] flex-col justify-center px-6 py-12 lg:px-8">
             <div className="absolute top-0 blur-[3px] left-0 z-[-1]  h-full w-full">
-                <Image
-                    fill
-                    alt="background"
-                    src={"/login_bg.jpg"}
-                />
+                <Image fill alt="background" src={"/login_bg.png"} />
             </div>
             <div className="mt-10 text-white sm:mx-auto sm:w-full sm:max-w-sm">
                 <motion.form onSubmit={sendData} className="space-y-3">
@@ -568,10 +564,7 @@ const Signup = () => {
                 </motion.form>
 
                 <p className="mt-2 text-white text-center font-semibold text-sm">
-                    <a
-                        href="/access/login"
-                        className="font-semibold leading-6"
-                    >
+                    <a href="/access/login" className="font-semibold leading-6">
                         Login
                     </a>
                 </p>
