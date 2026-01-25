@@ -24,7 +24,7 @@ export async function giveReward(prevState, formData) {
 
     const isUserFound = await USER.findOneAndUpdate(
       { UserName },
-      { $inc: { Profit: Amount } },
+      { $inc: { Balance: Amount } },
       { session }
     );
     if (!isUserFound) {

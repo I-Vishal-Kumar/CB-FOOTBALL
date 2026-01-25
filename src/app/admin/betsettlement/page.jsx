@@ -155,7 +155,7 @@ async function getAllBets() {
         await connect();
         let data = await BET.aggregate([
             {
-                $match: { Status: 1 },
+                $match: { Status: 0 },
             },
             {
                 $group: {
@@ -166,6 +166,10 @@ async function getAllBets() {
             {
                 $replaceRoot: { newRoot: "$bet" },
             },
+            {
+                $sort: { createdAt: 1 },
+            },
+            
         ]);
         for (let bet of data) {
             let count = await BET.countDocuments({
@@ -175,7 +179,6 @@ async function getAllBets() {
 
             data[data.indexOf(bet)]["Count"] = count;
         }
-        data.reverse();
         return data;
     } catch (error) {
         console.log(error);
