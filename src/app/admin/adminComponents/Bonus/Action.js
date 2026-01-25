@@ -19,7 +19,7 @@ export async function giveReward(prevState, formData) {
     }
 
     session = await mongoose.startSession();
-    session.startTransaction();
+    await session.startTransaction();
     transactionStarted = true;
 
     const isUserFound = await USER.findOneAndUpdate(
@@ -56,25 +56,13 @@ export async function giveReward(prevState, formData) {
     ) {
       ErrorReport(error);
     }
-    if (transactionStarted && session) {
-      try {
-        await session.abortTransaction();
-      } catch (abortErr) {
-        ErrorReport(abortErr);
-      }
+    if (transactionStarted && session?.isInTransaction()) {
+      await session.abortTransaction();
     }
     return {
       message: error?.message && typeof error.message === "string"
         ? error.message
         : "Something went wrong. Check username and try again.",
     };
-  } finally {
-    if (session) {
-      try {
-        await session.endSession();
-      } catch (endErr) {
-        ErrorReport(endErr);
-      }
-    }
   }
 }
