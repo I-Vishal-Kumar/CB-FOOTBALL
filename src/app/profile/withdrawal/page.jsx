@@ -125,14 +125,6 @@ function Page() {
                 );
                 return;
             }
-            if (
-                Number(userOtherData?.ValidAmount) <=
-                    Number(userOtherData?.ValidDeposit) ||
-                Number(userOtherData?.ValidDeposit) === 0
-            ) {
-                getAlert("opps", "Low valid amount .");
-                return;
-            }
             if (Amount < 600) {
                 getAlert("opps", "minimum withdrawal amount is 600");
                 return;

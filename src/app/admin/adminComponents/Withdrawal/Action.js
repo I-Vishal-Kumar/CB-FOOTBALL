@@ -1,4 +1,5 @@
 "use server";
+import ErrorReport from "@/app/helpers/ErrorReport";
 import { connect } from "@/app/modals/dbConfig";
 import { TRANSACTION, USER } from "@/app/modals/modal";
 import mongoose from "mongoose";
@@ -50,9 +51,12 @@ export async function updateTransaction(prevState, formData) {
 
 async function settleWithdraw(data) {
     await connect();
-    let Session = await mongoose.startSession();
-    Session.startTransaction();
+    let Session = null;
+    let transactionStarted = false;
     try {
+        Session = await mongoose.startSession();
+        await Session.startTransaction();
+        transactionStarted = true;
         let isWithdrawUpdated = await TRANSACTION.findOneAndUpdate(
             {
                 UserName: data?.UserName,
@@ -74,17 +78,36 @@ async function settleWithdraw(data) {
             throw Error("error while seettling withdrawal");
         }
     } catch (error) {
-        await Session.abortTransaction();
-        console.log(error);
+        if (transactionStarted && Session) {
+            try {
+                await Session.abortTransaction();
+            } catch (abortErr) {
+                ErrorReport(abortErr);
+            }
+        }
+        if (error?.code === 500 || error?.status === 500 || !error?.status) {
+            ErrorReport(error);
+        }
         return error?.message || "somethign went wrong";
+    } finally {
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 
 async function cancelWithdraw(data) {
     await connect();
-    let Session = await mongoose.startSession();
-    Session.startTransaction();
+    let Session = null;
+    let transactionStarted = false;
     try {
+        Session = await mongoose.startSession();
+        await Session.startTransaction();
+        transactionStarted = true;
         let isUpdatedTransaction = await TRANSACTION.findOneAndUpdate(
             {
                 UserName: data?.UserName,
@@ -114,8 +137,24 @@ async function cancelWithdraw(data) {
             throw Error("error while canceling the transaction");
         }
     } catch (error) {
-        await Session.abortTransaction();
-        console.log(error);
+        if (transactionStarted && Session) {
+            try {
+                await Session.abortTransaction();
+            } catch (abortErr) {
+                ErrorReport(abortErr);
+            }
+        }
+        if (error?.code === 500 || error?.status === 500 || !error?.status) {
+            ErrorReport(error);
+        }
         return error?.message || "something went wrong";
+    } finally {
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
