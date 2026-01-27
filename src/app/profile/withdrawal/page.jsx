@@ -121,7 +121,7 @@ function Page() {
             if (!isValidTime) {
                 getAlert(
                     "opps",
-                    "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Friday. Withdrawals are not available on Saturday and Sunday."
+                    "you can withdraw on working days i.e Monday to Friday. Withdrawals are not available on Saturday and Sunday."
                 );
                 return;
             }
@@ -848,11 +848,6 @@ async function validateTime() {
 
     // Check if it's Saturday (6) or Sunday (0) - withdrawals are off on weekends
     if (currentDay === 0 || currentDay === 6) {
-        return false;
-    }
-
-    // Check if outside the working hours (10 am to 4 pm)
-    if (currentHour < 10 || currentHour >= 16) {
         return false;
     }
 
