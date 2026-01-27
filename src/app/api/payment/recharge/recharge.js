@@ -13,6 +13,8 @@ import { NextResponse } from "next/server";
  *
  */
 
+import crypto from 'crypto';
+
 export const validateSignByKey = (signSource, key, providedSign) => {
     if (key) {
       signSource += `&key=${key}`;
@@ -27,7 +29,7 @@ export async function POST(request) {
   await connect();
   
   let Session = await mongoose.startSession();
-  Session.startTransaction();
+  await Session.startTransaction();
   
   let { session, token } = await getCookieData();
   
@@ -54,10 +56,8 @@ export async function POST(request) {
   
       const isValid = validateSignByKey(signStr, merchant_key, sign);
   
-      if (isValid) {
-        res.status(200).send('success');
-      } else {
-        res.status(400).send('Signature error');
+      if (!isValid) {
+        throw new CustomError(400, "Signature validation failed", {});
       }
 
     // await Session.commitTransaction();
@@ -66,7 +66,7 @@ export async function POST(request) {
       status: 200,
       message:
         "Your deposit is in processing and will be reflected soon in you account .",
-      data: data,
+      data: {},
     });
 
   } catch (error) {

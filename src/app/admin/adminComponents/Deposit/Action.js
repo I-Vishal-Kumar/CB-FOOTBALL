@@ -220,6 +220,7 @@ async function cancelDeposit(data) {
             {
                 UserName: data?.UserName,
                 TransactionId: data?.prevTransactionId,
+                Status: 0,  // Only cancel pending transactions
             },
             {
                 Status: 2,
@@ -244,7 +245,7 @@ function getVipLevel(amount) {
     let vip_level = 0;
     amount = Number(amount);
 
-    if (amount === 1000 && amount < 55_000) {
+    if (amount >= 1000 && amount < 55_000) {
         vip_level = 0;
     } else if (amount >= 55_000 && amount < 105_000) {
         vip_level = 1;

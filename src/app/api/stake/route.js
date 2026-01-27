@@ -43,7 +43,7 @@ export async function POST(request) {
     let { session, token } = await getCookieData();
     await connect();
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
 
     try {
         let UserName = await isValidUser(token, session);
@@ -93,11 +93,23 @@ export async function POST(request) {
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);
         }
-        await Session.abortTransaction();
+        try {
+            await Session.abortTransaction();
+        } catch (abortErr) {
+            ErrorReport(abortErr);
+        }
         return NextResponse.json({
             status: error?.status || error?.code || 500,
             message: error?.message || "something went wrong",
         });
+    } finally {
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 

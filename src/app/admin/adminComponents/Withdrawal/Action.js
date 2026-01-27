@@ -101,7 +101,7 @@ async function cancelWithdraw(data) {
             { UserName: data?.UserName },
             {
                 $inc: {
-                    Balance: data?.Amount,
+                    Profit: data?.Amount,
                     Withdrawal: -data?.Amount,
                 },
             },

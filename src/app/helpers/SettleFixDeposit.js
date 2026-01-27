@@ -9,7 +9,7 @@ const calculateCompoundInterest = (principal, rate, time) => {
 
 export const settleFixDeposit = async (UserName) => {
     const Session = await mongoose.startSession(); // Start the session
-    Session.startTransaction(); // Start the transaction
+    await Session.startTransaction(); // Start the transaction
 
     try {
         await connect();
@@ -79,6 +79,6 @@ export const settleFixDeposit = async (UserName) => {
         console.log(error);
         await Session.abortTransaction();
     } finally {
-        Session.endSession();
+        await Session.endSession();
     }
 };

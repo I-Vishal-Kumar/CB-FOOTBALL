@@ -10,6 +10,30 @@ import { NextResponse } from "next/server";
 import axios from 'axios';
 import { sign } from "./signApi";
 import crypto, { randomBytes } from 'crypto';
+
+/**
+ * Calculate VIP level based on deposit amount
+ */
+function getVipLevel(amount) {
+    let vip_level = 0;
+    amount = Number(amount);
+
+    if (amount >= 1000 && amount < 55_000) {
+        vip_level = 0;
+    } else if (amount >= 55_000 && amount < 105_000) {
+        vip_level = 1;
+    } else if (amount >= 105_000 && amount < 300_000) {
+        vip_level = 2;
+    } else if (amount >= 300_000 && amount < 700_000) {
+        vip_level = 3;
+    } else if (amount >= 700_000) {
+        vip_level = 4;
+    } else {
+        vip_level = 0;
+    }
+    return vip_level;
+}
+
 /**
  *
  *   This file will handle the deposits from various channels be it usdt or local;
@@ -32,7 +56,7 @@ export async function POST(request, response) {
   await connect();
   
   let Session = await mongoose.startSession();
-  Session.startTransaction();
+  await Session.startTransaction();
   
   try {
 
@@ -51,8 +75,9 @@ export async function POST(request, response) {
     const {
       tradeResult="", oriAmount=0, amount=1, mchId="", mchOrderNo=1, orderDate='' } = body
 
-    if(Number(oriAmount) !== Number(amount) && Number(tradeResult) !== 1 
-      && Number(mchId) !== merchantId
+    // Validate payment: if ANY condition fails, it's a failure
+    if(Number(oriAmount) !== Number(amount) || Number(tradeResult) !== 1 
+      || Number(mchId) !== merchantId
     ){
       // its failure
       await TRANSACTION.findOneAndDelete({TransactionId: `${mchOrderNo}`});
@@ -73,9 +98,17 @@ export async function POST(request, response) {
         }
       }, {session: Session});
 
+    // Check if transaction was found
+    if (!isTransactionUpdated || !isTransactionUpdated?.UserName) {
+      throw new Error("Transaction not found or invalid");
+    }
 
+    let isFirstDeposit = await USER.findOne({ UserName: isTransactionUpdated.UserName });
 
-    let isFirstDeposit = await USER.findOne({ UserName: isTransactionUpdated?.UserName });
+    // Check if user was found
+    if (!isFirstDeposit) {
+      throw new Error("User not found");
+    }
 
     if (isFirstDeposit?.Parent !== "" && isFirstDeposit?.FirstDeposit) {
       let isParentUpdated = await USER.findOneAndUpdate(
@@ -120,6 +153,10 @@ export async function POST(request, response) {
     // Calculate bonus: 5% for first deposit, 4% for subsequent deposits
     const bonusPercentage = isFirstDeposit?.FirstDeposit ? 0.05 : 0;
     
+    // Calculate VIP level based on deposit amount
+    const depositAmount = amm_updated / 100; // Convert back to normal units for VIP calculation
+    const vip_level = getVipLevel(depositAmount);
+    
     let userUpdated = await USER.findOneAndUpdate(
       { UserName: isFirstDeposit?.UserName },
         {
@@ -129,7 +166,7 @@ export async function POST(request, response) {
                 ValidDeposit: amm_updated,
             },
             FirstDeposit: false,
-            VipLevel: 1,
+            VipLevel: vip_level,
         },
         { session: Session }
     );
@@ -144,9 +181,20 @@ export async function POST(request, response) {
       ErrorReport(error);
     }
     
-    await Session.abortTransaction();
+    try {
+      await Session.abortTransaction();
+    } catch (abortErr) {
+      ErrorReport(abortErr);
+    }
 
     return new NextResponse('failure', {status: 400 });
-
+  } finally {
+    if (Session) {
+      try {
+        await Session.endSession();
+      } catch (endErr) {
+        ErrorReport(endErr);
+      }
+    }
   }
 }
