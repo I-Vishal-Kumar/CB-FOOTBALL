@@ -63,38 +63,28 @@ async function getAllTransactions() {
                 timeZone: "Asia/Kolkata",
             })
         );
-        const todayDateString = formatDate(today);
+        
+        // Calculate start of 3 days ago (day before yesterday at 00:00:00)
+        const threeDaysAgo = new Date(today);
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 2);
+        threeDaysAgo.setHours(0, 0, 0, 0);
+        
+        // Calculate end of today (23:59:59)
+        const endOfToday = new Date(today);
+        endOfToday.setHours(23, 59, 59, 999);
 
-        // Calculate the dates for yesterday and the day before yesterday
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayDateString = formatDate(yesterday);
-
-        const dayBeforeYesterday = new Date(today);
-        dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-        const dayBeforeYesterdayDateString = formatDate(dayBeforeYesterday);
-
-        // Fetch transactions for the last three days
+        // Fetch transactions for the last three days using createdAt
         const data = await TRANSACTION.find({
             Type: "withdrawal",
-            Date: {
-                $in: [
-                    todayDateString,
-                    yesterdayDateString,
-                    dayBeforeYesterdayDateString,
-                ],
-            },
+            createdAt: {
+                $gte: threeDaysAgo,
+                $lte: endOfToday
+            }
         }).sort({ createdAt: -1 });
 
         return data;
     } catch (error) {
         console.log(error);
     }
-}
-function formatDate(date) {
-    const day = String(date.getDate());
-    const month = String(date.getMonth() + 1); // January is 0!
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
 }
 export const dynamic = "force-dynamic";

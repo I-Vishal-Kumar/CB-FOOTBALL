@@ -70,12 +70,19 @@ export async function POST(request) {
                 timeZone: "Asia/Calcutta",
             })
         );
+        // Set to start of day for comparison
+        const startOfToday = new Date(today);
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date(today);
+        endOfToday.setHours(23, 59, 59, 999);
+        
         let isTodayWithdrawal = await TRANSACTION.findOne({
             UserName,
-            Date: `${today.getDate()}/${
-                today.getMonth() + 1
-            }/${today.getFullYear()}`,
             Type: "withdrawal",
+            createdAt: {
+                $gte: startOfToday,
+                $lte: endOfToday
+            }
         });
         if (isTodayWithdrawal)
             throw new CustomError(
@@ -85,22 +92,19 @@ export async function POST(request) {
             );
 
         // Check monthly withdrawal limit (4 successful withdrawals per month)
-        const currentMonth = today.getMonth() + 1; // 1-12
-        const currentYear = today.getFullYear();
-        
-        // Count successful withdrawals (Status = 1) in current month
-        // Date format is "DD/MM/YYYY" (e.g., "15/1/2024" or "5/12/2024")
-        // Match pattern: handle both single and double digit months (e.g., "/1/2024" or "/01/2024")
-        const monthPattern = currentMonth < 10 
-            ? `/(0?${currentMonth})/${currentYear}$`  // Match "/1/2024" or "/01/2024" for months 1-9
-            : `/${currentMonth}/${currentYear}$`;     // Match "/10/2024", "/11/2024", "/12/2024"
+        // Use createdAt for accurate month calculation
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        startOfMonth.setHours(0, 0, 0, 0);
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        endOfMonth.setHours(23, 59, 59, 999);
         
         const monthlyWithdrawals = await TRANSACTION.countDocuments({
             UserName,
             Type: "withdrawal",
             Status: 1, // Only count successful withdrawals
-            Date: {
-                $regex: monthPattern
+            createdAt: {
+                $gte: startOfMonth,
+                $lte: endOfMonth
             }
         });
 

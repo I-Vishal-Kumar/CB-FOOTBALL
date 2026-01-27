@@ -75,13 +75,76 @@ export function generateMatchesForDay(dayOfWeek, numberOfMatches = 50) {
     // Reset to start of day
     targetDate.setHours(0, 0, 0, 0);
     
-    // Distribute matches across hours (6 AM to 11 PM)
+    // Priority hours: 8pm (20), 9pm (21), 10pm (22), 11pm (23)
+    const priorityHours = [20, 21, 22, 23];
     const startHour = 6;
     const endHour = 23;
-    const totalHours = endHour - startHour + 1;
-    const matchesPerHour = Math.ceil(numberOfMatches / totalHours);
     
     let matchIndex = 0;
+    
+    // Helper function to create a match
+    const createMatch = (hour, minute) => {
+        const matchDate = new Date(targetDate);
+        matchDate.setHours(hour, minute, 0, 0);
+        
+        // Ensure match is in the future
+        if (matchDate <= today) {
+            matchDate.setDate(matchDate.getDate() + 7); // Move to next week
+        }
+        
+        // Select random teams (ensure they're different)
+        let teamAIndex = Math.floor(Math.random() * teamNames.length);
+        let teamBIndex = Math.floor(Math.random() * teamNames.length);
+        while (teamBIndex === teamAIndex) {
+            teamBIndex = Math.floor(Math.random() * teamNames.length);
+        }
+        
+        const teamA = teamNames[teamAIndex];
+        const teamB = teamNames[teamBIndex];
+        const SCORE = scores[Math.floor(Math.random() * scores.length)];
+        const league = leagues[Math.floor(Math.random() * leagues.length)];
+        
+        const match = {
+            StakeId: `match_${dayOfWeek}_${matchIndex + 1}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            Team_a: teamA.name,
+            Team_b: teamB.name,
+            Team_a_logo: teamA.logo,
+            Team_b_logo: teamB.logo,
+            LeagueName: league,
+            StartsAt: matchDate.toISOString(),
+            Score_a: parseInt(SCORE.split("-")[0]) || 0,
+            Score_b: parseInt(SCORE.split("-")[1]) || 0,
+            Percents: [],
+            FixedPercent: (Math.random() * 6 + 1.5).toFixed(2),
+        };
+        
+        // Generate Percents array (17 values)
+        for (let j = 0; j < 17; j++) {
+            match.Percents.push(
+                (Math.random() * (2.5 - 3) + 3).toFixed(2)
+            );
+        }
+        
+        return match;
+    };
+    
+    // First, ensure matches at priority hours (8pm, 9pm, 10pm, 11pm)
+    for (const hour of priorityHours) {
+        if (matchIndex >= numberOfMatches) break;
+        
+        // Create at least 2-3 matches per priority hour
+        const matchesThisHour = Math.min(3, numberOfMatches - matchIndex);
+        for (let i = 0; i < matchesThisHour && matchIndex < numberOfMatches; i++) {
+            const minute = (i % 4) * 15; // 0, 15, 30, 45
+            matches.push(createMatch(hour, minute));
+            matchIndex++;
+        }
+    }
+    
+    // Then distribute remaining matches across all hours (6 AM to 11 PM)
+    const totalHours = endHour - startHour + 1;
+    const remainingMatches = numberOfMatches - matchIndex;
+    const matchesPerHour = Math.ceil(remainingMatches / totalHours);
     
     for (let hour = startHour; hour <= endHour && matchIndex < numberOfMatches; hour++) {
         const matchesThisHour = Math.min(matchesPerHour, numberOfMatches - matchIndex);
@@ -89,49 +152,7 @@ export function generateMatchesForDay(dayOfWeek, numberOfMatches = 50) {
         for (let i = 0; i < matchesThisHour && matchIndex < numberOfMatches; i++) {
             // Distribute minutes within the hour (0, 15, 30, 45)
             const minute = (i % 4) * 15;
-            
-            const matchDate = new Date(targetDate);
-            matchDate.setHours(hour, minute, 0, 0);
-            
-            // Ensure match is in the future
-            if (matchDate <= today) {
-                matchDate.setDate(matchDate.getDate() + 7); // Move to next week
-            }
-            
-            // Select random teams (ensure they're different)
-            let teamAIndex = Math.floor(Math.random() * teamNames.length);
-            let teamBIndex = Math.floor(Math.random() * teamNames.length);
-            while (teamBIndex === teamAIndex) {
-                teamBIndex = Math.floor(Math.random() * teamNames.length);
-            }
-            
-            const teamA = teamNames[teamAIndex];
-            const teamB = teamNames[teamBIndex];
-            const SCORE = scores[Math.floor(Math.random() * scores.length)];
-            const league = leagues[Math.floor(Math.random() * leagues.length)];
-            
-            const match = {
-                StakeId: `match_${dayOfWeek}_${matchIndex + 1}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                Team_a: teamA.name,
-                Team_b: teamB.name,
-                Team_a_logo: teamA.logo,
-                Team_b_logo: teamB.logo,
-                LeagueName: league,
-                StartsAt: matchDate.toISOString(),
-                Score_a: parseInt(SCORE.split("-")[0]) || 0,
-                Score_b: parseInt(SCORE.split("-")[1]) || 0,
-                Percents: [],
-                FixedPercent: (Math.random() * 6 + 1.5).toFixed(2),
-            };
-            
-            // Generate Percents array (17 values)
-            for (let j = 0; j < 17; j++) {
-                match.Percents.push(
-                    (Math.random() * (2.5 - 3) + 3).toFixed(2)
-                );
-            }
-            
-            matches.push(match);
+            matches.push(createMatch(hour, minute));
             matchIndex++;
         }
     }

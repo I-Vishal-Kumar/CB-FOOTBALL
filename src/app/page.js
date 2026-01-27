@@ -2,21 +2,18 @@
 
 import Image from "next/image";
 import { FaCirclePlus, FaLock } from "react-icons/fa6";
-import MatchCard from "./components/MatchCard";
+import MatchCard2 from "./components/MatchCard2";
 import { useContext, useState, useEffect } from "react";
 import { IoIosAdd, IoIosArrowForward } from "react-icons/io";
 import { FaRupeeSign,  FaTelegramPlane, FaWhatsapp  } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { Carousel } from "flowbite-react";
 import Layout from "./components/Layout";
 import { UserContext } from "./helpers/UserContext";
-import { easeInOut, motion } from "framer-motion";
-import Loading from "./components/Loading";
+import { motion } from "framer-motion";
 import { AlertContext } from "./helpers/AlertContext";
 import DemoCarousel from "./components/DemoCarousel";
-import { BsArrowRight, BsLock } from "react-icons/bs";
-import { duration } from "moment-timezone";
 import Link from "next/link";
+import PlaceBet from "./components/PlaceBet";
 
 export default function Home() {
     let router = useRouter();
@@ -30,8 +27,11 @@ export default function Home() {
     const [popupVisible, setPopupVisible] = useState(false);
 
     // event handlers for the popup and accesing current data //
-    const handleMatchCardClick = (item) => {
-        setSelectedMatch(item);
+    const handleMatchCardClick = (isOpen, item) => {
+        // MatchCard2 passes (true, data), so use the second parameter (item) as the match data
+        // If only one parameter is passed (backward compatibility), use it as the match data
+        const matchData = item !== undefined ? item : isOpen;
+        setSelectedMatch(matchData);
         setPopupVisible(true);
     };
 
@@ -150,7 +150,7 @@ export default function Home() {
     }, []);
     return (
         <Layout>
-            <main className="h-screen relative bg-no-repeat bg- bg-center bg-gradient-to-b from-[#11468F] to-[#00000063] overflow-hidden  ">
+            <main className="h-screen relative bg-no-repeat bg- bg-center bg-gradient-to-b from-[#11468F] to-[#00000063] overflow-hidden flex flex-col  ">
                 <div className="  flex justify-between place-items-center  w-[90%] mr-auto ml-auto   ">
                     <div className="w-max mt-2 flex flex-col justify-center  pt-2 ">
                         <div
@@ -198,11 +198,11 @@ export default function Home() {
                     <DemoCarousel />
                 </div>
 
-                <div className="h-[100%] bg-white mt-[1rem] rounded-t-[30px] overflow-hidden  shadow-2xl shadow-black">
-                    <div className=" overflow-y-scroll">
+                <div className="flex-1 bg-white mt-[1rem] rounded-t-[30px] overflow-hidden shadow-2xl shadow-black flex flex-col min-h-0">
+                    <div className="overflow-y-scroll flex-1 min-h-0">
                         {matches && matches.length > 0 ? (
                             matches.map((match, index) => (
-                                <MatchCard
+                                <MatchCard2
                                     key={match?.StakeId || index}
                                     data={match}
                                     placeBet={handleMatchCardClick}
@@ -276,172 +276,11 @@ export default function Home() {
 }
 
 function MatchPopup({ match, onClose }) {
-    const router = useRouter();
-    const [disabled, setDisabled] = useState(false);
-    const { getAlert } = useContext(AlertContext);
-    const { userBalance, getBalance } = useContext(UserContext);
-    const [Team_a_logo, updateSrcTeam_a] = useState();
-    const [Team_b_logo, updateSrcTeam_b] = useState();
-    const [MatchStartTime, updateTime] = useState(new Date());
-
-    // placeBet function //
-
-    async function placeBet(Percentage, Score_a, Score_b, BetAmount) {
-        setDisabled(true);
-
-        getAlert();
-        if (disabled === false) {
-            try {
-                // let [Score_a, Score_b] = score.split("-");
-                let body = {
-                    ...match,
-                    BetAmount,
-                    Percentage,
-                    Score_a,
-                    Score_b,
-                };
-
-                let config = {
-                    method: "POST",
-                    headers: {
-                        "content-type": "applicaiton/json",
-                    },
-                    body: JSON.stringify(body),
-                };
-                let res = await fetch(`/api/match`, config);
-                res = await res.json();
-                if (res?.status === 200) {
-                    getAlert("success", res.message);
-                    await getBalance();
-                    router.push("/stake");
-                } else if (res?.status === 302) {
-                    getAlert("redirect", res.message);
-                } else {
-                    getAlert("opps", res.message || "something went wrong");
-                }
-            } catch (error) {
-                getAlert("redirect", res.message);
-            }
-        }
-        setTimeout(() => {
-            setDisabled(false);
-        }, 4000);
-    }
-
-    // updating the logos and match time start
-
-    useEffect(() => {
-        const MatchTime = new Date(
-            new Date(match?.StartsAt).toLocaleString("en-US", {
-                timeZone: "asia/calcutta",
-            })
-        );
-        updateTime(MatchTime);
-        updateSrcTeam_a(match?.Team_a_logo);
-        updateSrcTeam_b(match?.Team_b_logo);
-    }, []);
-
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="h-screen absolute z-[1] bottom-0 top-0 left-0 flex justify-center items-end bg-black/70 w-full  "
-        >
-            <motion.div
-                initial={{ y: 100 }}
-                animate={{ y: 0 }}
-                className=" h-[80%] pt-[2rem] pb-[6rem]  bg-slate-100 overflow-y-scroll rounded-t-[2rem] w-[98%]"
-            >
-                <div className="flex  relative px-2  justify-center">
-                    <h4 className="border-2 border-solid border-[#333333]  min-w-[20%] rounded-full"></h4>
-                    <p
-                        onClick={onClose}
-                        className="absolute left-2 text-sm font-bold mt-[-1rem] p-2"
-                    >
-                        &lt; Back
-                    </p>
-                </div>
-
-                <div className=" px-6 mt-4 text-white">
-                    <div className="rounded-2xl relative  pt-4 bg-[url(/profileBg.jpg)]  h-full  text-center  w-full">
-                        <h2 className="capitalize text-sm font-bold truncate text-white">
-                            {match.LeagueName}
-                            <p className="hidden">{match.StakeId}</p>
-                        </h2>
-                        <div className="w-full mt-3 flex px-2">
-                            <div className="flex-[2] flex-col flex w-full items-center h-full ">
-                                <span className="h-[60px] w-[60px] rounded-full relative  flex justify-center place-items-center ">
-                                    <Image
-                                        src={Team_a_logo || "/search.png"}
-                                        alt="logo"
-                                        unoptimized
-                                        width={38}
-                                        height={38}
-                                    />
-                                </span>
-                                <span className="line-clamp-2 w-[80%] text-[.6rem] capitalize font-bold">
-                                    {match?.Team_a || "Team b unavailable"}
-                                </span>
-                            </div>
-                            <div className="flex-[1] flex items-center justify-center flex-col">
-                                <span className="text-xl block font-bold text-red-600">
-                                    {MatchStartTime.getHours()
-                                        ?.toString()
-                                        ?.padStart(1, "0")}
-                                    :
-                                    {MatchStartTime.getMinutes()
-                                        ?.toString()
-                                        ?.padStart(1, "0")}
-                                </span>
-                                <span className="uppercase text-sm font-bold">
-                                    {MatchStartTime.getDate()}
-                                    {MatchStartTime.toDateString().slice(3, 8)}
-                                </span>
-                            </div>
-                            <div className="flex-[2] flex-col flex w-full items-center h-full ">
-                                <span className="h-[60px] w-[60px] rounded-full relative flex justify-center place-items-center ">
-                                    <Image
-                                        src={Team_b_logo || "/search.png"}
-                                        alt="logo"
-                                        unoptimized
-                                        width={38}
-                                        height={38}
-                                    />
-                                </span>
-                                <span className="line-clamp-2 w-[80%] text-[.6rem] capitalize font-bold">
-                                    {match?.Team_b || "Team b unavailable"}
-                                </span>
-                            </div>
-                        </div>
-                        <div className="mt-6 flex justify-center">
-                            <div className="rounded-t-xl bg-red-600 px-3 py-1 h-full">
-                                <h2 className="capitalize font-bold text-sm text-white">
-                                    full-time
-                                </h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="px-5">
-                    <h2 className="text-[0.7rem] mt-3 font-semibold text-slate-500">
-                        Please choose a match score to place your stake.
-                    </h2>
-                </div>
-
-                <div className="mt-2 px-4 space-y-4">
-                    <ScoreCards
-                        placeBet={placeBet}
-                        percent={match?.FixedPercent}
-                        Balance={userBalance}
-                        Score_a={match.Score_a}
-                        Score_b={match.Score_b}
-                        disabled={disabled}
-                        style={{ backgroundColor: disabled ? "gray" : "blue" }}
-                    />
-                </div>
-            </motion.div>
-        </motion.div>
+        <PlaceBet 
+            data={match} 
+            togglePopup={onClose} 
+        />
     );
 }
 

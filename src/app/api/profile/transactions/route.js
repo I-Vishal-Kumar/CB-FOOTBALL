@@ -53,14 +53,18 @@ export async function GET(request) {
 
         const calculateTotal = (transactions) => {
             let today = new Date();
-            let date = `${today?.getDate()}/${
-                today?.getMonth() + 1
-            }/${today?.getFullYear()}`;
+            // Set to start of day for comparison
+            const startOfToday = new Date(today);
+            startOfToday.setHours(0, 0, 0, 0);
+            const endOfToday = new Date(today);
+            endOfToday.setHours(23, 59, 59, 999);
 
             return transactions.reduce(
                 (acc, curr) => {
                     if (curr.Type === "deposit") {
-                        if(curr.Date === date){
+                        // Check if transaction was created today using createdAt
+                        const createdAt = new Date(curr.createdAt);
+                        if(createdAt >= startOfToday && createdAt <= endOfToday){
                             acc.today_deposit = (acc.today_deposit || 0) +
                             parseFloat(curr.Amount) / 100;
                         }
