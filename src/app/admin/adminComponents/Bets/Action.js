@@ -57,9 +57,12 @@ async function betParser({
     let update_bet = [];
     let create_commission = [];
     let give_commission = {};
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    let session = null;
+    let transactionStarted = false;
     try {
+        session = await mongoose.startSession();
+        await session.startTransaction();
+        transactionStarted = true;
 
         let totalUpdatedUsers = { matchedCount: 0, modifiedCount: 0 };
         let totalUpdatedBets = { matchedCount: 0, modifiedCount: 0 };
@@ -160,16 +163,32 @@ async function betParser({
        
 
         await session.commitTransaction();
+        transactionStarted = false;
         return {
             message: `Bet's matched => ${totalUpdatedBets.matchedCount} , Bet's updated => ${totalUpdatedBets.modifiedCount} \n User's Matched => ${totalUpdatedUsers.matchedCount} , User's Updated => ${totalUpdatedUsers.modifiedCount} \n Commission given Count => ${totalInsertedCommissions.insertedCount}`,
         };
     } catch (error) {
-        await session.abortTransaction();
+        if (transactionStarted && session) {
+            try {
+                await session.abortTransaction();
+            } catch (abortErr) {
+                ErrorReport(abortErr);
+            }
+        }
+        if (error?.code === 500 || error?.status === 500 || !error?.status) {
+            ErrorReport(error);
+        }
         return {
             message: error?.message || "something went wrong ",
         };
     } finally {
-        session.endSession();
+        if (session) {
+            try {
+                await session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 
@@ -428,10 +447,13 @@ async function cancelBet({ StakeId }) {
     await connect();
     let betsToCancel = [];
     let updateUsers = [];
-    const Session = await mongoose.startSession();
-    Session.startTransaction();
-
+    let Session = null;
+    let transactionStarted = false;
     try {
+        Session = await mongoose.startSession();
+        await Session.startTransaction();
+        transactionStarted = true;
+        
         let cancelable_bets = await BET.find({ StakeId, Status: 1 });
         for (let bet of cancelable_bets) {
             updateUsers.push({
@@ -474,13 +496,28 @@ async function cancelBet({ StakeId }) {
             received: true,
         };
     } catch (error) {
-        await Session.abortTransaction();
+        if (transactionStarted && Session) {
+            try {
+                await Session.abortTransaction();
+            } catch (abortErr) {
+                ErrorReport(abortErr);
+            }
+        }
+        if (error?.code === 500 || error?.status === 500 || !error?.status) {
+            ErrorReport(error);
+        }
         return {
             message: JSON.stringify(error),
             received: true,
         };
     } finally {
-        Session.endSession();
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 

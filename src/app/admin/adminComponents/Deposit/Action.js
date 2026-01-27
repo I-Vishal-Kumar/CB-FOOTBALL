@@ -57,10 +57,13 @@ export async function updateTransaction(prevState, formData) {
 }
 
 async function settleDeposit(data) {
-    let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await connect();
+    let Session = null;
+    let transactionStarted = false;
     try {
-        await connect();
+        Session = await mongoose.startSession();
+        await Session.startTransaction();
+        transactionStarted = true;
         let amm_updated = data?.Amount;
         // const vip_level = getVipLevel(Number(amm_updated) / 100);
         const vip_level = 0;
@@ -205,11 +208,25 @@ async function settleDeposit(data) {
             return "ok";
         }
     } catch (error) {
+        if (transactionStarted && Session) {
+            try {
+                await Session.abortTransaction();
+            } catch (abortErr) {
+                ErrorReport(abortErr);
+            }
+        }
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);
         }
-        await Session.abortTransaction();
         return error?.message || "somethign went wrong";
+    } finally {
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 

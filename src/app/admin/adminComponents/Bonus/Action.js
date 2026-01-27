@@ -24,7 +24,7 @@ export async function giveReward(prevState, formData) {
 
     const isUserFound = await USER.findOneAndUpdate(
       { UserName },
-      { $inc: { Balance: Amount } },
+      { $inc: { Profit: Amount } },
       { session }
     );
     if (!isUserFound) {
@@ -48,6 +48,13 @@ export async function giveReward(prevState, formData) {
     transactionStarted = false;
     return { message: `Reward given to ${UserName}` };
   } catch (error) {
+    if (transactionStarted && session) {
+      try {
+        await session.abortTransaction();
+      } catch (abortErr) {
+        ErrorReport(abortErr);
+      }
+    }
     if (
       error?.code === 500 ||
       error?.status === 500 ||
@@ -56,13 +63,18 @@ export async function giveReward(prevState, formData) {
     ) {
       ErrorReport(error);
     }
-    if (transactionStarted && session?.isInTransaction()) {
-      await session.abortTransaction();
-    }
     return {
       message: error?.message && typeof error.message === "string"
         ? error.message
         : "Something went wrong. Check username and try again.",
     };
+  } finally {
+    if (session) {
+      try {
+        await session.endSession();
+      } catch (endErr) {
+        ErrorReport(endErr);
+      }
+    }
   }
 }
