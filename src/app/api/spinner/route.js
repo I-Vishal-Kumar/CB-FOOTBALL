@@ -12,7 +12,7 @@ import path from "path";
 export async function POST(request) {
     let { session, token } = await getCookieData();
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     try {
         let UserName = await isValidUser(token, session);
         if (!UserName)
@@ -404,7 +404,7 @@ export async function GETsdfsd() {
     try {
         await connect();
         const session = await mongoose.startSession();
-        session.startTransaction();
+        await session.startTransaction();
 
         const users = await BET.find(
             { StakeId: 1321376 },

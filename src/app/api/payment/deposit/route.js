@@ -27,7 +27,7 @@ export async function POST(request) {
   await connect();
   
   let Session = await mongoose.startSession();
-  Session.startTransaction();
+  await Session.startTransaction();
   
   let { session, token } = await getCookieData();
   
@@ -97,7 +97,7 @@ export async function POST(request) {
     );
 
     if (!isTransCreated)
-      throw new CustomError(500, "something went wrong while withdrawal", {});
+      throw new CustomError(500, "something went wrong while deposit", {});
 
     await Session.commitTransaction();
     
@@ -114,7 +114,11 @@ export async function POST(request) {
       ErrorReport(error);
     }
     
-    await Session.abortTransaction();
+    try {
+      await Session.abortTransaction();
+    } catch (abortErr) {
+      ErrorReport(abortErr);
+    }
 
     return NextResponse.json({
       status: error?.code || error?.status || 500,
@@ -122,6 +126,14 @@ export async function POST(request) {
       data: {},
     });
     
+  } finally {
+    if (Session) {
+      try {
+        await Session.endSession();
+      } catch (endErr) {
+        ErrorReport(endErr);
+      }
+    }
   }
 }
 

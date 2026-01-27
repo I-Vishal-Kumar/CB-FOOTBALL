@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 
 export async function POST(request, response) {
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     try {
         await connect();
 

@@ -338,21 +338,15 @@ function Page() {
                                         className=" h-full font-semibold capitalize  rounded-full 
               flex   justify-center items-center"
                                     >
-                                        valid amount
+                                        withdrawable profit
                                     </span>
                                     <div className="flex text-xs text-red-500 font-medium space-x-0">
                                         <span>
                                             {(
-                                                userOtherData?.ValidAmount / 100
-                                            ).toFixed(2) || 0}
+                                                (userOtherData?.Profit || 0) / 100
+                                            ).toFixed(2)}
                                         </span>
-                                        <span>/</span>
-                                        <span>
-                                            {(
-                                                userOtherData?.ValidDeposit /
-                                                100
-                                            ).toFixed(2) || 0}
-                                        </span>
+                                       
                                     </div>
                                 </div>
 

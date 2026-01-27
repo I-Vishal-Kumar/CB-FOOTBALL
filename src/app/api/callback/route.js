@@ -23,7 +23,7 @@ export async function POST(request, res) {
     
         await connect();
         let Session = await mongoose.startSession();
-        Session.startTransaction();
+        await Session.startTransaction();
         try {
             let isWithdrawUpdated = await TRANSACTION.findOneAndUpdate(
                 {
@@ -44,8 +44,20 @@ export async function POST(request, res) {
                 throw Error("error while seettling withdrawal");
             }
         } catch (error) {
-            await Session.abortTransaction();
+            try {
+                await Session.abortTransaction();
+            } catch (abortErr) {
+                console.log(abortErr);
+            }
             console.log(error);
+        } finally {
+            if (Session) {
+                try {
+                    await Session.endSession();
+                } catch (endErr) {
+                    console.log(endErr);
+                }
+            }
         }
 
     }

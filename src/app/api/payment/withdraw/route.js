@@ -27,7 +27,7 @@ export async function GET(request){
 export async function POST(request) {
     await connect();
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     let { session, token } = await getCookieData();
     try {
         const UserName = await isValidUser(token, session);
@@ -45,7 +45,7 @@ export async function POST(request) {
         if (!(await validateTime()))
             throw new CustomError(
                 705,
-                "you can withdraw from 10:00 AM to 16:00 PM UTC on working days i.e Monday to Friday. Withdrawals are not available on Saturday and Sunday."
+                "Withdrawals are not available on Saturday and Sunday. Please try again on Monday to Friday."
             );
 
         if (!Amount) throw new CustomError(705, "Enter a valid amount", {});
@@ -62,7 +62,6 @@ export async function POST(request) {
         // if (!(await vipVerified(UserName, body?.Amount)))
         //     throw new CustomError(705, "Your vip level is low", {});
         
-            if (!Amount) throw new CustomError(705, "Missing Fields", {});
         Amount = Amount * 100;
 
         // check if the transaction already exists for today
@@ -86,18 +85,22 @@ export async function POST(request) {
             );
 
         // Check monthly withdrawal limit (4 successful withdrawals per month)
-        const currentMonth = today.getMonth() + 1; // 1-12 (no leading zero)
+        const currentMonth = today.getMonth() + 1; // 1-12
         const currentYear = today.getFullYear();
         
         // Count successful withdrawals (Status = 1) in current month
         // Date format is "DD/MM/YYYY" (e.g., "15/1/2024" or "5/12/2024")
-        // Match pattern: "/MM/YYYY" or "/M/YYYY" at end of string
+        // Match pattern: handle both single and double digit months (e.g., "/1/2024" or "/01/2024")
+        const monthPattern = currentMonth < 10 
+            ? `/(0?${currentMonth})/${currentYear}$`  // Match "/1/2024" or "/01/2024" for months 1-9
+            : `/${currentMonth}/${currentYear}$`;     // Match "/10/2024", "/11/2024", "/12/2024"
+        
         const monthlyWithdrawals = await TRANSACTION.countDocuments({
             UserName,
             Type: "withdrawal",
             Status: 1, // Only count successful withdrawals
             Date: {
-                $regex: `/${currentMonth}/${currentYear}$` // Match current month/year at end of date string
+                $regex: monthPattern
             }
         });
 
@@ -179,12 +182,24 @@ export async function POST(request) {
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);
         }
-        await Session.abortTransaction();
+        try {
+            await Session.abortTransaction();
+        } catch (abortErr) {
+            ErrorReport(abortErr);
+        }
         return NextResponse.json({
             status: error?.code || error?.status || 500,
             message: error?.message || "something went wrong",
             data: {},
         });
+    } finally {
+        if (Session) {
+            try {
+                await Session.endSession();
+            } catch (endErr) {
+                ErrorReport(endErr);
+            }
+        }
     }
 }
 
@@ -192,12 +207,17 @@ async function updateUser(UserName, Amount, Session, Bank, WithdrawCode) {
     await connect();
     try {
         // Withdraw from Profit only - check Profit has enough funds
+        // Dynamic withdraw code path based on bank type
+        const withdrawCodePath = Bank === 'LocalBankAdded' 
+            ? 'LocalBank.WithdrawCode' 
+            : 'UsdtBank.WithdrawCode';
+        
         let user = await USER.findOneAndUpdate(
             { 
                 UserName, 
                 [Bank]: true, 
                 Profit: { $gte: Number(Amount) }, 
-                'LocalBank.WithdrawCode': WithdrawCode 
+                [withdrawCodePath]: WithdrawCode 
             },
             {
                 $inc: {
@@ -268,17 +288,12 @@ async function validateTime() {
         })
     );
     const currentDay = Number(currentDate.getDay()); // Sunday is 0, Monday is 1, ..., Saturday is 6
-    const currentHour = Number(currentDate.getHours());
 
     // Check if it's Saturday (6) or Sunday (0) - withdrawals are off on weekends
     if (currentDay === 0 || currentDay === 6) {
         return false;
     }
 
-    // Check if outside the working hours (10 am to 4 pm)
-    if (currentHour < 10 || currentHour >= 16) {
-        return false;
-    }
-
+    // No time restrictions - withdrawals available 24/7 on weekdays
     return true;
 }

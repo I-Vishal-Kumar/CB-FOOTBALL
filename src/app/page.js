@@ -17,7 +17,6 @@ import DemoCarousel from "./components/DemoCarousel";
 import { BsArrowRight, BsLock } from "react-icons/bs";
 import { duration } from "moment-timezone";
 import Link from "next/link";
-import { Matches } from "./matches/Match";
 
 export default function Home() {
     let router = useRouter();
@@ -201,7 +200,19 @@ export default function Home() {
 
                 <div className="h-[100%] bg-white mt-[1rem] rounded-t-[30px] overflow-hidden  shadow-2xl shadow-black">
                     <div className=" overflow-y-scroll">
-                        <Matches/>
+                        {matches && matches.length > 0 ? (
+                            matches.map((match, index) => (
+                                <MatchCard
+                                    key={match?.StakeId || index}
+                                    data={match}
+                                    placeBet={handleMatchCardClick}
+                                />
+                            ))
+                        ) : (
+                            <div className="flex justify-center items-center h-full">
+                                <p className="text-gray-500">No matches available</p>
+                            </div>
+                        )}
                     </div>
 
                     {popupVisible && (

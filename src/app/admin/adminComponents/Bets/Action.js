@@ -1,5 +1,6 @@
 "use server";
 import CustomError from "@/app/helpers/Error";
+import ErrorReport from "@/app/helpers/ErrorReport";
 import { mongoose } from "mongoose";
 import { USER, BET, COMMISSION } from "@/app/modals/modal";
 import { connect } from "@/app/modals/dbConfig";
@@ -377,6 +378,7 @@ async function give_parent_bonus(
         })
     );
     let LEVEL = 1;
+    // Commission percentages: Level 1 = 4%, Level 2 = 2%, Level 3 = 1% of user's profit
     let REBADE_PERCENT = [4, 2, 1];
     try {
         while (LEVEL <= 3 && Parent !== false) {
@@ -387,10 +389,12 @@ async function give_parent_bonus(
                 // throw new Error("Parent not found invalid parent");
             }
 
-            // the rebade will become the negative if the user has lost the bet
-
+            // Calculate commission: Level 1 parent gets 4% of profit, Level 2 gets 2%, Level 3 gets 1%
+            // Profit is already in normal units (not * 100), so calculate commission directly
+            // If user lost, rebade becomes negative (penalty)
+            // Calculate as number and round to avoid precision issues when multiplying by 100 later
             let rebade = win
-                ? ((Profit / 100) * REBADE_PERCENT[LEVEL - 1]).toFixed(2)
+                ? Math.round((Profit * REBADE_PERCENT[LEVEL - 1] / 100) * 100) / 100
                 : Number(BetAmount - BetAmount * 2);
 
             create_commission.push({

@@ -13,7 +13,7 @@ export async function POST(request) {
     await connect();
     
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     
     let { session, token } = await getCookieData();
     

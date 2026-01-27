@@ -87,7 +87,7 @@ function Page() {
             res = await res.json();
             getStakeData();
             setShow(false);
-            router.push("/matches");
+            router.push("/");
         } catch (error) {
             console.log(error);
         }

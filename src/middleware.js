@@ -34,7 +34,6 @@ export const config = {
         "/profile/:path*",
         "/stake/:path*",
         "/recharge/:path*",
-        "/matches/:path*",
     ],
 };
 

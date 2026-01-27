@@ -210,7 +210,7 @@ async function getCookieData() {
 // claim commission bonus;
 async function claimBonusForUnoptimized(UserName, dates) {
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     try {
         await connect();
         let totalCommission = 0;
@@ -283,7 +283,7 @@ async function claimBonusForUnoptimized(UserName, dates) {
 }
 async function claimBonusFor(UserName, dates) {
     let Session = await mongoose.startSession();
-    Session.startTransaction();
+    await Session.startTransaction();
     try {
         await connect();
 
