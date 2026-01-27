@@ -78,7 +78,6 @@ export async function scheduleMatches() {
 
         // Store matches in database
         let stringData = JSON.stringify(data);
-        console.log({ stringData });
         let isCreated = await MATCH.findOneAndUpdate(
             { _id: process.env.NEXT_PUBLIC_MATCH_ID },
             { data: stringData }

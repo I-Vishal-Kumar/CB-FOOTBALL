@@ -144,12 +144,18 @@ export async function fetchMatchesFromAPI({ season, leagueIds }) {
                                 };
 
                                 // Generate Percents array (17 values)
+                                // Index 15 corresponds to score "3-3" which should always be 1.5%
                                 for (let i = 0; i < 17; i++) {
-                                    match["Percents"].push(
-                                        (
-                                            Math.random() * (2.5 - 3) + 3
-                                        ).toFixed(2)
-                                    );
+                                    if (i === 15) {
+                                        // Index 15 is for score "3-3" - always use 1.5%
+                                        match["Percents"].push("1.50");
+                                    } else {
+                                        match["Percents"].push(
+                                            (
+                                                Math.random() * (2.5 - 3) + 3
+                                            ).toFixed(2)
+                                        );
+                                    }
                                 }
 
                                 allMatches.push(match);
@@ -253,10 +259,16 @@ export async function fetchUpcomingMatches(limit = 20) {
                 };
 
                 // Generate Percents array (17 values)
+                // Index 15 corresponds to score "3-3" which should always be 1.5%
                 for (let i = 0; i < 17; i++) {
-                    match["Percents"].push(
-                        (Math.random() * (2.5 - 3) + 3).toFixed(2)
-                    );
+                    if (i === 15) {
+                        // Index 15 is for score "3-3" - always use 1.5%
+                        match["Percents"].push("1.50");
+                    } else {
+                        match["Percents"].push(
+                            (Math.random() * (2.5 - 3) + 3).toFixed(2)
+                        );
+                    }
                 }
 
                 matches.push(match);
@@ -501,10 +513,16 @@ function mapSportMonksResponse(fixturesData, limit) {
             };
 
             // Generate Percents array (17 values)
+            // Index 15 corresponds to score "3-3" which should always be 1.5%
             for (let i = 0; i < 17; i++) {
-                match["Percents"].push(
-                    (Math.random() * (2.5 - 3) + 3).toFixed(2)
-                );
+                if (i === 15) {
+                    // Index 15 is for score "3-3" - always use 1.5%
+                    match["Percents"].push("1.50");
+                } else {
+                    match["Percents"].push(
+                        (Math.random() * (2.5 - 3) + 3).toFixed(2)
+                    );
+                }
             }
 
             matches.push(match);
@@ -673,10 +691,16 @@ export function getHardcodedMatches(limit = 20) {
             };
             
             // Generate Percents array (17 values) using seeded random
+            // Index 15 corresponds to score "3-3" which should always be 1.5%
             for (let j = 0; j < 17; j++) {
-                match.Percents.push(
-                    (random() * (3 - 2.5) + 2.5).toFixed(2)
-                );
+                if (j === 15) {
+                    // Index 15 is for score "3-3" - always use 1.5%
+                    match.Percents.push("1.50");
+                } else {
+                    match.Percents.push(
+                        (random() * (3 - 2.5) + 2.5).toFixed(2)
+                    );
+                }
             }
             
             matches.push(match);
@@ -737,10 +761,16 @@ export function getHardcodedMatches(limit = 20) {
             };
             
             // Generate Percents array (17 values) using seeded random
+            // Index 15 corresponds to score "3-3" which should always be 1.5%
             for (let j = 0; j < 17; j++) {
-                match.Percents.push(
-                    (random() * (3 - 2.5) + 2.5).toFixed(2)
-                );
+                if (j === 15) {
+                    // Index 15 is for score "3-3" - always use 1.5%
+                    match.Percents.push("1.50");
+                } else {
+                    match.Percents.push(
+                        (random() * (3 - 2.5) + 2.5).toFixed(2)
+                    );
+                }
             }
             
             matches.push(match);
