@@ -38,10 +38,10 @@ function Page() {
     // post request from the front-end
     async function submitDeposit() {
         getAlert();
-        if(!hasUploaded){
-            getAlert("opps", "payment Screenshort is required.")
-            return;
-        }
+            // if(!hasUploaded){
+            //     getAlert("opps", "payment Screenshort is required.")
+            //     return;
+            // }
         if (value == "" || amount == "") {
             getAlert("opps", "fill the utr number first");
         } else if (value.length !== 12) {
@@ -113,12 +113,12 @@ function Page() {
                     </Suspense>
                 </div>
 
-                <div className="flex place-items-center w-[90%] mr-auto ml-auto  mt-2 py-3 px-2 justify-between text-[.6rem] ">
+                {/* <div className="flex place-items-center w-[90%] mr-auto ml-auto  mt-2 py-3 px-2 justify-between text-[.6rem] ">
                     <p>UPI ID</p>
                     <CopyUPI
                         upiId={upiId[Math.floor(Math.random() * upiId?.length)]}
                     />
-                </div>
+                </div> */}
 
                 <div className="h-[35%] mt-3 flex flex-col justify-center place-items-center  text-[.6rem] ">
                     <div className="w-[60%] h-[90%]  flex justify-center items-center ">
@@ -144,18 +144,7 @@ function Page() {
                         Paytm, phonepe, googlepay, other bank
                     </p>
                     <div className="grid grid-cols-2 gap-3 w-[90%] mr-auto ml-auto p-2 mt-2  text-[.75rem] ">
-                        <div   onClick={() =>
-                                        UpiRedirect(
-                                            amount,
-                                            upiId[
-                                                Math.floor(
-                                                    Math.random() *
-                                                        upiId?.length
-                                                )
-                                            ]
-                                        )
-                                    } 
-                        className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
+                        <div  className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
                             <div className="h-[3rem] w-[3rem] grid place-items-center  ">
                                 <Image
                                     src={"/paytm.png"}
@@ -168,17 +157,7 @@ function Page() {
                             <span>Paytm</span>
                         </div>
 
-                        <div onClick={() =>
-                                        UpiRedirect(
-                                            amount,
-                                            upiId[
-                                                Math.floor(
-                                                    Math.random() *
-                                                        upiId?.length
-                                                )
-                                            ]
-                                        )
-                                    } className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
+                        <div  className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
                             <div className="h-[3rem] w-[3rem] grid place-items-center  ">
                                 <Image
                                     
@@ -192,17 +171,7 @@ function Page() {
                             <span>Google pay</span>
                         </div>
 
-                        <div  onClick={() =>
-                                        UpiRedirect(
-                                            amount,
-                                            upiId[
-                                                Math.floor(
-                                                    Math.random() *
-                                                        upiId?.length
-                                                )
-                                            ]
-                                        )
-                                    } className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
+                        <div className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
                             <div className="h-[3rem] w-[3rem] grid place-items-center  ">
                                 <Image
                                    
@@ -216,30 +185,10 @@ function Page() {
                             <span>Phonepe</span>
                         </div>
 
-                        <div  onClick={() =>
-                                        UpiRedirect(
-                                            amount,
-                                            upiId[
-                                                Math.floor(
-                                                    Math.random() *
-                                                        upiId?.length
-                                                )
-                                            ]
-                                        )
-                                    } className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
+                        <div  className="flex rounded-lg place-items-center  border-2 border-[lightgray] ">
                             <div className="h-[3rem] w-[3rem] grid place-items-center  ">
                                 <Image
-                                    onClick={() =>
-                                        UpiRedirect(
-                                            amount,
-                                            upiId[
-                                                Math.floor(
-                                                    Math.random() *
-                                                        upiId?.length
-                                                )
-                                            ]
-                                        )
-                                    }
+                                    
                                     src={"/bhim.png"}
                                     alt="paytm"
                                     width={40}
@@ -251,7 +200,7 @@ function Page() {
                         </div>
                     </div>
 
-                    <UploadComponent setUploaded={setUploaded}  />
+                    {/* <UploadComponent setUploaded={setUploaded}  /> */}
 
                     <div className=" flex   w-[90%] mr-auto ml-auto  mt-3 ">
                         <p className="grid place-items-center font-semibold  text-[.75rem] ">

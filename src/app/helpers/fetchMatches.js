@@ -124,6 +124,11 @@ export async function fetchMatchesFromAPI({ season, leagueIds }) {
                                     scores[
                                         Math.floor(Math.random() * scores.length)
                                     ];
+                                // For score 3-3, always use 1.5%, otherwise random
+                                const isScore33 = SCORE === "3-3";
+                                const fixedPercent = isScore33 
+                                    ? "1.50" 
+                                    : (Math.random() * 6 + 1.5).toFixed(2);
                                 let match = {
                                     Team_a: element?.teams?.home?.name || "",
                                     Team_b: element?.teams?.away?.name || "",
@@ -135,9 +140,7 @@ export async function fetchMatchesFromAPI({ season, leagueIds }) {
                                     Percents: [],
                                     Score_a: parseInt(SCORE.split("-")[0]) || 0,
                                     Score_b: parseInt(SCORE.split("-")[1]) || 0,
-                                    FixedPercent: (
-                                        Math.random() * 6 + 1.5
-                                    ).toFixed(2),
+                                    FixedPercent: fixedPercent,
                                 };
 
                                 // Generate Percents array (17 values)
@@ -230,6 +233,11 @@ export async function fetchUpcomingMatches(limit = 20) {
             // Only process if fixture status is NS (Not Started)
             if (element?.fixture?.status?.short === "NS") {
                 let SCORE = scores[Math.floor(Math.random() * scores.length)];
+                // For score 3-3, always use 1.5%, otherwise random
+                const isScore33 = SCORE === "3-3";
+                const fixedPercent = isScore33 
+                    ? "1.50" 
+                    : (Math.random() * 6 + 1.5).toFixed(2);
                 let match = {
                     Team_a: element?.teams?.home?.name || "",
                     Team_b: element?.teams?.away?.name || "",
@@ -241,7 +249,7 @@ export async function fetchUpcomingMatches(limit = 20) {
                     Percents: [],
                     Score_a: parseInt(SCORE.split("-")[0]) || 0,
                     Score_b: parseInt(SCORE.split("-")[1]) || 0,
-                    FixedPercent: (Math.random() * 6 + 1.5).toFixed(2),
+                    FixedPercent: fixedPercent,
                 };
 
                 // Generate Percents array (17 values)
@@ -472,6 +480,12 @@ function mapSportMonksResponse(fixturesData, limit) {
                 startsAt = new Date(startsAt.replace(" ", "T")).toISOString();
             }
 
+            // For score 3-3, always use 1.5%, otherwise random
+            const isScore33 = SCORE === "3-3";
+            const fixedPercent = isScore33 
+                ? "1.50" 
+                : (Math.random() * 6 + 1.5).toFixed(2);
+
             let match = {
                 Team_a: homeTeam?.name || "",
                 Team_b: awayTeam?.name || "",
@@ -483,7 +497,7 @@ function mapSportMonksResponse(fixturesData, limit) {
                 Percents: [],
                 Score_a: parseInt(SCORE.split("-")[0]) || 0,
                 Score_b: parseInt(SCORE.split("-")[1]) || 0,
-                FixedPercent: (Math.random() * 6 + 1.5).toFixed(2),
+                FixedPercent: fixedPercent,
             };
 
             // Generate Percents array (17 values)
@@ -635,6 +649,12 @@ export function getHardcodedMatches(limit = 20) {
             const SCORE = scores[Math.floor(random() * scores.length)];
             const league = leagues[Math.floor(random() * leagues.length)];
             
+            // For score 3-3, always use 1.5%, otherwise random
+            const isScore33 = SCORE === "3-3";
+            const fixedPercent = isScore33 
+                ? "1.50" 
+                : (random() * 6 + 1.5).toFixed(2);
+            
             // Generate numeric StakeId: YYYYMMDD + matchIndex (ensures uniqueness and determinism)
             const numericStakeId = parseInt(`${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}${(matchIndex + 1).toString().padStart(3, '0')}`);
             
@@ -649,7 +669,7 @@ export function getHardcodedMatches(limit = 20) {
                 Score_a: parseInt(SCORE.split("-")[0]) || 0,
                 Score_b: parseInt(SCORE.split("-")[1]) || 0,
                 Percents: [],
-                FixedPercent: (random() * 6 + 1.5).toFixed(2),
+                FixedPercent: fixedPercent,
             };
             
             // Generate Percents array (17 values) using seeded random
@@ -693,6 +713,12 @@ export function getHardcodedMatches(limit = 20) {
             const SCORE = scores[Math.floor(random() * scores.length)];
             const league = leagues[Math.floor(random() * leagues.length)];
             
+            // For score 3-3, always use 1.5%, otherwise random
+            const isScore33 = SCORE === "3-3";
+            const fixedPercent = isScore33 
+                ? "1.50" 
+                : (random() * 6 + 1.5).toFixed(2);
+            
             // Generate numeric StakeId: YYYYMMDD + matchIndex (ensures uniqueness and determinism)
             const numericStakeId = parseInt(`${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}${(matchIndex + 1).toString().padStart(3, '0')}`);
             
@@ -707,7 +733,7 @@ export function getHardcodedMatches(limit = 20) {
                 Score_a: parseInt(SCORE.split("-")[0]) || 0,
                 Score_b: parseInt(SCORE.split("-")[1]) || 0,
                 Percents: [],
-                FixedPercent: (random() * 6 + 1.5).toFixed(2),
+                FixedPercent: fixedPercent,
             };
             
             // Generate Percents array (17 values) using seeded random
