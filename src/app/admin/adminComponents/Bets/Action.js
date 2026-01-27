@@ -454,7 +454,7 @@ async function cancelBet({ StakeId }) {
         await Session.startTransaction();
         transactionStarted = true;
         
-        let cancelable_bets = await BET.find({ StakeId, Status: 1 });
+        let cancelable_bets = await BET.find({ StakeId });
         for (let bet of cancelable_bets) {
             updateUsers.push({
                 updateOne: {
