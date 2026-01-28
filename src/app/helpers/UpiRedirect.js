@@ -1,5 +1,5 @@
 export const UpiRedirect = (amount, vpa) => {
-    const name = "C.B football";
+    const name = "Bharat Goal";
     const transactionId = Math.floor(Math.random() * 10000000);
     const upiUrl = `upi://pay?pa=${vpa}&pn=${name}&tid=${transactionId}&tr=${transactionId}&am=${amount}&cu=INR`;
 
