@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
             />
             <meta
                 name="keywords"
-                content="football betting, live football bets, online betting, soccer betting, bet on football, live sports betting, Cb-football.com"
+                content="football betting, live football bets, online betting, soccer betting, bet on football, live sports betting, Bharat goal"
             />
             <meta name="author" content="Bharat Goal " />
 
@@ -48,23 +48,8 @@ export default function RootLayout({ children }) {
                 property="og:description"
                 content="Join  Bharat Goal for live betting on matches from leagues around the globe. Bet on your favorite teams in real-time and enjoy the excitement of winning."
             />
-            <meta
-                property="og:image"
-                content="https://www.Cb-football.com/logo.png"
-            />
-            <meta
-                property="og:url"
-                content="https://www.Cb-football.com"
-            />
             <meta property="og:type" content="website" />
-
-            <link rel="canonical" href="https://www.Cb-football.com" />
-
-            <link
-                rel="icon"
-                href="https://www.Cb-football.com/logo.png"
-                type="image/x-icon"
-            />
+      
 
             <meta name="robots" content="index, follow" />
         </head>
