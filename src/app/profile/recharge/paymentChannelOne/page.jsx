@@ -64,7 +64,7 @@ function Page() {
                 let config = {
                     method: "POST",
                     headers: {
-                        "content-type": "applicaiton/json",
+                        "content-type": "application/json",
                     },
                     body: JSON.stringify(body),
                 };
