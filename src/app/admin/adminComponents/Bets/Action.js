@@ -331,8 +331,7 @@ async function settle_bet(
             Number(match?.Score_a) === Number(g_first) &&
             Number(match?.Score_b) === Number(g_second) &&
             (Number(match?.Score_a) !== Number(s_first) ||
-                Number(match?.Score_b) !== Number(s_second)) &&
-            Number(match?.BetAmount) > Number(membership)
+                Number(match?.Score_b) !== Number(s_second))
         ) {
             win = true;
         }
