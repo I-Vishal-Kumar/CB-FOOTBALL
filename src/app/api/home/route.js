@@ -64,6 +64,9 @@ export async function GET(request) {
 async function getLiveBets() {
     await connect();
     try {
+        const apiMatches = getHardcodedMatches(20);
+        return apiMatches;
+        
         let current_version = await MATCH.findOne(
             { _id: MATCH_ID },
             { _id: 0, version: 1 }
