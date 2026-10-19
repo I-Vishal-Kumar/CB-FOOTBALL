@@ -153,7 +153,7 @@ const Page = () => {
                                     </span>
                                 </div>
                                 <div className="flex-[4]">
-                                    <p>Bharat Goal Pdf </p>
+                                    <p>chelsea fb Pdf </p>
                                 </div>
                                 <div className="flex-[1] flex justify-center items-center">
                                     <span className="h-full rounded-full bg-gray-200 text-white p-0.5">

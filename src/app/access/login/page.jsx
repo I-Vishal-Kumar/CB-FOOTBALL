@@ -71,7 +71,7 @@ const Login = () => {
                         src={"/logo.png"}
                         height={120}
                         width={130}
-                        alt="Bharat Goal"
+                        alt="chelsea fb"
                     />
                     <h2 className=" text-center text-md font-bold leading-9 tracking-tight to-blue-500 uppercase">
                         Welcome back
