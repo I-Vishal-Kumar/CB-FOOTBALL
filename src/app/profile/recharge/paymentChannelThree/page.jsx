@@ -230,7 +230,7 @@ function page() {
                             style={{
                                 border: " 1px solid rgba(0, 0, 0, 0.05)",
                             }}
-                            className=" bg-[#2885F6] pl-2 py-1 rounded-t-[15px] text-[#FFF] "
+                            className=" bg-[#1A5FD6] pl-2 py-1 rounded-t-[15px] text-[#FFF] "
                         >
                             Reference Number
                         </div>
@@ -253,10 +253,10 @@ function page() {
                         onClick={() => btndisbaled()}
                         disabled={disabled}
                         style={{
-                            backgroundColor: disabled ? "#5A5A5A" : "#2885F6",
+                            backgroundColor: disabled ? "#5A5A5A" : "#1A5FD6",
                             boxShadow: "0 0 5px 0 #c0cad9",
                         }}
-                        className="bg-[#2885F6] text-center p-3 mt-2 rounded-lg flex justify-center place-items-center text-[#fff] "
+                        className="bg-[#1A5FD6] text-center p-3 mt-2 rounded-lg flex justify-center place-items-center text-[#fff] "
                     >
                         Recharge
                     </div>
@@ -288,7 +288,7 @@ const InputWithCopyIcon = ({ value }) => {
     return (
         <div className="w-full flex justify-between items-center ">
             <input type="text" value={value} readOnly />
-            <button style={{ color: "#2885F6" }} onClick={copyToClipboard}>
+            <button style={{ color: "#1A5FD6" }} onClick={copyToClipboard}>
                 {copied ? "Copied!" : "Copy"}
             </button>
         </div>

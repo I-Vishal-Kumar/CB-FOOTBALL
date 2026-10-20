@@ -221,9 +221,9 @@ function Page() {
                                 style={{
                                     backgroundColor: disabled
                                         ? "#5A5A5A"
-                                        : "#2885F6",
+                                        : "#1A5FD6",
                                 }}
-                                className="bg-[#2885F6] text-white  w-[23%]  text-[.65rem] "
+                                className="bg-[#1A5FD6] text-white  w-[23%]  text-[.65rem] "
                             >
                                 Submit
                             </button>
@@ -307,7 +307,7 @@ function RechargeAmount({ getAmount }) {
 
     return (
         <div className="flex  items-center ">
-            <p className="ml-1 text-[.65rem] font-semibold text-[#2885F6] ">
+            <p className="ml-1 text-[.65rem] font-semibold text-[#1A5FD6] ">
                 {" "}
                 {receivedAmount}{" "}
             </p>

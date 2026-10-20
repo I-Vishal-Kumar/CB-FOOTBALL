@@ -199,7 +199,7 @@ function Page() {
 
           <div className="mt-4 ">
             <p className="font-[500] text-[.7rem] ">Deposit Address</p>
-            <div className="flex justify-between rounded-lg bg-transparent border-2 border-[#2885F6] p-2 ">
+            <div className="flex justify-between rounded-lg bg-transparent border-2 border-[#1A5FD6] p-2 ">
               <input
                 type="text"
                 placeholder="Enter Your Deposit Address"
@@ -209,7 +209,7 @@ function Page() {
               />
               <FaRegCopy
                 onClick={() => copyAddress()}
-                className="text-[#2885F6] "
+                className="text-[#1A5FD6] "
               />
             </div>
           </div>
@@ -218,7 +218,7 @@ function Page() {
 
           <div className="mt-4 ">
             <p className="font-[500] text-[.7rem] ">Transaction Id</p>
-            <div className="flex justify-between rounded-lg bg-transparent border-2 border-[#2885F6] p-2 ">
+            <div className="flex justify-between rounded-lg bg-transparent border-2 border-[#1A5FD6] p-2 ">
               <input
                 type="text"
                 value={transactionId}
@@ -228,7 +228,7 @@ function Page() {
               />
               {/* <FaRegCopy
                 onClick={() => copyTransactionId()}
-                className="text-[#2885F6] "
+                className="text-[#1A5FD6] "
               /> */}
             </div>
           </div>
@@ -237,10 +237,10 @@ function Page() {
             onClick={() => btndisbaled()}
             disabled={disabled}
             style={{
-              backgroundColor: disabled ? "#5A5A5A" : "#2885F6",
+              backgroundColor: disabled ? "#5A5A5A" : "#1A5FD6",
               boxShadow: "0 0 5px 0 #c0cad9",
             }}
-            className="bg-[#2885F6] text-center p-3 mt-4 rounded-lg flex justify-center place-items-center text-[#fff] text-[.7rem] "
+            className="bg-[#1A5FD6] text-center p-3 mt-4 rounded-lg flex justify-center place-items-center text-[#fff] text-[.7rem] "
           >
             Recharge
           </div>

@@ -418,7 +418,7 @@ function Page() {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="ring-[1.5px] ring-[#11468F] py-2 mt-1 rounded-md">
+                                    <div className="ring-[1.5px] ring-[#034694] py-2 mt-1 rounded-md">
                                         <div className="flex capitalize font-semibold text-[0.65rem] space-x-2 ">
                                             <div className=" flex w-[50%] space-x-2 px-2">
                                                 <span
@@ -458,7 +458,7 @@ function Page() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="ring-[1.5px] mt-3 ring-[#11468F] py-2 rounded-md">
+                                    <div className="ring-[1.5px] mt-3 ring-[#034694] py-2 rounded-md">
                                         <div className="flex capitalize font-semibold text-[0.65rem] space-x-2 ">
                                             <div className=" flex w-[50%] space-x-2 px-2">
                                                 <span
@@ -594,7 +594,7 @@ function Page() {
                         <div className="px-2 py-1">
                             <button
                                 onClick={withdraw}
-                                className="w-full capitalize rounded-md mt-4 shadow-md bg-[#11468F] text-white font-bold py-2 "
+                                className="w-full capitalize rounded-md mt-4 shadow-md bg-[#034694] text-white font-bold py-2 "
                             >
                                 transfer to bank
                             </button>

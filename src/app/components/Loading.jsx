@@ -41,13 +41,13 @@ function Loading() {
                             r="60"
                             gradientUnits="userSpaceOnUse"
                         >
-                            <stop offset=".68" stopColor="#11468F" />
-                            <stop offset=".72" stopColor="#11468F" />
-                            <stop offset=".77" stopColor="#11468F" />
-                            <stop offset=".82" stopColor="#11468F" />
-                            <stop offset=".88" stopColor="#11468F" />
-                            <stop offset=".93" stopColor="#11468F" />
-                            <stop offset=".99" stopColor="#11468F" />
+                            <stop offset=".68" stopColor="#034694" />
+                            <stop offset=".72" stopColor="#034694" />
+                            <stop offset=".77" stopColor="#034694" />
+                            <stop offset=".82" stopColor="#034694" />
+                            <stop offset=".88" stopColor="#034694" />
+                            <stop offset=".93" stopColor="#034694" />
+                            <stop offset=".99" stopColor="#034694" />
                             <stop offset="1" stopColor="#f1eefb" />
                         </radialGradient>
                     </defs>
@@ -55,7 +55,7 @@ function Loading() {
                         id="fillDot"
                         cx="400"
                         cy="300"
-                        fill="#11468F"
+                        fill="#034694"
                         r="60"
                     />
                     <circle

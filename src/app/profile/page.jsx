@@ -200,7 +200,7 @@ function Page() {
 
                             <div
                                 onClick={() => router.push("/profile/recharge")}
-                                className="flex items-center space-x-2 bg-gradient-to-r from-[#11468F] to-[#2885F6] px-4 py-2 rounded-full cursor-pointer hover:shadow-lg transition-all"
+                                className="flex items-center space-x-2 bg-gradient-to-r from-[#034694] to-[#1A5FD6] px-4 py-2 rounded-full cursor-pointer hover:shadow-lg transition-all"
                             >
                                 <FaPlus className="text-white text-sm" />
                                 <span className="text-sm font-semibold text-white">

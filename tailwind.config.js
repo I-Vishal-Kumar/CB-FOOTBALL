@@ -8,6 +8,21 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Chelsea crest palette: blue-* utilities shifted to the club's royal blue
+      colors: {
+        blue: {
+          400: "#4A7FE3",
+          500: "#1A5FD6",
+          600: "#0B52BD",
+          700: "#034694",
+          800: "#033A7A",
+        },
+        chelsea: {
+          blue: "#034694",
+          royal: "#1A5FD6",
+          gold: "#DBA111",
+        },
+      },
       fontWeight: {
         bold: 600,
         medium: 400,

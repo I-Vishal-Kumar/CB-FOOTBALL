@@ -127,7 +127,7 @@ function MatchCard({ id, data, onClick, color }) {
           </span>
         </div>
 
-        <div className="font-light text-[#2885F6] text-[.6rem] ">
+        <div className="font-light text-[#1A5FD6] text-[.6rem] ">
           <MemoizedCountdown StartsAt={data?.StartsAt || new Date()} />
         </div>
       </div>
