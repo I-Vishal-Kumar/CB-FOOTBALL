@@ -247,7 +247,7 @@ function Page() {
                         cancel={() => cancel()}
                         disabled={disabled}
                         Style={{
-                            backgroundColor: disabled ? "#5A5A5A" : "#2885F6",
+                            backgroundColor: disabled ? "#5A5A5A" : "#1A5FD6",
                         }}
                     />
                 </motion.div>
@@ -465,8 +465,8 @@ function Stake({ onClick, data }) {
                 <button
                     onClick={() => btnControl()}
                     disabled={disabled}
-                    style={{ backgroundColor: disabled ? "gray" : "#11468F" }}
-                    className=" bg-[#11468F]  w-[85%] h-[2.5rem] mr-auto ml-auto block  mt-[1rem] rounded-[5px] font-bold text-white  text-[0.8rem] "
+                    style={{ backgroundColor: disabled ? "gray" : "#034694" }}
+                    className=" bg-[#034694]  w-[85%] h-[2.5rem] mr-auto ml-auto block  mt-[1rem] rounded-[5px] font-bold text-white  text-[0.8rem] "
                 >
                     Cancel Stake
                 </button>

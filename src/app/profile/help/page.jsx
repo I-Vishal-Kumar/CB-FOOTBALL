@@ -41,7 +41,7 @@ const Page = () => {
                             <div className="flex-[2] flex justify-end items-center">
                                 <Link
                                     href={"https://t.me/Bharat_Goal"}
-                                    className="h-full rounded-xl bg-[#11468F] text-white px-8 py-2"
+                                    className="h-full rounded-xl bg-[#034694] text-white px-8 py-2"
                                 >
                                     join
                                 </Link>
@@ -66,7 +66,7 @@ const Page = () => {
                                     href={
                                         "https://chat.whatsapp.com/E3l8JJ9ThPb781Yo086IE2"
                                     }
-                                    className="h-full rounded-xl bg-[#11468F] text-white px-8 py-2"
+                                    className="h-full rounded-xl bg-[#034694] text-white px-8 py-2"
                                 >
                                     join
                                 </Link>

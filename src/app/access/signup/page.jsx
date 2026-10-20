@@ -393,7 +393,7 @@ const Signup = () => {
                                     disabled={isDisabled}
                                     value={credentials?.Phone}
                                     containerStyle={{
-                                        border: "2px solid #11468F",
+                                        border: "2px solid #034694",
                                     }}
                                     inputProps={{
                                         name: "Phone",
@@ -555,7 +555,7 @@ const Signup = () => {
                         <motion.div variants={itemVariants2}>
                             <button
                                 type="submit"
-                                className="flex my-6 w-full justify-center rounded-md bg-[#11468F] px-3 py-[0.6rem] font-semibold leading-6 text-white capitalize shadow-sm "
+                                className="flex my-6 w-full justify-center rounded-md bg-[#034694] px-3 py-[0.6rem] font-semibold leading-6 text-white capitalize shadow-sm "
                             >
                                 create new account
                             </button>

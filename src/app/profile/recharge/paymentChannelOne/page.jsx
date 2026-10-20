@@ -145,9 +145,9 @@ function Page() {
                     <UploadComponent setUploaded={setUploaded} />
                     <div
                         style={{ boxShadow: "0 0 5px 0 #c0cad9" }}
-                        className="bg-[white] mt-4 flex place-items-center border-2 rounded-lg border-[#2885F6] "
+                        className="bg-[white] mt-4 flex place-items-center border-2 rounded-lg border-[#1A5FD6] "
                     >
-                        <p className="w-[20%] rounded-l-sm text-center bg-[#2885F6] text-white py-2  text-[.8rem] font-semibold focus-wit  ">
+                        <p className="w-[20%] rounded-l-sm text-center bg-[#1A5FD6] text-white py-2  text-[.8rem] font-semibold focus-wit  ">
                             UTR
                         </p>
                         <input
@@ -163,10 +163,10 @@ function Page() {
                         onClick={() => btndisbaled()}
                         disabled={disabled}
                         style={{
-                            backgroundColor: disabled ? "#5A5A5A" : "#2888f6",
+                            backgroundColor: disabled ? "#5A5A5A" : "#1A5FD6",
                             boxShadow: "0 0 5px 0 #c0cad9",
                         }}
-                        className="bg-[#2888f6] rounded-lg text-center p-3 mt-4 flex justify-center items-center text-white  text-[.7rem] "
+                        className="bg-[#1A5FD6] rounded-lg text-center p-3 mt-4 flex justify-center items-center text-white  text-[.7rem] "
                     >
                         pay
                     </div>
@@ -193,7 +193,7 @@ function RechargeAmount({ getAmount }) {
     return (
         <div className="flex  items-center ">
             <LiaRupeeSignSolid />
-            <h1 className="text-[.7rem] font-semibold text-[#2888f6] ">
+            <h1 className="text-[.7rem] font-semibold text-[#1A5FD6] ">
                 {receivedAmount}
             </h1>
         </div>

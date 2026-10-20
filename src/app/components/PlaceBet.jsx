@@ -272,7 +272,7 @@ function ScoreCards({
                     className={`h-full w-[90%] py-1 px-1 text-center text-[0.6rem] rounded-md ${
                         cardDetails.selected
                             ? " bg-gray-600 "
-                            : " bg-[#11468F] "
+                            : " bg-[#034694] "
                     }  text-white justify-center`}
                 >
                     Place stake
@@ -324,7 +324,7 @@ function ScoreCards({
                             </h2>
                         </span>
                         <div
-                            className="flex ring-2 px-1 ring-[#11468F]
+                            className="flex ring-2 px-1 ring-[#034694]
            mt-1 py-1 rounded-md items-center"
                         >
                             <div className="flex pl-1 space-x-1 max-w-[50%] min-w-[50%]  items-center h-[90%]">
@@ -379,7 +379,7 @@ function ScoreCards({
                                 );
                                 updateLoading(false);
                             }}
-                            className="py-2 px-2 w-[70%] disabled:bg-[#5A5A5A] bg-[#11468F] font-bold text-sm text-white rounded-md capitalize"
+                            className="py-2 px-2 w-[70%] disabled:bg-[#5A5A5A] bg-[#034694] font-bold text-sm text-white rounded-md capitalize"
                         >
                             confirm
                         </button>

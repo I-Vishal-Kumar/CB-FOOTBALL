@@ -39,14 +39,14 @@ function loading() {
                             r="50" // Reduced the r attribute for smaller circles
                             gradientUnits="userSpaceOnUse"
                         >
-                            <stop offset=".68" stopColor="#11468F" />
-                            <stop offset=".72" stopColor="#11468F" />
-                            <stop offset=".77" stopColor="#11468F" />
-                            <stop offset=".82" stopColor="#11468F" />
-                            <stop offset=".88" stopColor="#11468F" />
-                            <stop offset=".93" stopColor="#11468F" />
-                            <stop offset=".99" stopColor="#11468F" />
-                            <stop offset="1" stopColor="#11468F" />
+                            <stop offset=".68" stopColor="#034694" />
+                            <stop offset=".72" stopColor="#034694" />
+                            <stop offset=".77" stopColor="#034694" />
+                            <stop offset=".82" stopColor="#034694" />
+                            <stop offset=".88" stopColor="#034694" />
+                            <stop offset=".93" stopColor="#034694" />
+                            <stop offset=".99" stopColor="#034694" />
+                            <stop offset="1" stopColor="#034694" />
                         </radialGradient>
                     </defs>
                     <circle id="fillDot" cx="400" cy="300" fill="red" r="50" />{" "}

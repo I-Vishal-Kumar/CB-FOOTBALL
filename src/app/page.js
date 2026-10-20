@@ -150,7 +150,7 @@ export default function Home() {
     }, []);
     return (
         <Layout>
-            <main className="h-screen relative bg-no-repeat bg- bg-center bg-gradient-to-b from-[#11468F] to-[#00000063] overflow-hidden flex flex-col  ">
+            <main className="h-screen relative bg-no-repeat bg- bg-center bg-gradient-to-b from-[#034694] to-[#00000063] overflow-hidden flex flex-col  ">
                 <div className="  flex justify-between place-items-center  w-[90%] mr-auto ml-auto   ">
                     <div className="w-max mt-2 flex flex-col justify-center  pt-2 ">
                         <div
@@ -262,7 +262,7 @@ export default function Home() {
                                     }}
                                     className="flex  items-center py-3  rounded-[19px] bg-[#fff]  px-2"
                                 >
-                                    <button className="flex items-center justify-center w-full py-2 px-4 rounded-md text-white bg-[#11468F] hover:bg-[#215aab] transition duration-200">
+                                    <button className="flex items-center justify-center w-full py-2 px-4 rounded-md text-white bg-[#034694] hover:bg-[#0A5AC2] transition duration-200">
                                         Download apk
                                     </button>
                             </a>
@@ -334,7 +334,7 @@ function ScoreCards({
                     Odds percentage -<h2 className=" ml-1 text-green-400"></h2>
                     <h2 className="text-green-400"> {percent} </h2>
                 </span>
-                <span className="flex items-center justify-center py-2 px-2 bg-[#11468F] text-white rounded-[7px] ">
+                <span className="flex items-center justify-center py-2 px-2 bg-[#034694] text-white rounded-[7px] ">
                     Place stake
                 </span>
             </div>
@@ -382,7 +382,7 @@ function ScoreCards({
                     </span>
 
                     <div
-                        className="flex ring-2 px-1 ring-[#11468F]
+                        className="flex ring-2 px-1 ring-[#034694]
            mt-1 py-1 rounded-md items-center"
                     >
                         <div className="flex pl-1 space-x-1 max-w-[50%] min-w-[50%]  items-center h-[90%]">
@@ -430,9 +430,9 @@ function ScoreCards({
                         }
                         disabled={disabled}
                         style={{
-                            backgroundColor: disabled ? "#5A5A5A" : "#11468F",
+                            backgroundColor: disabled ? "#5A5A5A" : "#034694",
                         }}
-                        className="py-2 px-2 w-[70%] bg-[#11468F] font-bold text-sm text-white rounded-md capitalize"
+                        className="py-2 px-2 w-[70%] bg-[#034694] font-bold text-sm text-white rounded-md capitalize"
                     >
                         confirm
                     </button>
@@ -538,14 +538,14 @@ function FixedDeposit({ userBalance, closePopup }) {
             </div>
             <div className="py-4 mt-2 flex flex-col gap-4">
                 <input
-                    className="py-2 px-4 w-full border-[#11468F] border-2 text-gray-900 rounded-md"
+                    className="py-2 px-4 w-full border-[#034694] border-2 text-gray-900 rounded-md"
                     type="number"
                     value={amount}
                     onChange={(e) => updateAmount(e.target.value)}
                     placeholder="Enter amount"
                 />
                 <select
-                    className="py-2 px-3 border-[#11468F] border-2 rounded-md"
+                    className="py-2 px-3 border-[#034694] border-2 rounded-md"
                     value={selectDuration}
                     onChange={(e) => updateDuration(e.target.value)}
                 >
@@ -566,7 +566,7 @@ function FixedDeposit({ userBalance, closePopup }) {
             </div>
             <div
                 onClick={handleSubmit}
-                className="text-center bg-[#11468F] rounded-md py-2 text-white"
+                className="text-center bg-[#034694] rounded-md py-2 text-white"
             >
                 <button>Create fixed deposit</button>
             </div>

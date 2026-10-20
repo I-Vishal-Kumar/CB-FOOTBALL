@@ -31,7 +31,7 @@ function Modal() {
 
           <button
             onClick={closeAlert}
-            className="border-t-2 capitalize border-[#00000033] absolute bottom-0 w-full py-2 text-[#2885F6] font-semibold "
+            className="border-t-2 capitalize border-[#00000033] absolute bottom-0 w-full py-2 text-[#1A5FD6] font-semibold "
           >
             Done
           </button>

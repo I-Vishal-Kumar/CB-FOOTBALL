@@ -277,7 +277,7 @@ const Page = () => {
                             <p className="capitalize text-[0.65rem] font-bold">
                                 invite link
                             </p>
-                            <div className="flex items-center py-2 justify-center ring-[#11468F]  rounded-md ring-[1.7px]">
+                            <div className="flex items-center py-2 justify-center ring-[#034694]  rounded-md ring-[1.7px]">
                                 <span className="w-[10%] flex justify-center items-center text-blue-500">
                                     <FaLink />
                                 </span>
@@ -304,7 +304,7 @@ const Page = () => {
                             <p className="capitalize text-[0.65rem] font-bold mt-3">
                                 invite code
                             </p>
-                            <div className="flex items-center py-2 justify-center ring-[#11468F]  rounded-md ring-[1.7px]">
+                            <div className="flex items-center py-2 justify-center ring-[#034694]  rounded-md ring-[1.7px]">
                                 <span className="w-[10%] flex justify-center items-center text-blue-500">
                                     <FaLink />
                                 </span>

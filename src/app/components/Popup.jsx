@@ -21,7 +21,7 @@ function Popup({ image, condtions, onClick, cancel , disabled , Style}) {
       </div>
       <div className=" h-[80%] mt-[2rem]    ">
         <div className=" h-[50vh] flex flex-col justify-center place-items-center ">
-          <div className="border-2 border-[#2885F6] w-[4rem] h-[4rem] flex justify-center place-items-center rounded-[100%] ">
+          <div className="border-2 border-[#1A5FD6] w-[4rem] h-[4rem] flex justify-center place-items-center rounded-[100%] ">
             <Image src={image} width={25} height={25} alt="success" />
           </div>
           <p className="my-[.7rem] font-bold text-xl ">{condtions}</p>
@@ -42,7 +42,7 @@ function Popup({ image, condtions, onClick, cancel , disabled , Style}) {
           onClick={PopUpDlt}
           disabled={disabled}
           style={{boxShadow: "0 0 5px 0 #c0cad9",background:Style.backgroundColor}}
-          className="bg-[#2885F6] text-center p-3 mt-4 rounded-lg flex justify-center place-items-center text-[#fff] w-[90%] mr-auto ml-auto  "
+          className="bg-[#1A5FD6] text-center p-3 mt-4 rounded-lg flex justify-center place-items-center text-[#fff] w-[90%] mr-auto ml-auto  "
         >
           Done
         </div>
