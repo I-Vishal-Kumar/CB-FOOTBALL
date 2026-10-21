@@ -145,7 +145,7 @@ const Login = () => {
                     </form>
 
                         <a
-                            href="https://t.me/BharatGoalCS"
+                            href="https://t.me/+Qv2p0w48dy81NDFl"
                             className="font-semibold leading-6 hover:text-blue-800"
                         >
                             <p className="mt-10 text-center font-semibold text-sm">
