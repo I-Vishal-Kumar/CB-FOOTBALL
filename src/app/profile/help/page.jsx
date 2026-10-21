@@ -40,7 +40,7 @@ const Page = () => {
                             </div>
                             <div className="flex-[2] flex justify-end items-center">
                                 <Link
-                                    href={"https://t.me/Bharat_Goal"}
+                                    href={"https://t.me/+Qv2p0w48dy81NDFl"}
                                     className="h-full rounded-xl bg-[#034694] text-white px-8 py-2"
                                 >
                                     join

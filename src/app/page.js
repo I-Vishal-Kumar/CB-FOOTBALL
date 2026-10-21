@@ -241,7 +241,7 @@ export default function Home() {
                     landingPopup && (
                         <section onClick={()=>setLandingPopup(false)} className="h-full w-full flex justify-center items-center bg-gray-600/50 absolute top-0 left-0 z-20" >
                              <div onClick={(e)=>e.stopPropagation()} className="bg-white rounded-md py-20 w-[90%] flex flex-col items-center justify-center space-y-4 p-4">
-                                <Link href={'https://t.me/Bharat_Goal'}>
+                                <Link href={'https://t.me/+Qv2p0w48dy81NDFl'}>
                                     <button
                                         className="flex items-center justify-center w-full py-2 px-4 rounded-md text-white bg-[#0088cc] hover:bg-[#0078b5] transition duration-200">
                                         <FaTelegramPlane className="mr-2" size={20} />
