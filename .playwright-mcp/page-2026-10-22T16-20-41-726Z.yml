@@ -1,0 +1,181 @@
+- generic [ref=e1]:
+  - generic [ref=e5]:
+    - generic [ref=e8]:
+      - generic [ref=e10]:
+        - img "logo" [ref=e11]
+        - generic [ref=e12]: AstroPay API Documentation
+      - generic [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: 
+        - text: Catalog
+    - generic [ref=e18]:
+      - generic [ref=e19]: Overview & Authentication
+      - generic [ref=e26]:
+        - heading "AstroPay Merchant API" [level=1] [ref=e27]:  AstroPay Merchant API
+        - paragraph [ref=e28]: This is the server-to-server integration API for merchants — used to create collection (deposit) and payment (withdrawal) orders, check their status, check your balance, and receive real-time settlement webhooks. Everything in this documentation uses simple API-key authentication in the request body.
+        - heading "Base URL" [level=2] [ref=e29]:  Base URL
+        - code [ref=e31]: https://api.gpay.one
+        - paragraph [ref=e32]:
+          - text: All endpoints in this documentation are relative to this base, e.g.
+          - code [ref=e33]: POST https://api.gpay.one/v1/payins/create
+          - text: .
+        - heading "Authentication" [level=2] [ref=e34]:  Authentication
+        - paragraph [ref=e35]:
+          - text: Every request is a
+          - code [ref=e36]: POST
+          - text: with a JSON body (
+          - code [ref=e37]: "Content-Type: application/json"
+          - text: ) that includes your credentials directly in the body — there is no
+          - code [ref=e38]: Authorization
+          - text: "header and no per-request request-signing:"
+        - code [ref=e40]: "{ \"merchantKey\": \"your_merchant_key\", \"secretKey\": \"your_secret_key\" }"
+        - list [ref=e41]:
+          - listitem [ref=e42]:
+            - strong [ref=e43]: merchantKey / secretKey
+            - text: — issued when your account is provisioned. Treat
+            - code [ref=e44]: secretKey
+            - text: "like a password: it is also used to verify webhook signatures (see the Webhooks section)."
+          - listitem [ref=e45]:
+            - strong [ref=e46]: IP whitelisting is required.
+            - text: Requests from an IP not on your account’s whitelist are rejected with
+            - code [ref=e47]: "403"
+            - text: . Send us the IP(s) your integration calls from during onboarding.
+          - listitem [ref=e48]:
+            - text: Your account has
+            - strong [ref=e49]: one fixed settlement currency
+            - text: (e.g. INR, PKR, BDT, or USDT) set when it was provisioned. You never pass a currency parameter — every amount you send or receive is in your account’s currency.
+        - heading "Response envelope" [level=2] [ref=e50]:  Response envelope
+        - paragraph [ref=e51]: "Every endpoint returns the same JSON shape:"
+        - code [ref=e53]: "{ \"code\": 1000, \"data\": { \"...\": \"...\" }, \"msg\": \"success\" }"
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - code [ref=e56]: "code: 1000"
+            - text: always means success.
+          - listitem [ref=e57]:
+            - text: Any other
+            - code [ref=e58]: code
+            - text: is a business/validation error. The HTTP status code mirrors it when it falls in the 400–599 range, otherwise the response is sent as HTTP 500.
+          - listitem [ref=e59]:
+            - code [ref=e60]: data
+            - text: is
+            - code [ref=e61]: "null"
+            - text: on error.
+          - listitem [ref=e62]:
+            - code [ref=e63]: msg
+            - text: is a human-readable message — it may occasionally be in Chinese for lower-level internal errors, so match on
+            - code [ref=e64]: code
+            - text: in your integration, not on the text of
+            - code [ref=e65]: msg
+            - text: .
+        - paragraph [ref=e66]:
+          - text: See
+          - strong [ref=e67]: Reference → Status & Error Codes
+          - text: for the full list.
+        - heading "Order status values" [level=2] [ref=e68]:  Order status values
+        - paragraph [ref=e69]: "Both deposit and withdrawal orders move through the same three states:"
+        - table [ref=e71]:
+          - rowgroup [ref=e72]:
+            - row [ref=e73]:
+              - columnheader "status" [ref=e74]
+              - columnheader "meaning" [ref=e75]
+          - rowgroup [ref=e76]:
+            - row [ref=e77]:
+              - cell [ref=e78]:
+                - code [ref=e79]: "1"
+              - cell "Pending / in flight" [ref=e80]
+            - row [ref=e81]:
+              - cell [ref=e82]:
+                - code [ref=e83]: "9"
+              - cell "Failed" [ref=e84]
+            - row [ref=e85]:
+              - cell [ref=e86]:
+                - code [ref=e87]: "10"
+              - cell "Success (settled)" [ref=e88]
+        - heading "Idempotency" [level=2] [ref=e89]:  Idempotency
+        - paragraph [ref=e90]:
+          - code [ref=e91]: orderId
+          - text: is
+          - strong [ref=e92]: your own
+          - text: order reference (a string you generate) and must be unique per order on your side. Creating an order with an
+          - code [ref=e93]: orderId
+          - text: you’ve already used will be treated as a fresh order by these endpoints — always generate a new, unique
+          - code [ref=e94]: orderId
+          - text: per attempt.
+        - heading "Webhooks aren’t retried automatically" [level=2] [ref=e95]:  Webhooks aren’t retried automatically
+        - paragraph [ref=e96]:
+          - text: When an order settles, we POST a webhook to the
+          - code [ref=e97]: callbackUrl
+          - text: you supplied at creation time (see
+          - strong [ref=e98]: Webhooks
+          - text: ). If your endpoint is briefly down and misses it, there is currently no automatic retry loop — a human has to manually resend it from our side.
+          - strong [ref=e99]: Don’t rely on the webhook alone
+          - text: ": poll"
+          - code [ref=e100]: /v1/payins/query
+          - text: /
+          - code [ref=e101]: /v1/payouts/query
+          - text: periodically for any order still
+          - code [ref=e102]: "status: 1"
+          - text: after a reasonable window, and treat the webhook as the fast path rather than the only path.
+    - text: 
+  - generic [ref=e108]:
+    - generic [ref=e110]:
+      - button "Close" [ref=e111] [cursor=pointer]:
+        - img "close" [ref=e112]
+      - generic [ref=e115]: 目录
+    - generic [ref=e118]:
+      - generic [ref=e119]:
+        - generic [ref=e120]: 
+        - textbox "Enter keywords and press Enter to search" [ref=e122]
+      - tree [ref=e124]:
+        - generic:
+          - textbox "for screen reader"
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - generic [ref=e130] [cursor=pointer]: 
+            - generic [ref=e135] [cursor=pointer]:
+              - generic [ref=e136]: 
+              - generic "English | 英语" [ref=e138]
+          - generic [ref=e139]:
+            - generic [ref=e141] [cursor=pointer]: 
+            - generic [ref=e146] [cursor=pointer]:
+              - generic [ref=e147]: 
+              - generic "Getting Started" [ref=e149]
+          - generic [ref=e150]:
+            - generic [ref=e152] [cursor=pointer]
+            - generic [ref=e155] [cursor=pointer]:
+              - generic [ref=e156]: 
+              - generic "Overview & Authentication" [ref=e158]
+          - generic [ref=e159]:
+            - generic [ref=e161] [cursor=pointer]: 
+            - generic [ref=e166] [cursor=pointer]:
+              - generic [ref=e167]: 
+              - generic "Collection" [ref=e169]
+          - generic [ref=e170]:
+            - generic [ref=e172] [cursor=pointer]: 
+            - generic [ref=e177] [cursor=pointer]:
+              - generic [ref=e178]: 
+              - generic "Payment" [ref=e180]
+          - generic [ref=e181]:
+            - generic [ref=e183] [cursor=pointer]: 
+            - generic [ref=e188] [cursor=pointer]:
+              - generic [ref=e189]: 
+              - generic "Account" [ref=e191]
+          - generic [ref=e192]:
+            - generic [ref=e194] [cursor=pointer]: 
+            - generic [ref=e199] [cursor=pointer]:
+              - generic [ref=e200]: 
+              - generic "UPI Tools" [ref=e202]
+          - generic [ref=e203]:
+            - generic [ref=e205] [cursor=pointer]: 
+            - generic [ref=e210] [cursor=pointer]:
+              - generic [ref=e211]: 
+              - generic "Webhooks" [ref=e213]
+          - generic [ref=e214]:
+            - generic [ref=e216] [cursor=pointer]: 
+            - generic [ref=e221] [cursor=pointer]:
+              - generic [ref=e222]: 
+              - generic "Reference" [ref=e224]
+          - generic [ref=e225]:
+            - generic [ref=e226] [cursor=pointer]: 
+            - generic [ref=e231] [cursor=pointer]:
+              - generic [ref=e232]: 
+              - generic "Chinese | 中文" [ref=e234]

@@ -1,0 +1,3 @@
+[    4967ms] Uncaught ReferenceError: _ is not defined
+    at <anonymous> (https://showdoc.cdn.dfyun.com.cn/editor.md/lib/sequence-diagram.min.js:6:2300)
+    at <anonymous> (https://showdoc.cdn.dfyun.com.cn/editor.md/lib/sequence-diagram.min.js:6:9925)

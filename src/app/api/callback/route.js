@@ -13,6 +13,9 @@ export async function POST(request, res) {
         if (!exists) {
             return NextResponse.json({ status: 0, message: "Transaction already exists" });
         }
+        if (exists.Method === "JazPays payout") {
+            return NextResponse.json({ status: 0, msg: "Already being paid by JazPays" });
+        }
     } catch (error) {
         return NextResponse.json({ msg : "Transaction already updated." });
     }

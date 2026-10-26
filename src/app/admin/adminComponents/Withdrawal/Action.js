@@ -15,6 +15,23 @@ export async function updateTransaction(prevState, formData) {
             Remark: formData.get("Remark"),
         };
 
+        // JazPays payouts are settled or refunded by their callback — editing them here
+        // could pay the user twice or refund a payout that still goes through
+        if (!formData.get("stat_0")) {
+            await connect();
+            const sentToJazpays = await TRANSACTION.exists({
+                TransactionId: data.prevTransactionId,
+                Type: "withdrawal",
+                Method: "JazPays payout",
+                Status: 0,
+            });
+            if (sentToJazpays)
+                return {
+                    message:
+                        "This withdrawal is being paid by JazPays and will update automatically.",
+                };
+        }
+
         if (formData.get("stat_0")) {
             //its in pending state;
         } else if (formData.get("stat_1")) {
