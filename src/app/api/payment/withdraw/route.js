@@ -7,6 +7,13 @@ import { cookies } from "next/headers";
 import { connect } from "@/app/modals/dbConfig";
 import ErrorReport from "@/app/helpers/ErrorReport";
 import { randomBytes } from "crypto";
+import {
+    JAZPAYS_MAX_AMOUNT,
+    JAZPAYS_MIN_AMOUNT,
+    createPayout,
+    jazpaysConfig,
+    queryPayout,
+} from "@/app/helpers/jazpays";
 const { mongoose } = require("mongoose");
 
 /**
@@ -177,6 +184,11 @@ export async function POST(request) {
                 {}
             );
         await Session.commitTransaction();
+
+        // already committed — a gateway problem must not fail the user's request
+        if (body?.isLocalBank)
+            await sendJazpaysPayout(TransactionId, Amount, Bank).catch(ErrorReport);
+
         return NextResponse.json({
             status: 200,
             message: "Withdrawall is in processing",
@@ -265,6 +277,57 @@ async function vipVerified(UserName, Ammount) {
             ErrorReport(error);
         }
         throw new Error(error?.message);
+    }
+}
+
+/**
+ *   Sends a local-bank withdrawal to JazPays right away (when JAZPAYS_AUTO_PAYOUT=true).
+ *   The user receives the requested amount minus the 10% withdrawal tax, in whole rupees.
+ *   Accepted payouts get Method "JazPays payout" and are settled/refunded by
+ *   /api/payment/jazpays/payout/notify. If JazPays rejects the request, the withdrawal
+ *   stays a normal pending one for the admin to handle as before.
+ */
+async function sendJazpaysPayout(TransactionId, Amount, Bank) {
+    if (!jazpaysConfig().autoPayout) return;
+
+    const payoutRupees = Math.floor((Amount / 100) * 0.9);
+    if (payoutRupees < JAZPAYS_MIN_AMOUNT || payoutRupees > JAZPAYS_MAX_AMOUNT) return;
+
+    const markSentToJazpays = (Remark) =>
+        TRANSACTION.updateOne(
+            { TransactionId, Type: "withdrawal", Status: 0 },
+            { Method: "JazPays payout", Remark }
+        );
+    const markManual = (Remark) =>
+        TRANSACTION.updateOne(
+            { TransactionId, Type: "withdrawal", Status: 0 },
+            { Remark }
+        );
+
+    try {
+        const res = await createPayout({
+            orderNo: TransactionId,
+            amount: payoutRupees,
+            accountName: Bank?.AccHolderName,
+            accountNo: Bank?.AccNumber,
+            ifsc: Bank?.Ifsc,
+            bankName: Bank?.BankName,
+        });
+        if (res?.code === 0) await markSentToJazpays("processing (JazPays)");
+        else await markManual(`pending · JazPays rejected ${res?.code}: ${res?.msg}`);
+    } catch (error) {
+        ErrorReport(error);
+        // timeout / network error: JazPays may still have accepted it, so never resend
+        // with a new order_no — look the same order_no up instead
+        try {
+            const q = await queryPayout(TransactionId);
+            if (q?.code === 0) await markSentToJazpays("processing (JazPays)");
+            else if (q?.code === 1007) await markManual("pending · JazPays request failed");
+            else await markSentToJazpays("JazPays status unknown · check JazPays dashboard");
+        } catch (queryError) {
+            ErrorReport(queryError);
+            await markSentToJazpays("JazPays status unknown · check JazPays dashboard");
+        }
     }
 }
 

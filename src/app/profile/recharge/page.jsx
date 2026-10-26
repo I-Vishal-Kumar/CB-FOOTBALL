@@ -10,102 +10,12 @@ import Layout from "@/app/components/Layout";
 import { useContext } from "react";
 import { AlertContext } from "@/app/helpers/AlertContext";
 import { UserContext } from "@/app/helpers/UserContext";
-import { sign } from "@/app/api/payment/gateway/signApi";
-import axios from "axios";
 
-
-const test = async (amount, orderNo) => {
-  const merchant_key = process.env.NEXT_PUBLIC_MERCHANT_KEY; // Set in .env file
-  const reqUrl = process.env.NEXT_PUBLIC_REQUEST_URL;
-  const page_url = 'https://cb-football.com/';
-  const order_date = formatDate(new Date());
-  const notify_url = `https://cb-football.com/api/payment/gateway`; 
-  const pay_type = 151;
-  const trade_amount = amount;
-  const goods_name = 'PAYMENT'
-  const mch_order_no= `${orderNo}`;
-  const sign_type = 'MD5';
-  const mch_id = process.env.NEXT_PUBLIC_MERCHANT_ID;
-  const version = '1.0';
-
-  // Construct the sign string
-  let signStr = `goods_name=${goods_name}&mch_id=${mch_id}&mch_order_no=${mch_order_no}&notify_url=${notify_url}&order_date=${order_date}&page_url=${page_url}&pay_type=${pay_type}&trade_amount=${trade_amount}&version=${version}`;
-
-  const signature = sign(signStr, merchant_key);
- 
-  const postData = {
-      goods_name,
-      mch_id,
-      mch_order_no,
-      notify_url,
-      order_date,
-      page_url,
-      pay_type,
-      trade_amount,
-      version,
-      sign_type,
-      sign: signature,
-    };
-    console.log(reqUrl)
-    const data = await axios.post(reqUrl, postData, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-
-    console.log(data);
-    if(data.data?.respCode === 'SUCCESS'){
-      window.open(data.data.payInfo);
-    }else{
-      alert('something went wrong please try other gateway for now.')
-    }
-}
-
-const okPay = async (amount, orderNo) => {
-  let key = 'a84d45a9da414f0ba6152059330bf57a';
-
-  var urlencoded = new URLSearchParams();
-  urlencoded.append("mchId", "1000");
-  urlencoded.append("currency", "INR");
-  urlencoded.append("out_trade_no", `1719`);
-  urlencoded.append("pay_type", "UPI");
-  urlencoded.append("money", "100");
-  urlencoded.append("attach", "userId");
-  urlencoded.append("notify_url", "https://www.sandbox.wpay.one/callback/payin");
-  urlencoded.append("returnUrl", "https://www.google.com");
-  
-  const signature = sign(urlencoded.toString(), key);
-  urlencoded.append("sign", signature);
-  
-  const data = await axios.post('https://api.wpay.one/v1/Collect', urlencoded, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  });
-  console.log(data);
-}
-
-const initiatePayment = async (amount) => {
- 
-  try {
-
-    const orderNo = Date.now();
-    const reqBody = {orderNo,amount}
-
-    const res = await fetch("/api/payment/initiateGateway", {
-      method: 'POST',
-      headers: {
-        'content-type': "application/json"
-      },
-      body: JSON.stringify(reqBody)
-    })
-    let resBody = await res.json();
-
-    if(resBody?.status !== 200 ){
-      alert('something went wrong');
-    }
-    await test(amount, orderNo)
-  } catch (error) {
-    alert(error);
-  }
-}
-
+// JazPays (UPI) gateway — "Payment link 1". Disabled for now; to turn it back on set this
+// to true and JAZPAYS_PAYIN_ENABLED=true on the server.
+const JAZPAYS_ENABLED = false;
+// JazPays limit per order
+const JAZPAYS_MAX_DEPOSIT = 50000;
 
 
 function Page() {
@@ -134,9 +44,33 @@ function Page() {
   }, []);
 
   // implementing condtion based redireacting
-  const [selectedOption, setSelectedOption] = useState("option2");
+  const [selectedOption, setSelectedOption] = useState(
+    JAZPAYS_ENABLED ? "option1" : "option2"
+  );
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
+  };
+
+  // creates a JazPays order on our server and sends the user to the UPI cashier page;
+  // the balance is credited by the signed gateway callback, not by this page
+  const payWithJazpays = async () => {
+    try {
+      const res = await fetch("/api/payment/jazpays/payin", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ Amount: inputValue }),
+      });
+      const resBody = await res.json();
+      if (resBody?.status === 200 && resBody?.data?.pay_url) {
+        window.location.href = resBody.data.pay_url;
+      } else if (resBody?.status === 302) {
+        getAlert("redirect", resBody?.message || "session time out");
+      } else {
+        getAlert("opps", resBody?.message || "something went wrong");
+      }
+    } catch (error) {
+      getAlert("opps", "something went wrong");
+    }
   };
   const handleRedirect = () => {
     setDisabled(true);
@@ -147,13 +81,11 @@ function Page() {
         getAlert("opps", "Minimum deposit amount 500");
       } else {
         if (selectedOption === "option1") {
-          // router.push(
-          //   `/profile/recharge/paymentChannelOne?data=${encodeURIComponent(
-          //     inputValue
-          //   )}`
-          // );
-          // okPay(100, 123);
-          // initiatePayment(inputValue);
+          if (Number(inputValue) > JAZPAYS_MAX_DEPOSIT) {
+            getAlert("opps", `Maximum amount for Payment link 1 is ${JAZPAYS_MAX_DEPOSIT}`);
+          } else {
+            payWithJazpays();
+          }
         } else if (selectedOption === "option2") {
           router.push(
             `/profile/recharge/paymentChannelTwo?data=${encodeURIComponent(
@@ -284,11 +216,12 @@ function Page() {
                   className=" py-2 w-[80%] ml-2 bg-transparent outline-none focus-within text-[.65rem] "
                 />{" "}
               </div>
-              {/* <div
+              {JAZPAYS_ENABLED && (
+              <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
               >
-                <p className="text-[0.7rem] ">Payment link 1</p>
+                <p className="text-[0.7rem] ">Payment link 1 (UPI · instant)</p>
                 <input
                   type="radio"
                   name="link"
@@ -297,11 +230,12 @@ function Page() {
                   checked={selectedOption === "option1"}
                   onChange={handleOptionChange}
                 />
-            </div> */}
+            </div>
+              )}
             {
-              selectedOption === "option1" &&
+              JAZPAYS_ENABLED && selectedOption === "option1" &&
               (
-                <p className="text-red-600 text-xs pl-3">Please press back only after success message.</p>
+                <p className="text-gray-600 text-xs pl-3">You will be taken to a secure UPI payment page. Your balance updates automatically once the payment succeeds.</p>
               )
             }
 
@@ -387,16 +321,3 @@ function Page() {
 }
 
 export default Page;
-
-
-
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so add 1
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
