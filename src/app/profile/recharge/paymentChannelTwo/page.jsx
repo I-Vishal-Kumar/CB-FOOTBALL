@@ -122,9 +122,13 @@ function Page() {
 
                 <div className="h-[35%] mt-3 flex flex-col justify-center place-items-center  text-[.6rem] ">
                     <div className="w-[60%] h-[90%]  flex justify-center items-center ">
-                        {/* hardcoded payment QR — replaces the admin-uploaded QrChannel2 */}
+                        {/* QR uploaded from the admin panel (channel 2); /qr.png until one is uploaded */}
                         <Image
-                            src="/qr.png"
+                            src={
+                                extraDetails?.QrChannel2
+                                    ? `data:image/jpeg;base64,${extraDetails?.QrChannel2}`
+                                    : "/qr.png"
+                            }
                             alt="barCode"
                             height={80}
                             width={80}

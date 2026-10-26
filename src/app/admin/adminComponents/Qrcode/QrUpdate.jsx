@@ -23,16 +23,14 @@ const QrUpdate = () => {
         alert("no file choosen");
         return;
       }
-      let reader = new FileReader();
-      reader.readAsDataURL(qrCode);
-      reader.onload = () => {
-        const base64Data = reader.result.split(",")[1];
-        qrInput.value = base64Data;
-        formRef?.current?.requestSubmit();
-      };
-      reader.onerror = (error) => {
-        alert("error", error);
-      };
+      // phone screenshots are often several MB; server actions reject bodies over the
+      // configured limit, so shrink the QR to a small JPEG before sending it
+      compressQr(qrCode)
+        .then((base64Data) => {
+          qrInput.value = base64Data;
+          formRef?.current?.requestSubmit();
+        })
+        .catch(() => alert("Could not read this image, please choose a PNG or JPG file."));
     }
   }
   return (
@@ -101,3 +99,29 @@ const QrUpdate = () => {
 };
 
 export default QrUpdate;
+
+// resizes to at most 800px and re-encodes as JPEG (white background for transparent PNGs);
+// resolves with the base64 payload without the "data:...;base64," prefix
+function compressQr(file, maxSide = 800) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg", 0.92).split(",")[1]);
+    };
+    img.onerror = (error) => {
+      URL.revokeObjectURL(url);
+      reject(error);
+    };
+    img.src = url;
+  });
+}
