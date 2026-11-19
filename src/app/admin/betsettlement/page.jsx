@@ -153,32 +153,30 @@ async function getAllBets() {
     "use server";
     try {
         await connect();
+        // one pass: first pending bet per match plus the number of pending bets on it
         let data = await BET.aggregate([
             {
                 $match: { Status: 0 },
             },
             {
+                $sort: { createdAt: 1 },
+            },
+            {
                 $group: {
                     _id: "$StakeId",
                     bet: { $first: "$$ROOT" },
+                    Count: { $sum: 1 },
                 },
             },
             {
-                $replaceRoot: { newRoot: "$bet" },
+                $replaceRoot: {
+                    newRoot: { $mergeObjects: ["$bet", { Count: "$Count" }] },
+                },
             },
             {
                 $sort: { createdAt: 1 },
             },
-            
         ]);
-        for (let bet of data) {
-            let count = await BET.countDocuments({
-                StakeId: bet?.StakeId,
-                Status: 0,
-            })
-
-            data[data.indexOf(bet)]["Count"] = count;
-        }
         return data;
     } catch (error) {
         console.log(error);

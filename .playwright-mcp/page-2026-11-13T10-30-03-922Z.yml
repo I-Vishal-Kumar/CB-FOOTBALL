@@ -1,0 +1,26 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: How is your experience?
+        - button "Provide Feedback" [ref=e9]
+      - generic [ref=e11]:
+        - generic [ref=e12]: Language
+        - button "Language English" [ref=e17]:
+          - generic [ref=e18]: English
+    - img "AWS logo" [ref=e21]
+  - generic [ref=e27]:
+    - generic [ref=e28]:
+      - link "Privacy Policy (opens in new tab)" [ref=e29] [cursor=pointer]:
+        - /url: https://aws.amazon.com/privacy/
+        - text: Privacy Policy
+      - generic [ref=e31]: "|"
+      - link "Terms of Use (opens in new tab)" [ref=e32] [cursor=pointer]:
+        - /url: https://aws.amazon.com/terms/
+        - text: Terms of Use
+      - generic [ref=e34]: "|"
+      - button "Cookie Preferences" [ref=e35] [cursor=pointer]
+      - generic [ref=e36]: "|"
+      - link "Sign Out" [ref=e37] [cursor=pointer]:
+        - /url: https://signup.aws.amazon.com/billing/signup/logout!doLogout
+    - generic [ref=e38]: Amazon Web Services, Inc. or its affiliates. All rights reserved.

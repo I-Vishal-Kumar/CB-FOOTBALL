@@ -40,7 +40,7 @@ const Page = () => {
                             </div>
                             <div className="flex-[2] flex justify-end items-center">
                                 <Link
-                                    href={"https://t.me/+Qv2p0w48dy81NDFl"}
+                                    href={"https://t.me/CHELSEAFOOTBALL_CS"}
                                     className="h-full rounded-xl bg-[#034694] text-white px-8 py-2"
                                 >
                                     join
@@ -64,7 +64,7 @@ const Page = () => {
                             <div className="flex-[2] flex justify-end items-center">
                                 <Link
                                     href={
-                                        "https://chat.whatsapp.com/E3l8JJ9ThPb781Yo086IE2"
+                                        "https://whatsapp.com/channel/0029VbDLSKEGU3BMEAUwlW2M"
                                     }
                                     className="h-full rounded-xl bg-[#034694] text-white px-8 py-2"
                                 >
@@ -74,7 +74,7 @@ const Page = () => {
                         </div>
 
                         <div
-                            onClick={()=>window.location.href = 'https://t.me/BharatGoalCS'}
+                            onClick={()=>window.location.href = 'https://t.me/CHELSEAFOOTBALL_CS'}
                             style={{
                                 boxShadow: "0 10px 10px rgba(0,0,0,0.04) ",
                             }}
@@ -87,7 +87,7 @@ const Page = () => {
                                     </span>
                                 </div>
                                 <div className="flex-[4]">
-                                    <p>telegram agenets</p>
+                                    <p>telegram agents</p>
                                 </div>
                                 <div className="flex-[1] flex justify-center items-center">
                                     <span

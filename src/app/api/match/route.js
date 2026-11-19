@@ -14,7 +14,7 @@ import CustomError from "@/app/helpers/Error";
 import { cookies } from "next/headers";
 import ErrorReport from "@/app/helpers/ErrorReport";
 import { settleFixDeposit } from "@/app/helpers/SettleFixDeposit";
-import { getHardcodedMatches } from "@/app/helpers/fetchMatches";
+import { getUpcomingMatches } from "@/app/helpers/fetchMatches";
 // 200 -> Everything went fine
 // 700 -> something went wrong with data sent by the client;
 // 703 -> database issue;
@@ -37,7 +37,7 @@ export async function GET(request) {
         if (!userData || !matches)
             throw new CustomError(703, "Login again", {});
 
-        const apiMatches = getHardcodedMatches(20);
+        const apiMatches = await getUpcomingMatches(20);
         await settleFixDeposit(UserName);
 
         return NextResponse.json({
@@ -86,11 +86,11 @@ async function getLiveBets() {
             });
         }
 
-        // If still no matches in DB, use hardcoded matches as fallback
+        // If still no matches in DB, fetch upcoming matches directly as fallback
         if (!matches || !matches?.data || matches?.data?.length < 30) {
-            console.log("Database empty, using hardcoded matches");
-            // Get hardcoded matches for current day (max 50 for match route)
-            const apiMatches = getHardcodedMatches(50);
+            console.log("Database empty, fetching upcoming matches");
+            // max 50 for match route
+            const apiMatches = await getUpcomingMatches(50);
 
             if (apiMatches && apiMatches.length > 0) {
                 return apiMatches;
@@ -108,12 +108,12 @@ async function getLiveBets() {
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);
         }
-        // Fallback to hardcoded matches if database fails
+        // Fallback to upcoming matches if database fails
         try {
-            const apiMatches = getHardcodedMatches(50);
+            const apiMatches = await getUpcomingMatches(50);
             return apiMatches || [];
         } catch (fallbackError) {
-            console.error("Fallback to hardcoded matches failed:", fallbackError);
+            console.error("Fallback to upcoming matches failed:", fallbackError);
         }
         return [];
     }

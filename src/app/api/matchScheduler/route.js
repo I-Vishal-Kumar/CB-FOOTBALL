@@ -13,7 +13,7 @@ import cron from "node-cron";
 import { MATCH } from "@/app/modals/modal";
 import { connect } from "@/app/modals/dbConfig";
 import ErrorReport from "@/app/helpers/ErrorReport";
-import { getHardcodedMatches } from "@/app/helpers/fetchMatches";
+import { getUpcomingMatches } from "@/app/helpers/fetchMatches";
 export async function GET(request, res) {
     let test = "not";
     let schedulerStarted = false;
@@ -64,10 +64,10 @@ export async function GET(request, res) {
 export async function scheduleMatches() {
     await connect();
     try {
-        console.log("Fetching hardcoded matches for current day");
+        console.log("Fetching upcoming matches from API-Football");
 
-        // Get hardcoded matches for current day (50 matches distributed across hours)
-        const data = getHardcodedMatches(50);
+        // Upcoming matches for today + tomorrow (falls back to hardcoded matches if the API returns none)
+        const data = await getUpcomingMatches(50);
 
         if (!data || data.length === 0) {
             console.log("No matches found from API");
