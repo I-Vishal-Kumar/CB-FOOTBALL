@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - main [ref=e4]:
+    - generic [ref=e5]:
+      - button "Language English" [ref=e12] [cursor=pointer]:
+        - generic [ref=e13]: English
+      - img "AWS logo" [ref=e16]
+    - generic [ref=e18]:
+      - group [ref=e24]:
+        - img "Info" [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - text: First time AWS user?
+            - link "Sign up for AWS (new)" [ref=e32]:
+              - /url: https://signin.aws.amazon.com/signup?request_type=builderId
+            - text: and build using AWS accounts with preconfigured defaults.
+          - generic [ref=e33]: Advanced user? You’re in the right place. Sign up here to create an AWS account where you have complete control over the initial account configuration and where your content is stored.
+          - generic [ref=e36]:
+            - text: Not sure?
+            - link "Compare sign-up options" [ref=e37]:
+              - /url: https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html
+            - text: to figure out what sign up is right for you.
+      - generic [ref=e41]:
+        - generic [ref=e44]:
+          - heading "Try AWS at no cost for up to 6 months" [level=2] [ref=e45]
+          - paragraph [ref=e46]: Start with USD $100 in AWS credits, plus earn up to USD $100 by completing various activities.
+          - img "Free Tier Rocket Icon" [ref=e47]
+        - generic [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e55]:
+              - heading "Sign up for AWS (advanced)" [level=1] [ref=e60]
+              - generic [ref=e61]:
+                - generic [ref=e63]:
+                  - generic [ref=e64]: Root user email address
+                  - generic [ref=e65]:
+                    - text: Used for account recovery and as described in the
+                    - link "AWS Privacy Notice" [ref=e66]:
+                      - /url: https://aws.amazon.com/privacy/
+                  - textbox "Root user email address" [ref=e74]
+                - generic [ref=e76]:
+                  - generic [ref=e77]: AWS account name
+                  - generic [ref=e78]: Choose a name for your account. You can change this name in your account settings after you sign up.
+                  - textbox "AWS account name" [ref=e83]
+                - button "Verify email address" [ref=e85] [cursor=pointer]
+            - generic [ref=e86]: OR
+            - button "Sign in to an existing AWS account" [ref=e87] [cursor=pointer]
+          - generic [ref=e88]:
+            - text: This site uses essential cookies. See our
+            - link "Cookie Notice" [ref=e89]:
+              - /url: https://aws.amazon.com/legal/cookies
+            - text: for more information.
+    - generic [ref=e94]:
+      - generic [ref=e95]:
+        - link "Privacy Policy" [ref=e96]:
+          - /url: https://aws.amazon.com/privacy/
+        - generic [ref=e100]: "|"
+        - link "Terms of Use" [ref=e101]:
+          - /url: https://aws.amazon.com/terms/
+      - generic [ref=e105]: Amazon Web Services, Inc. or its affiliates. All rights reserved.
+  - alert [ref=e106]

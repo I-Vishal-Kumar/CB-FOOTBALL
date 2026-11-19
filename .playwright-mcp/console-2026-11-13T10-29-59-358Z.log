@@ -1,0 +1,112 @@
+[    3405ms] [ERROR] Permissions policy violation: unload is not allowed in this document. @ https://dcoo28a3i62o.cloudfront.net/js/signup_prod_va6dc14965095bd5993f8c242517ef62c9d3ca21d.gz.js:1
+[    4488ms] [ERROR] [TangerineBox] Telemetry configuration is missing. Error: Error: Telemetry broker not found @ https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2
+[    4489ms] [ERROR] [TangerineBox] Telemetry configuration is missing. Error: Error: Telemetry broker not found @ https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2
+[    4491ms] [LOG] Error: {"missingFieldsInSessionData":["sessionARN","identityToken","accountId","infrastructureRegion"]}
+    at U (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:21068)
+    at F.parseSessionDataMetaTag (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:21749)
+    at new F (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:21189)
+    at F.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:21307)
+    at j.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:23908)
+    at Ce (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2:28828)
+    at Hs.setupLocals (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:4:84470)
+    at new Hs (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:4:78460)
+    at qs.createNewNamespace (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:4:103269)
+    at qs.applyAsyncFunction (https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:4:104353) @ https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2
+[    4492ms] [WARNING] Unable to decrypt userInfoSigned cookie @ https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2
+[    4492ms] [ERROR] Couldn't determine console domain and dual-stack values. @ https://a.b.cdn.console.awsstatic.com/a/v1/CEQ753HGI4VIEBGCDVTGJAUVQGBTUEBLQAPUZKXOPUCG73VLELWQ/4f9d21011c2f449797c97ad39e28d981db54e8abc2d447ce9b3129dbc8be99c4.js:2
+[    4609ms] [LOG] Error: {"missingFieldsInSessionData":["sessionARN","identityToken","accountId","infrastructureRegion"]}
+    at a (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:2667223)
+    at n.parseSessionDataMetaTag (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:2668212)
+    at new n (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:2667344)
+    at n.getInstance (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:2667462)
+    at r.getInstance (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:2665198)
+    at jj (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:3127670)
+    at tV (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:3133542)
+    at oV (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:3135512)
+    at Object.queryFn (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:3189341)
+    at Object.fetchFn [as fn] (https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2:3450707) @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    4610ms] [WARNING] Unable to decrypt userInfoSigned cookie @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    4610ms] [ERROR] Couldn't determine console domain and dual-stack values. @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    4621ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    4938ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    5020ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5020ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    5021ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:149
+[    6888ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:31
+[    8339ms] [LOG] Error: {"missingFieldsInSessionData":["sessionARN","identityToken","accountId","infrastructureRegion"]}
+    at z (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1:9873)
+    at D.parseSessionDataMetaTag (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1:10807)
+    at new D (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1:9979)
+    at D.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1:10097)
+    at u.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1:12872)
+    at ye (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BpRlwDRP.js:2:2970)
+    at https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.Dwh3Wqr3.js:3:5573
+    at m (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:2:18092)
+    at Generator.<anonymous> (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:2:19446)
+    at Generator.next (https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:2:18517) @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1
+[    8341ms] [WARNING] Unable to decrypt userInfoSigned cookie @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1
+[    8342ms] [ERROR] Couldn't determine console domain and dual-stack values. @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.BPIPw55a.js:1
+[    8348ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.Dm3j5z_A.js:1
+[    8638ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:31
+[    8679ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8679ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:32
+[    8718ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[    8784ms] [LOG] Error: {"missingFieldsInSessionData":["sessionARN","identityToken","accountId","infrastructureRegion"]}
+    at L (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1:11576)
+    at l.parseSessionDataMetaTag (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1:12512)
+    at new l (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1:11682)
+    at l.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1:11800)
+    at w.getInstance (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1:14579)
+    at Wl (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.ypu3qwXL.js:1100:14920)
+    at s (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:9:1519)
+    at BN (https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:9:3301)
+    at async https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:9:2598
+    at async https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:9:3875 @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1
+[    8785ms] [WARNING] Unable to decrypt userInfoSigned cookie @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1
+[    8785ms] [ERROR] Couldn't determine console domain and dual-stack values. @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.COQp8jNS.js:1
+[    9208ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[    9210ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[    9423ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   10641ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ https://aws-payments-gateway-service.us-east-1.amazonaws.com/External/PaymentPreference/:1
+[   11059ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   11576ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14028ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14406ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14510ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14511ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14511ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14512ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   14995ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   18682ms] [LOG] Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.B7ig74rW.js:1
+[   18794ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   21585ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   23749ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   24624ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   26400ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ https://aws-payments-gateway-service.us-east-1.amazonaws.com/External/PaymentInstrument/:1
+[   30483ms] [WARNING] Lotus: awsc-mezz-region element is not available. Falling back to default region @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.Dm3j5z_A.js:1
+[   31131ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:31
+[   31133ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   31134ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:31
+[   31633ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/TLWM2VIMIR76UYR4U5JLBCCAB3STEFA55EZXC27SIVO56FUJU3MQ/chunks/index.js:123961
+[   32160ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   32220ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://tax.us-east-1.amazonaws.com/GetTaxRegistration:1
+[   33132ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ https://aws-tcrs.amazon.com/:1
+[   33346ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://d3c9ouasuy8pg6.cloudfront.net/async%20https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/chunk.IAVIy9m1.js:1
+[   33352ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://d3c9ouasuy8pg6.cloudfront.net/async%20https://a.b.cdn.console.awsstatic.com/a/v1/SHZ7A43FXBICVUZTF7P53VGAJ7BZZE2CHNY52343NGXSMFHXCCPQ/index.js:1
+[   34190ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   35400ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   36108ms] [WARNING] [TangerineBox] Telemetry configuration is missing, events will not be emitted @ https://a.b.cdn.console.awsstatic.com/a/v1/N5CDLVCJMNHX7PAJTXS5MFTRHYEYR3JQ45VAXCZ45A47QXJBI3UQ/chunk.BWG_VTCv.js:31
+[   37392ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ https://aws-payments-gateway-service.us-east-1.amazonaws.com/External/PaymentInstrument/:1
+[   42165ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2
+[   45764ms] [INFO] The browser has successfully queued the data for transfer... @ https://d3c9ouasuy8pg6.cloudfront.net/dist/signup_classic/app_885dc28d99f17f065c1c.min.js:2

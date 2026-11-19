@@ -27,7 +27,7 @@ function Page() {
   const [usdtAmount,updateUsdtAmount] = useState(null);
 
   // implementing the function which copies the address value //
-  const [text, setText] = useState("TLNpPzXAMhW1rh32TddcRJDhPj5EeD2gH7");
+  const [text, setText] = useState("0x18A0DEea1d19d499d1B031eAc8290F96b2C02DD9");
   const [transactionId, setTransactionId] = useState("");
 
   const copyAddress = async () => {
@@ -66,11 +66,15 @@ function Page() {
       getAlert("opps", "please fill each input field.");
       return;
     } else {
+      if(amount < 10){
+        getAlert("opps", "Minimum $ deposit amount is 10$");
+        return;
+      }
       try {
         // updateUsdtAmount(amount*80)
         let body = {
           TransactionId: transactionId,
-          Amount: amount*80,
+          Amount: amount*88,
           Channel: 4,
         };
         let config = {
@@ -160,7 +164,7 @@ function Page() {
 
             <div className="w-[40vw] h-[20vh] grid place-items-center mr-auto ml-auto my-3 ">
               <Image
-                src={'/usdt.jpg'}
+                src={'/usdt.png'}
                 alt="barCode"
                 width={100}
                 height={100}

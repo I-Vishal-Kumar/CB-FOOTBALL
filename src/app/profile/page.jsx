@@ -193,7 +193,7 @@ function Page() {
                                         ₹{new Intl.NumberFormat("en-US", {
                                             style: "decimal",
                                             maximumFractionDigits: 2,
-                                        }).format(userBalance || 0)}
+                                        }).format(userBalance || 0 + (userOtherData?.Profit || 0) / 100)}
                                     </span>
                                 </div>
                             </div>
@@ -222,19 +222,6 @@ function Page() {
                                         <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" fillOpacity="0.3"/>
                                     </svg>
                                 </span>
-                                <div className="flex flex-col">
-                                    <span className="text-[0.7rem] text-white/90 font-medium">
-                                        Cashout profit
-                                    </span>
-                                    <span className="text-lg font-bold text-white">
-                                        ₹{new Intl.NumberFormat("en-US", {
-                                            style: "decimal",
-                                            maximumFractionDigits: 2,
-                                        }).format(
-                                            (userOtherData?.Profit || 0) / 100
-                                        )}
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -375,8 +362,8 @@ function Page() {
                         </div>
 
                         <a
-                            download={"cb-football.apk"}
-                            href={"/downloads/cb-football.apk"}
+                            download={"chelsea-football.apk"}
+                            href={"/downloads/chelsea-football.apk"}
                             style={{
                                 boxShadow: "0px 2px 8px 1px rgb(0,0,0,0.1) ",
                             }}

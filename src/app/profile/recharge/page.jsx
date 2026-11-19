@@ -13,7 +13,7 @@ import { UserContext } from "@/app/helpers/UserContext";
 
 // JazPays (UPI) gateway — "Payment link 1". Disabled for now; to turn it back on set this
 // to true and JAZPAYS_PAYIN_ENABLED=true on the server.
-const JAZPAYS_ENABLED = false;
+const JAZPAYS_ENABLED = true;
 // JazPays limit per order
 const JAZPAYS_MAX_DEPOSIT = 50000;
 

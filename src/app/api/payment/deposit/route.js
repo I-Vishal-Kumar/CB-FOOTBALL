@@ -51,8 +51,8 @@ export async function POST(request) {
       throw new CustomError(705, "Missing fields", {});
 
     // Check minimum deposit amount
-    if (Number(Amount) < 500) {
-      throw new CustomError(705, "Minimum deposit amount is 500", {});
+    if (Number(Amount) < 200) {
+      throw new CustomError(705, "Minimum deposit amount is 200", {});
     }
 
     Amount = Number(Amount) * 100;

@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     {
         Session: { type: String, required: true },
         VipLevel: { type: Number, default: 0 },
-        UserName: { type: String, required: true },
+        UserName: { type: String, required: true, index: true },
         Password: { type: String, required: true },
         Blocked: { type: Boolean, default: false },
         Avatar: { type: Number, default: 0 },
@@ -74,6 +74,9 @@ const BetSchema = new Schema(
     },
     { timestamps: true }
 );
+// settlement / pending-match lookups, and the one-bet-per-user-per-match check
+BetSchema.index({ StakeId: 1, Status: 1 });
+BetSchema.index({ UserName: 1, StakeId: 1 });
 
 const CommissionSchema = new Schema(
     {

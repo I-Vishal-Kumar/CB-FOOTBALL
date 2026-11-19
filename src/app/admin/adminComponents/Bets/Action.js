@@ -6,7 +6,8 @@ import { USER, BET, COMMISSION } from "@/app/modals/modal";
 import { connect } from "@/app/modals/dbConfig";
 import { revalidatePath } from "next/cache";
 
-const CHUNK_SIZE = 100;
+// bets per round of bulk writes (settlement is pure in-memory work between writes)
+const CHUNK_SIZE = 500;
 
 // function is responsible to settle the unsettled bets placed by the user's
 
@@ -81,7 +82,9 @@ async function betParser({
         )
             throw new CustomError(703, "every data is needed", {});
 
-        let unsettledBets = await BET.find({ StakeId, Status: 0 });
+        let unsettledBets = await BET.find({ StakeId, Status: 0 })
+            .session(session)
+            .lean();
 
         if (!unsettledBets || unsettledBets?.length < 1)
             throw new CustomError(
@@ -89,24 +92,38 @@ async function betParser({
                 "No matches exists with StakeId " + StakeId,
                 {unsettledBets}
             );
-        
+
+        // whole referral chain (3 levels) for every bettor in 3 queries,
+        // instead of up to 3 sequential USER lookups per bet
+        const parentOf = await loadReferralParents(
+            unsettledBets.map((bet) => bet?.Parent),
+            session
+        );
+        const today = new Date(
+            new Date().toLocaleString("en-US", {
+                timeZone: "Asia/Calcutta",
+            })
+        );
+        const commissionDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
         for (let i = 0; i < unsettledBets.length; i += CHUNK_SIZE) {
-           
+
             let chunk = unsettledBets.slice(i, i + CHUNK_SIZE);
         //    calculate settled values and store them in arrays.
-            await __init(
-                chunk,
-                StakeId,
-                s_first,
-                s_second,
-                g_first,
-                g_second,
-                membership,
-                update_user,
-                update_bet,
-                create_commission,
-                give_commission
-            );
+            for (const bet of chunk) {
+                settleOne(bet, {
+                    s_first,
+                    s_second,
+                    g_first,
+                    g_second,
+                    parentOf,
+                    commissionDate,
+                    update_user,
+                    update_bet,
+                    create_commission,
+                    give_commission,
+                });
+            }
 
             let userResults = await USER.bulkWrite(update_user, { session });
             let betResults = await BET.bulkWrite(update_bet, { session });
@@ -192,251 +209,157 @@ async function betParser({
     }
 }
 
-async function __init(
-    unsettledBets,
-    StakeId,
-    s_first,
-    s_second,
-    g_first,
-    g_second,
-    membership,
-    update_user,
-    update_bet,
-    create_commission,
-    give_commission
-) {
-    try {
-        await Promise.all(
-            unsettledBets.map((match) =>
-                initiateParallelProcess(
-                    match,
-                    s_first,
-                    s_second,
-                    g_first,
-                    g_second,
-                    membership,
-                    update_user,
-                    update_bet,
-                    create_commission,
-                    give_commission
-                )
-            )
-        );
-    } catch (error) {
-        throw error;
+/**
+ * Loads UserName -> Parent for the referral chain of the given level-1 parents,
+ * 3 levels deep, with one query per level. A name missing from the map means that
+ * user doesn't exist (the chain stops there, same as before).
+ */
+async function loadReferralParents(level1Parents, session) {
+    const parentOf = new Map();
+    let pending = [...new Set(level1Parents.filter(Boolean))];
+
+    for (let level = 1; level <= 3 && pending.length > 0; level++) {
+        const users = await USER.find(
+            { UserName: { $in: pending } },
+            { _id: 0, UserName: 1, Parent: 1 }
+        )
+            .session(session)
+            .lean();
+        for (const user of users) {
+            if (!parentOf.has(user.UserName))
+                parentOf.set(user.UserName, user?.Parent || "");
+        }
+        pending = [
+            ...new Set(
+                users.map((user) => user?.Parent).filter((p) => p && !parentOf.has(p))
+            ),
+        ];
     }
+    return parentOf;
 }
 
-async function initiateParallelProcess(
+// Queues the writes that settle one bet: bet result, winner payout and referral commissions
+function settleOne(
     match,
-    s_first,
-    s_second,
-    g_first,
-    g_second,
-    membership,
-    update_user,
-    update_bet,
-    create_commission,
-    give_commission
+    {
+        s_first,
+        s_second,
+        g_first,
+        g_second,
+        parentOf,
+        commissionDate,
+        update_user,
+        update_bet,
+        create_commission,
+        give_commission,
+    }
 ) {
-    // Asynchronously perform operations in settle_bet
-    try {
-        let Profit =
-            Number(Number(match?.BetAmount) / 10000) *
-            Number(match?.Percentage);
-        Profit -= Profit * 0.05;
-        let res = await settle_bet(
-            match,
+    let Profit =
+        Number(Number(match?.BetAmount) / 10000) * Number(match?.Percentage);
+    Profit -= Profit * 0.05;
+
+    const win =
+        Number(match?.Score_a) === Number(g_first) &&
+        Number(match?.Score_b) === Number(g_second) &&
+        (Number(match?.Score_a) !== Number(s_first) ||
+            Number(match?.Score_b) !== Number(s_second));
+
+    if (match?.Parent) {
+        give_parent_bonus(
+            match?.Parent,
+            match?.UserName,
+            match?.StakeId,
             Profit,
-            s_first,
-            s_second,
-            g_first,
-            g_second,
-            membership,
-            update_user,
-            update_bet,
+            Number(match?.BetAmount) / 100,
+            win,
+            parentOf,
+            commissionDate,
             create_commission,
             give_commission
         );
-        if (!res) {
-            update_bet.push({
-                updateOne: {
-                    filter: {
-                        StakeId: match?.StakeId,
-                        UserName: match?.UserName,
-                    },
-                    update: {
-                        $set: {
-                            Result_a: s_first,
-                            Result_b: s_second,
-                            Remark: "lose",
-                            Status: 1,
-                        },
-                    },
-                },
-            });
-        } else {
-            let BetAmount = Number(match?.BetAmount) / 100;
-            update_user.push({
-                updateOne: {
-                    filter: { UserName: match?.UserName },
-                    update: {
-                        $inc: {
-                            ValidAmount: Math.round(Number(match?.BetAmount) * 0.2),
-                            Balance: Math.round(BetAmount * 100), // Return bet amount to Balance
-                            Profit: Math.round(Profit * 100), // Add profit to Profit field
-                        },
-                    },
-                },
-            });
-            update_bet.push({
-                updateOne: {
-                    filter: {
-                        StakeId: match?.StakeId,
-                        UserName: match?.UserName,
-                    },
-                    update: {
-                        $set: {
-                            Result_a: s_first,
-                            Result_b: s_second,
-                            Remark: "win",
-                            Status: 1,
-                        },
-                    },
-                },
-            });
-        }
-    } catch (error) {
-        throw Error(error?.message || error);
     }
-}
 
-async function settle_bet(
-    match,
-    Profit,
-    s_first,
-    s_second,
-    g_first,
-    g_second,
-    membership,
-    update_user,
-    update_bet,
-    create_commission,
-    give_commission
-) {
-    try {
-        let win = false;
-
-        if (
-            Number(match?.Score_a) === Number(g_first) &&
-            Number(match?.Score_b) === Number(g_second) &&
-            (Number(match?.Score_a) !== Number(s_first) ||
-                Number(match?.Score_b) !== Number(s_second))
-        ) {
-            win = true;
-        }
-        if (match?.Parent && !!match?.Parent) {
-            // (parent , the user profit ,bet amount ,  match win)
-
-            let isBonusGiven = await give_parent_bonus(
-                match?.Parent,
-                match?.UserName,
-                match?.StakeId,
-                Profit,
-                Number(match?.BetAmount) / 100,
-                win,
-                create_commission,
-                give_commission
-            );
-
-            if (!isBonusGiven)
-                throw new CustomError(705, "something went wrong abort", {});
-        }
-
-        return win;
-    } catch (error) {
-        throw new CustomError(705, "something went wrong ", {
-            data: error,
+    if (win) {
+        let BetAmount = Number(match?.BetAmount) / 100;
+        update_user.push({
+            updateOne: {
+                filter: { UserName: match?.UserName },
+                update: {
+                    $inc: {
+                        ValidAmount: Math.round(Number(match?.BetAmount) * 0.2),
+                        Balance: Math.round(BetAmount * 100), // Return bet amount to Balance
+                        Profit: Math.round(Profit * 100), // Add profit to Profit field
+                    },
+                },
+            },
         });
     }
+
+    update_bet.push({
+        updateOne: {
+            // Status: 0 so a bet can never be settled twice
+            filter: { _id: match?._id, Status: 0 },
+            update: {
+                $set: {
+                    Result_a: s_first,
+                    Result_b: s_second,
+                    Remark: win ? "win" : "lose",
+                    Status: 1,
+                },
+            },
+        },
+    });
 }
 
-async function give_parent_bonus(
+function give_parent_bonus(
     Parent,
     UserName,
     StakeId,
     Profit,
     BetAmount,
     win,
+    parentOf,
+    commissionDate,
     create_commission,
     give_commission
 ) {
-    let today = new Date(
-        new Date().toLocaleString("en-US", {
-            timeZone: "Asia/Calcutta",
-        })
-    );
     let LEVEL = 1;
     // Commission percentages: Level 1 = 4%, Level 2 = 2%, Level 3 = 1% of user's profit
     let REBADE_PERCENT = [4, 2, 1];
-    try {
-        while (LEVEL <= 3 && Parent !== false) {
-            let parent_user = await USER.findOne({ UserName: Parent });
-            if (!parent_user) {
-                Parent = false;
-                continue;
-                // throw new Error("Parent not found invalid parent");
-            }
 
-            // Calculate commission: Level 1 parent gets 4% of profit, Level 2 gets 2%, Level 3 gets 1%
-            // Profit is already in normal units (not * 100), so calculate commission directly
-            // If user lost, rebade becomes negative (penalty)
-            // Calculate as number and round to avoid precision issues when multiplying by 100 later
-            let rebade = win
-                ? Math.round((Profit * REBADE_PERCENT[LEVEL - 1] / 100) * 100) / 100
-                : Number(BetAmount - BetAmount * 2);
+    while (LEVEL <= 3 && Parent) {
+        // parent doesn't exist -> chain stops
+        if (!parentOf.has(Parent)) break;
 
-            create_commission.push({
-                insertOne: {
-                    document: {
-                        Date: `${today.getDate()}/${
-                            today.getMonth() + 1
-                        }/${today.getFullYear()}`,
-                        Commission: rebade * 100,
-                        From: UserName,
-                        StakeId,
-                        Level: LEVEL,
-                        UserName: Parent,
-                        Claimed: false,
-                    },
+        // Calculate commission: Level 1 parent gets 4% of profit, Level 2 gets 2%, Level 3 gets 1%
+        // Profit is already in normal units (not * 100), so calculate commission directly
+        // If user lost, rebade becomes negative (penalty)
+        // Calculate as number and round to avoid precision issues when multiplying by 100 later
+        let rebade = win
+            ? Math.round((Profit * REBADE_PERCENT[LEVEL - 1] / 100) * 100) / 100
+            : Number(BetAmount - BetAmount * 2);
+
+        create_commission.push({
+            insertOne: {
+                document: {
+                    Date: commissionDate,
+                    Commission: rebade * 100,
+                    From: UserName,
+                    StakeId,
+                    Level: LEVEL,
+                    UserName: Parent,
+                    Claimed: false,
                 },
-            });
+            },
+        });
 
-            if (
-                typeof give_commission[Parent] !== "number" ||
-                isNaN(give_commission[Parent])
-            ) {
-                // give_commission.set(Parent, Math.max(0, rebade));
-                give_commission[Parent] = Math.max(0, rebade * 100);
-            } else {
-                give_commission[Parent] += Math.max(0, rebade * 100);
-                // give_commission.set(
-                //     Parent,
-                //     give_commission[Parent] + Math.max(0, rebade)
-                // );
-            }
+        give_commission[Parent] =
+            (Number(give_commission[Parent]) || 0) + Math.max(0, rebade * 100);
 
-            if (Parent !== parent_user.Parent) {
-                Parent = parent_user?.Parent || false;
-            } else {
-                Parent = false;
-            }
-            LEVEL++;
-        }
-        return true;
-    } catch (error) {
-        console.log("error in parent bonus ", error);
-        return false;
+        // stop on a self-referencing parent, same as before
+        const next = parentOf.get(Parent);
+        Parent = next && next !== Parent ? next : false;
+        LEVEL++;
     }
 }
 
@@ -453,7 +376,11 @@ async function cancelBet({ StakeId }) {
         await Session.startTransaction();
         transactionStarted = true;
         
-        let cancelable_bets = await BET.find({ StakeId });
+        // only pending bets: cancelling a match after settlement must not refund
+        // stakes that were already settled (winners already got their stake back)
+        let cancelable_bets = await BET.find({ StakeId, Status: 0 })
+            .session(Session)
+            .lean();
         for (let bet of cancelable_bets) {
             updateUsers.push({
                 updateOne: {
@@ -467,7 +394,7 @@ async function cancelBet({ StakeId }) {
             });
             betsToCancel.push({
                 updateOne: {
-                    filter: { UserName: bet?.UserName, StakeId: bet?.StakeId },
+                    filter: { _id: bet?._id, Status: 0 },
                     update: {
                         $set: {
                             Status: 2,
