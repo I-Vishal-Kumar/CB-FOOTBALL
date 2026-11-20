@@ -66,7 +66,7 @@ export async function POST(request) {
 
         const refunded = await USER.updateOne(
             { UserName: claimed.UserName },
-            { $inc: { Profit: claimed.Amount, Withdrawal: -claimed.Amount } },
+            { $inc: { Balance: claimed.Amount, Withdrawal: -claimed.Amount } },
             { session: Session }
         );
         if (!refunded?.modifiedCount)

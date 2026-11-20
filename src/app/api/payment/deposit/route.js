@@ -50,9 +50,13 @@ export async function POST(request) {
     if (!Amount || !Channel || !TransactionId)
       throw new CustomError(705, "Missing fields", {});
 
-    // Check minimum deposit amount
-    if (Number(Amount) < 200) {
-      throw new CustomError(705, "Minimum deposit amount is 200", {});
+    // Check minimum deposit amount (Channel 4 = USDT: amount is in INR at 88/USDT, $10 min)
+    if (Channel === 4) {
+      if (Number(Amount) < 10 * 88)
+        throw new CustomError(705, "Minimum USDT deposit is $10 (₹880)", {});
+    } else {
+      if (Number(Amount) < 200)
+        throw new CustomError(705, "Minimum deposit amount is ₹200", {});
     }
 
     Amount = Number(Amount) * 100;
