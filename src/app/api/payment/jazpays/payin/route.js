@@ -31,7 +31,7 @@ export async function POST(request) {
                 message: "Session Expired login again",
             });
 
-        if (!jazpaysConfig().payinEnabled)
+        if (!(jazpaysConfig().payinEnabled))
             throw new CustomError(
                 705,
                 "This payment channel is currently unavailable, please use another channel.",
@@ -78,7 +78,7 @@ export async function POST(request) {
             customerName: UserName,
             customerPhone: user?.PhoneNumber,
         });
-
+        console.log(res);
         if (res?.code !== 0 || !res?.data?.pay_url) {
             await TRANSACTION.updateOne(
                 { TransactionId, Status: 0 },
@@ -98,6 +98,7 @@ export async function POST(request) {
             data: { pay_url: res.data.pay_url, order_no: TransactionId },
         });
     } catch (error) {
+        console.log(error)
         // on a timeout the order may still exist at JazPays, so it stays pending for the callback
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);

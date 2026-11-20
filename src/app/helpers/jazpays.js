@@ -14,6 +14,7 @@ export const JAZPAYS_MIN_AMOUNT = 100;
 export const JAZPAYS_MAX_AMOUNT = 50000;
 
 export function jazpaysConfig() {
+    console.log("enabled", typeof process.env.JAZPAYS_PAYIN_ENABLED, process.env.JAZPAYS_PAYIN_ENABLED);
     return {
         merchantId: process.env.JAZPAYS_MERCHANT_ID || "",
         payinKey: process.env.JAZPAYS_PAYIN_KEY || "",
