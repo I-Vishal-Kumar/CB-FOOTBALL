@@ -20,121 +20,66 @@ export async function GET(request) {
         await connect();
         const UserName = await isValidUser(token, session);
         if (!UserName)
-            return NextResponse.json({
-                status: 302,
-                message: "Session Expired login again",
-            });
-        let level1_transactions = await TRANSACTION.find({
-            Parent: UserName,
-            Status: 1,
-            Type: { $in: ["withdrawal", "deposit"] },
-        });
-        if (!level1_transactions)
-            throw new CustomError(705, "something went wrong", {});
+            return NextResponse.json({ status: 302, message: "Session Expired login again" });
 
-        const level1_users = await USER.find(
-            { Parent: UserName },
-            { UserName: 1 }
-        );
-        const level2_users = await USER.find(
-            { Parent: { $in: level1_users.map((user) => user.UserName) } },
-            { _id: 0, UserName: 1 }
-        );
-        const level2_transactions = await TRANSACTION.find({
-            Parent: { $in: level1_users.map((user) => user.UserName) },
-            Status: 1,
-            Type: { $in: ["deposit", "withdrawal"] },
-        });
-        const level3_transactions = await TRANSACTION.find({
-            Parent: { $in: level2_users.map((user) => user.UserName) },
-            Status: 1,
-            Type: { $in: ["deposit", "withdrawal"] },
-        });
-
-        const calculateTotal = (transactions) => {
-            let today = new Date();
-            // Set to start of day for comparison
-            const startOfToday = new Date(today);
-            startOfToday.setHours(0, 0, 0, 0);
-            const endOfToday = new Date(today);
-            endOfToday.setHours(23, 59, 59, 999);
-
-            return transactions.reduce(
-                (acc, curr) => {
-                    if (curr.Type === "deposit") {
-                        // Check if transaction was created today using createdAt
-                        const createdAt = new Date(curr.createdAt);
-                        if(createdAt >= startOfToday && createdAt <= endOfToday){
-                            acc.today_deposit = (acc.today_deposit || 0) +
-                            parseFloat(curr.Amount) / 100;
-                        }
-                        acc.total_deposit =
-                        (acc.total_deposit || 0) +
-                        parseFloat(curr.Amount) / 100;
-                    } else if (curr.Type === "withdrawal") {
-                        acc.total_withdrawal =
-                            (acc.total_withdrawal || 0) +
-                            parseFloat(curr.Amount) / 100;
-                    }
-                    return acc;
-                },
-                { total_deposit: 0, today_deposit: 0, total_withdrawal: 0 }
+        // Build the parent-name list for each level's transaction query:
+        //   parentGroups[0] = [UserName]           → level 1 transactions (made by direct members)
+        //   parentGroups[1] = level-1 user names   → level 2 transactions
+        //   …up to parentGroups[6]                 → level 7 transactions
+        const parentGroups = [[UserName]];
+        for (let level = 1; level <= 6 && parentGroups[parentGroups.length - 1].length > 0; level++) {
+            const users = await USER.find(
+                { Parent: { $in: parentGroups[parentGroups.length - 1] } },
+                { _id: 0, UserName: 1 }
             );
-        };
+            const names = users.map(u => u.UserName);
+            if (!names.length) break;
+            parentGroups.push(names);
+        }
 
-        const {
-            total_deposit: total_deposit_level1,
-            today_deposit: today_deposit1,
-            total_withdrawal: total_withdrawal_level1,
-        } = calculateTotal(level1_transactions);
-        const {
-            total_deposit: total_deposit_level2,
-            today_deposit: today_deposit2,
-            total_withdrawal: total_withdrawal_level2,
-        } = calculateTotal(level2_transactions);
-        const {
-            total_deposit: total_deposit_level3,
-            today_deposit: today_deposit3,
-            total_withdrawal: total_withdrawal_level3,
-        } = calculateTotal(level3_transactions);
+        // All level transaction queries can run in parallel once we have parentGroups
+        const levelTransactions = await Promise.all(
+            parentGroups.map(parents =>
+                TRANSACTION.find({
+                    Parent: { $in: parents },
+                    Status: 1,
+                    Type: { $in: ["deposit", "withdrawal"] },
+                })
+            )
+        );
+
+        const today = new Date();
+        const startOfToday = new Date(today); startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date(today); endOfToday.setHours(23, 59, 59, 999);
+
+        let total_deposit = 0, today_deposit = 0, total_withdrawal = 0;
+        for (const transactions of levelTransactions) {
+            for (const curr of transactions) {
+                if (curr.Type === "deposit") {
+                    const createdAt = new Date(curr.createdAt);
+                    if (createdAt >= startOfToday && createdAt <= endOfToday)
+                        today_deposit += parseFloat(curr.Amount) / 100;
+                    total_deposit += parseFloat(curr.Amount) / 100;
+                } else if (curr.Type === "withdrawal") {
+                    total_withdrawal += parseFloat(curr.Amount) / 100;
+                }
+            }
+        }
 
         return NextResponse.json({
             status: 200,
             message: "data fetched",
             data: {
-                level1_transactions,
-                level2_transactions,
-                level3_transactions,
-                total_deposit: Number(
-                    total_deposit_level1 +
-                        total_deposit_level2 +
-                        total_deposit_level3
-                ),
-                today_deposit : Number(
-                    today_deposit1 + today_deposit2 + today_deposit3
-                ),
-                total_withdrawal: Number(
-                    total_withdrawal_level1 +
-                        total_withdrawal_level2 +
-                        total_withdrawal_level3
-                ),
+                levels: levelTransactions,
+                total_deposit: Number(total_deposit),
+                today_deposit: Number(today_deposit),
+                total_withdrawal: Number(total_withdrawal),
             },
-        }, {
-            
-            headers: {
-                'Cache-Control': 'public, max-age=30'
-            }
-        
-        });
+        }, { headers: { 'Cache-Control': 'public, max-age=30' } });
     } catch (error) {
         console.log(error);
-        if (error?.code === 500 || error?.status === 500 || !error?.status) {
-            ErrorReport(error);
-        }
-        return NextResponse.json({
-            status: error?.code || error?.status || 500,
-            message: "something went wrong",
-        });
+        if (error?.code === 500 || error?.status === 500 || !error?.status) ErrorReport(error);
+        return NextResponse.json({ status: error?.code || error?.status || 500, message: "something went wrong" });
     }
 }
 

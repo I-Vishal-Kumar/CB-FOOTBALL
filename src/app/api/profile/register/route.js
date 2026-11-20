@@ -122,104 +122,51 @@ export async function POST(request) {
 export async function GET(request) {
     try {
         await connect();
-        let today = new Date(
+        const today = new Date(
             new Date().toLocaleDateString("en-US", { timeZone: "Asia/Kolkata" })
         );
         const { session, token } = await getCookieData();
         const UserName = await isValidUser(token, session);
 
         if (!UserName) {
-            return NextResponse.json({
-                status: 302,
-                message: "Session Expired login again",
-            });
+            return NextResponse.json({ status: 302, message: "Session Expired login again" });
         }
 
-        const level1_users = await USER.find(
-            { Parent: UserName },
-            {
-                _id: 0,
-                UserName: 1,
-                JoinedOn: 1,
-                Parent: 1,
-                PhoneNumber: 1,
-                Deposited: 1,
-                Withdrawal: 1,
-                Balance: 1,
-                createdAt: 1,
-            }
-        );
+        const PROJECTION = {
+            _id: 0, UserName: 1, JoinedOn: 1, Parent: 1,
+            PhoneNumber: 1, Deposited: 1, Withdrawal: 1, Balance: 1, createdAt: 1,
+        };
 
-        const level2_users = await USER.find(
-            { Parent: { $in: level1_users.map((user) => user.UserName) } },
-            {
-                _id: 0,
-                UserName: 1,
-                JoinedOn: 1,
-                Parent: 1,
-                Deposited: 1,
-                Withdrawal: 1,
-                PhoneNumber: 1,
-                Balance: 1,
-                createdAt: 1,
-            }
-        );
-
-        const level3_users = await USER.find(
-            { Parent: { $in: level2_users.map((user) => user.UserName) } },
-            {
-                _id: 0,
-                UserName: 1,
-                JoinedOn: 1,
-                Parent: 1,
-                Deposited: 1,
-                PhoneNumber: 1,
-                Withdrawal: 1,
-                Balance: 1,
-                createdAt: 1,
-            }
-        );
-
+        const levels = [];
+        let currentParents = [UserName];
         let active_users = 0;
+        let joinedToday = 0;
 
-        const joinedToday = [
-            ...level1_users,
-            ...level2_users,
-            ...level3_users,
-        ].filter((user) => {
-            const userJoinedDate =
-                typeof user?.JoinedOn === "string"
-                    ? user?.JoinedOn?.split("/")
-                    : ["", "", ""];
-            if (user?.Deposited > 0) {
-                active_users++;
+        for (let level = 1; level <= 7 && currentParents.length > 0; level++) {
+            const users = await USER.find({ Parent: { $in: currentParents } }, PROJECTION);
+            if (!users.length) break;
+            levels.push(users);
+            currentParents = users.map(u => u.UserName);
+
+            for (const user of users) {
+                if (user?.Deposited > 0) active_users++;
+                const parts = typeof user?.JoinedOn === "string" ? user.JoinedOn.split("/") : [];
+                if (
+                    Number(parts[0]) === Number(today.getDate()) &&
+                    Number(parts[1]) === Number(today.getMonth() + 1) &&
+                    Number(parts[2]) === Number(today.getFullYear())
+                ) joinedToday++;
             }
-            return (
-                Number(userJoinedDate[0]) === Number(today.getDate()) &&
-                Number(userJoinedDate[1]) === Number(today.getMonth() + 1) &&
-                Number(userJoinedDate[2]) === Number(today.getFullYear())
-            );
-        }).length;
+        }
 
         return NextResponse.json({
             status: 200,
             message: "data fetched",
-            data: {
-                level1_users,
-                level2_users,
-                level3_users,
-                joinedToday,
-                active_users,
-            },
+            data: { levels, joinedToday, active_users },
         });
     } catch (error) {
-        if (error.code === 500 || !error.status) {
-            ErrorReport(error);
-        }
-        return NextResponse.json({
-            status: error.code || error.status || 500,
-            message: "something went wrong",
-        });
+        if (error.code === 500 || !error.status) ErrorReport(error);
+        return NextResponse.json({ status: error.code || error.status || 500, message: "something went wrong" });
     }
 }
 

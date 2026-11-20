@@ -93,8 +93,8 @@ async function betParser({
                 {unsettledBets}
             );
 
-        // whole referral chain (3 levels) for every bettor in 3 queries,
-        // instead of up to 3 sequential USER lookups per bet
+        // whole referral chain (7 levels) for every bettor in 7 queries,
+        // instead of up to 7 sequential USER lookups per bet
         const parentOf = await loadReferralParents(
             unsettledBets.map((bet) => bet?.Parent),
             session
@@ -211,14 +211,14 @@ async function betParser({
 
 /**
  * Loads UserName -> Parent for the referral chain of the given level-1 parents,
- * 3 levels deep, with one query per level. A name missing from the map means that
+ * 7 levels deep, with one query per level. A name missing from the map means that
  * user doesn't exist (the chain stops there, same as before).
  */
 async function loadReferralParents(level1Parents, session) {
     const parentOf = new Map();
     let pending = [...new Set(level1Parents.filter(Boolean))];
 
-    for (let level = 1; level <= 3 && pending.length > 0; level++) {
+    for (let level = 1; level <= 7 && pending.length > 0; level++) {
         const users = await USER.find(
             { UserName: { $in: pending } },
             { _id: 0, UserName: 1, Parent: 1 }
@@ -324,10 +324,10 @@ function give_parent_bonus(
     give_commission
 ) {
     let LEVEL = 1;
-    // Commission percentages: Level 1 = 4%, Level 2 = 2%, Level 3 = 1% of user's profit
-    let REBADE_PERCENT = [4, 2, 1];
+    // Commission percentages: L1=7%, L2=3%, L3=2%, L4=1%, L5=1%, L6=1%, L7=1% of user's profit
+    let REBADE_PERCENT = [7, 3, 2, 1, 1, 1, 1];
 
-    while (LEVEL <= 3 && Parent) {
+    while (LEVEL <= 7 && Parent) {
         // parent doesn't exist -> chain stops
         if (!parentOf.has(Parent)) break;
 
