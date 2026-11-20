@@ -486,7 +486,7 @@ function Page() {
                                 <>
                                     <div>
                                         <p className="text-[0.69rem] capitalize font-bold text-gray-800">
-                                            FX current exchange rate Rs. 80 = $1
+                                            FX current exchange rate Rs. 88 = $1
                                         </p>
                                         <div className="flex mt-3 capitalize font-semibold text-[0.6rem] space-x-2 ">
                                             <span className="w-[50%]">

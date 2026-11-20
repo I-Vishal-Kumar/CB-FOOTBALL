@@ -10,9 +10,7 @@ function CommissionPopModel({
     type,
     todayCommission,
     overallCommission,
-    level1,
-    level2,
-    level3,
+    levels = [],   // array of arrays: levels[0] = level-1 data, levels[1] = level-2, …
     closeModel,
 }) {
     const [selectedLevel, updateLevel] = useState(1);
@@ -115,394 +113,58 @@ function CommissionPopModel({
                         ></Image>
                     </div>
                 </div>
-                {type !== "commission" ? (
-                    <div className="relative px-4 h-[10%] flex items-center justify-evenly ">
-                        <div className="flex shadow-sm items-center bg-white space-x-3 py-2 px-3 text-sm font-bold rounded-md">
-                            <div>level 1</div>
-                            <input
-                                type="radio"
-                                checked={selectedLevel === 1}
-                                onChange={() => updateLevel(1)}
-                                className="text-blue-500  size-5 radio-primary outline-blue-400"
-                                name="level"
-                            />
-                        </div>
-                        <div className="flex shadow-sm items-center bg-white space-x-3 py-2 px-3 text-sm font-bold rounded-md">
-                            <div>level 2</div>
-                            <input
-                                type="radio"
-                                checked={selectedLevel === 2}
-                                onChange={() => updateLevel(2)}
-                                className="text-blue-500 size-5 radio-primary outline-blue-400"
-                                name="level"
-                            />
-                        </div>
-                        <div className="flex shadow-sm items-center bg-white space-x-3 py-2 px-3 text-sm font-bold rounded-md">
-                            <div>level 3</div>
-                            <input
-                                type="radio"
-                                checked={selectedLevel === 3}
-                                onChange={() => updateLevel(3)}
-                                className="text-blue-500 size-5 radio-primary outline-blue-400"
-                                name="level"
-                            />
-                        </div>
+                {type !== "commission" && levels.length > 0 && (
+                    <div className="relative px-4 h-[10%] flex items-center gap-x-2 overflow-x-auto">
+                        {levels.map((_, i) => (
+                            <label
+                                key={i}
+                                className={`flex-shrink-0 flex shadow-sm items-center bg-white space-x-2 py-2 px-3 text-sm font-bold rounded-md cursor-pointer ${selectedLevel === i + 1 ? "ring-2 ring-blue-400" : ""}`}
+                            >
+                                <span>L{i + 1}</span>
+                                <input
+                                    type="radio"
+                                    checked={selectedLevel === i + 1}
+                                    onChange={() => updateLevel(i + 1)}
+                                    className="text-blue-500 size-4 radio-primary outline-blue-400"
+                                    name="level"
+                                />
+                            </label>
+                        ))}
                     </div>
-                ) : (
-                    ""
                 )}
                 <div
                     ref={dataBox}
                     className="h-[80%] mt-3 overflow-y-auto px-6 pb-[15rem] w-full"
                 >
-                    {selectedLevel === 1 &&
-                        type === "register" &&
-                        level1.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={1}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={1}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (searchKey?.length < 3) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={1}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={1}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
-                        })}
-                    {selectedLevel === 2 &&
-                        type === "register" &&
-                        level2.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={2}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={2}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (searchKey?.length < 3) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={2}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={2}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
-                        })}
-                    {selectedLevel === 3 &&
-                        type === "register" &&
-                        level3.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={3}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={3}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (searchKey?.length < 3) {
-                                if (swipe === 1 && today === item?.JoinedOn) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={3}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.JoinedOn
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <RegisterAcordian
-                                                level={3}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
+                    {type === "register" &&
+                        (levels[selectedLevel - 1] || []).map((item, idx) => {
+                            const matchesSearch =
+                                searchKey.length < 3 ||
+                                item?.UserName?.toLowerCase()?.startsWith(searchKey.toLowerCase());
+                            const matchesTime =
+                                swipe === 1 ? today === item?.JoinedOn : today !== item?.JoinedOn;
+                            if (!matchesSearch || !matchesTime) return null;
+                            return (
+                                <div key={idx}>
+                                    <RegisterAcordian level={selectedLevel} cardDetails={item} />
+                                </div>
+                            );
                         })}
 
-                    {selectedLevel === 1 &&
-                        (type === "deposit" || type === "withdrawal") &&
-                        level1.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.Type === type &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (
-                                searchKey?.length < 3 &&
-                                item?.Type === type
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
-                        })}
-                    {selectedLevel === 2 &&
-                        (type === "deposit" || type === "withdrawal") &&
-                        level2.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.Type === type &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (
-                                searchKey?.length < 3 &&
-                                item?.Type === type
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
-                        })}
-                    {selectedLevel === 3 &&
-                        (type === "deposit" || type === "withdrawal") &&
-                        level3.map((item, idx) => {
-                            if (
-                                searchKey?.length >= 3 &&
-                                item?.Type === type &&
-                                item?.UserName?.toLowerCase()?.startsWith(
-                                    searchKey.toLowerCase()
-                                )
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            } else if (
-                                searchKey?.length < 3 &&
-                                item?.Type === type
-                            ) {
-                                if (swipe === 1 && today === item?.Date) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                } else if (
-                                    swipe === 2 &&
-                                    today !== item?.Date
-                                ) {
-                                    return (
-                                        <div key={idx}>
-                                            <Transaction
-                                                type={type}
-                                                cardDetails={item}
-                                            />
-                                        </div>
-                                    );
-                                }
-                            }
+                    {(type === "deposit" || type === "withdrawal") &&
+                        (levels[selectedLevel - 1] || []).map((item, idx) => {
+                            if (item?.Type !== type) return null;
+                            const matchesSearch =
+                                searchKey.length < 3 ||
+                                item?.UserName?.toLowerCase()?.startsWith(searchKey.toLowerCase());
+                            const matchesTime =
+                                swipe === 1 ? today === item?.Date : today !== item?.Date;
+                            if (!matchesSearch || !matchesTime) return null;
+                            return (
+                                <div key={idx}>
+                                    <Transaction type={type} cardDetails={item} />
+                                </div>
+                            );
                         })}
 
                     {type === "commission" &&

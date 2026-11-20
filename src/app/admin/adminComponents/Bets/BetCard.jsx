@@ -35,82 +35,61 @@ const BetCard = ({ data }) => {
             <div className="grid py-2 px-2 items-center grid-cols-10 md:text-[0.66rem]  text-[0.6rem] gap-x-2 bg-white">
                 <div>
                     <input
-                        type="number"
+                        type="text"
                         value={StakeId}
-                        className="text-center"
-                        onChange={(e) => updateStakeId(StakeId)}
+                        className="text-center w-full"
+                        readOnly
                         name="StakeId"
                     />
                 </div>
                 <div
-                    style={{
-                        border: !isDocEditable ? "1px dashed blue" : "none",
-                    }}
-                    className="truncate size-full flex items-center "
+                    style={{ border: !isDocEditable ? "1px dashed blue" : "none" }}
+                    className="truncate size-full flex items-center"
                 >
-                    {/* <h1>293874829307</h1> */}
                     <input
                         type="number"
                         value={Score_a_own}
-                        className="text-center"
-                        onChange={(e) =>
-                            !isDocEditable
-                                ? updateScoreAOwn(e.target.value)
-                                : null
-                        }
+                        disabled={isDocEditable}
+                        className="text-center w-full disabled:opacity-40"
+                        onChange={(e) => updateScoreAOwn(e.target.value)}
                         name="score_a_own"
                     />
                 </div>
                 <div
-                    style={{
-                        border: !isDocEditable ? "1px dashed blue" : "none",
-                    }}
+                    style={{ border: !isDocEditable ? "1px dashed blue" : "none" }}
                     className="truncate size-full flex items-center text-center"
                 >
                     <input
                         type="number"
-                        className="text-center"
-                        onChange={(e) =>
-                            !isDocEditable
-                                ? updateScoreBOwn(e.target.value)
-                                : null
-                        }
+                        disabled={isDocEditable}
+                        className="text-center w-full disabled:opacity-40"
+                        onChange={(e) => updateScoreBOwn(e.target.value)}
                         value={Score_b_own}
                         name="score_b_own"
                     />
                 </div>
                 <div
-                    style={{
-                        border: !isDocEditable ? "1px dashed blue" : "none",
-                    }}
-                    className="truncate size-full flex items-center "
+                    style={{ border: !isDocEditable ? "1px dashed blue" : "none" }}
+                    className="truncate size-full flex items-center"
                 >
                     <input
                         type="number"
-                        onChange={(e) =>
-                            !isDocEditable
-                                ? updateScoreAResult(e.target.value)
-                                : null
-                        }
-                        className="text-center"
+                        disabled={isDocEditable}
+                        onChange={(e) => updateScoreAResult(e.target.value)}
+                        className="text-center w-full disabled:opacity-40"
                         value={Score_a_result}
                         name="score_a_result"
                     />
                 </div>
                 <div
-                    style={{
-                        border: !isDocEditable ? "1px dashed blue" : "none",
-                    }}
-                    className="truncate size-full flex items-center "
+                    style={{ border: !isDocEditable ? "1px dashed blue" : "none" }}
+                    className="truncate size-full flex items-center"
                 >
                     <input
                         type="number"
-                        onChange={(e) =>
-                            !isDocEditable
-                                ? updateScoreBResult(e.target.value)
-                                : null
-                        }
-                        className="text-center"
+                        disabled={isDocEditable}
+                        onChange={(e) => updateScoreBResult(e.target.value)}
+                        className="text-center w-full disabled:opacity-40"
                         value={Score_b_result}
                         name="score_b_result"
                     />
@@ -185,16 +164,21 @@ const BetCard = ({ data }) => {
                     <Button />
                 </div>
             </div>
-            <div className="text-sm font-semibold flex text-purple-600 space-x-2 px-2">
-                {createdAt &&
-                    `${createdAt.getDate()}/${createdAt?.getMonth() + 1} /
-            ${createdAt?.getFullYear()}-
-            ${
-                createdAt?.getHours() > 12
-                    ? createdAt?.getHours() - 12
-                    : createdAt.getHours()
-            }
-            :${createdAt?.getMinutes()}:${createdAt?.getSeconds()}`}
+            {/* match identity */}
+            <div className="flex items-center gap-x-3 px-2 pt-1 text-[0.6rem] font-semibold text-gray-700">
+                {data?.LeagueName && (
+                    <span className="text-blue-600 truncate max-w-[35%]">{data.LeagueName}</span>
+                )}
+                {(data?.Team_a || data?.Team_b) && (
+                    <span className="truncate">
+                        {data?.Team_a || "?"} <span className="text-gray-400">vs</span> {data?.Team_b || "?"}
+                    </span>
+                )}
+                {createdAt && (
+                    <span className="ml-auto text-purple-600 whitespace-nowrap">
+                        {`${createdAt.getDate()}/${createdAt.getMonth() + 1}/${createdAt.getFullYear()} - ${createdAt.getHours().toString().padStart(2, "0")}:${createdAt.getMinutes().toString().padStart(2, "0")}`}
+                    </span>
+                )}
             </div>
             <Listeners message={state?.message} />
         </form>

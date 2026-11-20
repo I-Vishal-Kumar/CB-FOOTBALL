@@ -5,7 +5,6 @@ import { useFormState } from "react-dom";
 import { updateTransaction } from "./Action";
 import { Button, Listeners } from "../Bets/BetCard";
 import { IoIosArrowDown } from "react-icons/io";
-import axios from "axios";
 
 const initialState = {
     message: "",
@@ -38,39 +37,22 @@ const WithdrawCard = ({ data, idx }) => {
         }
     }, [data]);
 
-    const initiatePayout = async ()=>{
+    const initiatePayout = async () => {
         try {
             setLoading(true);
-            let res = await axios.post("/api/callback", {
-                payout : {
-                    UserID: 82,
-                    Token: 'cf029b8702ae6c8a55e0f97bcf5980cf',
-                    OutletID: 10065,
-                    PayoutRequest: {
-                        AccountNo: data.Bank.AccNumber,
-                        AmountR:  Amount - (Number(data?.Amount || 0) / 1000),
-                        BankID: 1,
-                        IFSC: data.Bank.Ifsc.toUpperCase(),
-                        SenderMobile: '8092528285',
-                        SenderName: 'Shravan',
-                        SenderEmail: "parlourfootball@gmail.com",
-                        BeneName: data.Bank.AccHolderName,
-                        BeneMobile: `74811${Math.floor((Math.random()+1)*100)}97`,
-                        APIRequestID: data?.TransactionId,
-                        SPKey: 'IMPS',
-                    },
-                },
-                UserName,
-                ReferanceNo
-            })
-            setLoading(false);
-            setApproveMsg(JSON.stringify(res.data.msg));
+            const res = await fetch("/api/payment/jazpays/payout", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ transactionId: ReferanceNo }),
+            });
+            const body = await res.json();
+            setApproveMsg(body.message || JSON.stringify(body));
         } catch (error) {
-            setLoading(false);
-            alert(JSON.stringify(error));
             setApproveMsg("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <div className="p-1.5 flex shadow-md rounded-md bg-white">
@@ -141,7 +123,7 @@ const WithdrawCard = ({ data, idx }) => {
                         />
                     </div>
                     <div className="flex  text-purple-600 justify-between py-1.5">
-                        <p className="w-[60%]">final amount</p>
+                        <p className="w-[60%]">final amount (INR)</p>
                         <input
                             type="text"
                             value={
@@ -156,6 +138,17 @@ const WithdrawCard = ({ data, idx }) => {
                             placeholder="293847"
                         />
                     </div>
+                    {data?.Method === "usdt transfer" && (
+                        <div className="flex text-teal-600 justify-between py-1.5">
+                            <p className="w-[60%]">final amount (USDT)</p>
+                            <p className="w-[40%] font-semibold">
+                                {(
+                                    (Amount - (Number(data?.Amount || 0) / 10000) * 10) / 88
+                                ).toFixed(2)}{" "}
+                                USDT
+                            </p>
+                        </div>
+                    )}
                     <div className="flex justify-between py-1.5">
                         <p className="w-[60%]">status</p>
                         <div className="w-[40%] flex items-center space-x-4">

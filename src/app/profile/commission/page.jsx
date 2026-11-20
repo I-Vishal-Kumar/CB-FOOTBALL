@@ -33,18 +33,9 @@ const Page = () => {
     const [loading, setLoading] = useState(true);
     const [activeUsers, updateActiveUsers] = useState(0);
 
-    const [RegisterData, updateRegisterData] = useState({
-        level1: [],
-        level2: [],
-        level3: [],
-    });
-    const [TransactionData, updateTransactionData] = useState({
-        level1: [],
-        level2: [],
-        level3: [],
-    });
+    const [RegisterData, updateRegisterData] = useState([]);     // levels[0] = L1 users, etc.
+    const [TransactionData, updateTransactionData] = useState([]); // levels[0] = L1 txns, etc.
 
-    const [loadedOnce, updateLoaded] = useState(false);
     const [usersJoinedToday, updateUserJoinedToday] = useState(0);
 
     // functioni will get the commission popup which will show data of users like deposit withdrawal and register;
@@ -101,50 +92,28 @@ const Page = () => {
         }
     }
     async function getTransactionData() {
-        let res = await fetch("/api/profile/transactions");
+        const res = await fetch("/api/profile/transactions");
         if (res.ok) {
-            res = await res.json();
-            if (res?.status === 200) {
-            setLoading(false);
-
-                let {
-                    level1_transactions,
-                    level2_transactions,
-                    level3_transactions,
-                    total_deposit,
-                    today_deposit,
-                    total_withdrawal,
-                } = res?.data;
+            const body = await res.json();
+            if (body?.status === 200) {
+                setLoading(false);
+                const { levels, total_deposit, today_deposit, total_withdrawal } = body.data;
                 updateTotalDeposit(total_deposit);
                 updateTotalWithdrawal(total_withdrawal);
-                updateTodayDeposit(today_deposit)
-                updateTransactionData({
-                    level1: level1_transactions,
-                    level2: level2_transactions,
-                    level3: level3_transactions,
-                });
+                updateTodayDeposit(today_deposit);
+                updateTransactionData(levels || []);
             } else {
                 getAlert("redirect", "something went wrong login again");
             }
         }
     }
     async function getRegisterData() {
-        let res = await fetch("/api/profile/register");
+        const res = await fetch("/api/profile/register");
         if (res.ok) {
-            res = await res.json();
-            if (res?.status === 200) {
-                let {
-                    level1_users,
-                    level2_users,
-                    level3_users,
-                    joinedToday,
-                    active_users,
-                } = res?.data;
-                updateRegisterData({
-                    level1: level1_users,
-                    level2: level2_users,
-                    level3: level3_users,
-                });
+            const body = await res.json();
+            if (body?.status === 200) {
+                const { levels, joinedToday, active_users } = body.data;
+                updateRegisterData(levels || []);
                 updateActiveUsers(active_users);
                 updateUserJoinedToday(joinedToday);
             } else {
@@ -179,13 +148,8 @@ const Page = () => {
     }
 
     useEffect(() => {
-        if (!loadedOnce) {
-            getCommissionData();
-            getRegisterData();
-            getTransactionData();
-            updateLoaded(true);
-        }
-    }, [RegisterData, TransactionData, commissionData]);
+        Promise.all([getCommissionData(), getRegisterData(), getTransactionData()]);
+    }, []);
 
     const [invitationLink, setInvitationLink] = useState("");
 
@@ -465,9 +429,7 @@ const Page = () => {
                     <section className="absolute top-0 left-0 h-full w-full bg-slate-50">
                         <CommissionPopModel
                             type={popupType}
-                            level1={RegisterData?.level1 || []}
-                            level2={RegisterData?.level2 || []}
-                            level3={RegisterData?.level3 || []}
+                            levels={RegisterData}
                             closeModel={updateCommissionPop}
                         />
                     </section>
@@ -477,9 +439,7 @@ const Page = () => {
                         <section className="absolute top-0 left-0 h-full w-full bg-slate-50">
                             <CommissionPopModel
                                 type={popupType}
-                                level1={TransactionData?.level1 || []}
-                                level2={TransactionData?.level2 || []}
-                                level3={TransactionData?.level3 || []}
+                                levels={TransactionData}
                                 closeModel={updateCommissionPop}
                             />
                         </section>
