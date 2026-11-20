@@ -58,12 +58,14 @@ export async function POST(request) {
         if (!Amount) throw new CustomError(705, "Enter a valid amount", {});
         Amount = Number(Amount);
 
-        // Check minimum withdrawal amount
-        if (Amount < 600) {
-            throw new CustomError(
-                705,
-                "minimum withdrawal amount is 600"
-            );
+        // Method-aware minimum check (Amount is still in INR here, before ×100)
+        if (body?.isLocalBank) {
+            if (Amount < 300)
+                throw new CustomError(705, "Minimum withdrawal amount is ₹300", {});
+        } else {
+            // USDT: $15 minimum at 88 INR/USDT
+            if (Amount < 15 * 88)
+                throw new CustomError(705, "Minimum USDT withdrawal is $15 (₹1320)", {});
         }
 
         // if (!(await vipVerified(UserName, body?.Amount)))
@@ -229,21 +231,21 @@ async function updateUser(UserName, Amount, Session, Bank, WithdrawCode) {
             : 'UsdtBank.WithdrawCode';
         
         let user = await USER.findOneAndUpdate(
-            { 
-                UserName, 
-                [Bank]: true, 
-                Profit: { $gte: Number(Amount) }, 
-                [withdrawCodePath]: WithdrawCode 
+            {
+                UserName,
+                [Bank]: true,
+                Balance: { $gte: Number(Amount) },
+                [withdrawCodePath]: WithdrawCode
             },
             {
                 $inc: {
-                    Profit: -Amount,
+                    Balance: -Amount,
                     Withdrawal: Amount,
                 },
             },
             { session: Session }
         );
-        if (!user) throw Error("Insufficient profit or wrong withdrawal code");
+        if (!user) throw Error("Insufficient balance or wrong withdrawal code");
         parent = user?.Parent;
         return true;
     } catch (error) {
@@ -252,7 +254,7 @@ async function updateUser(UserName, Amount, Session, Bank, WithdrawCode) {
             ErrorReport(error);
         }
         parent = "";
-        throw new CustomError(705, error?.message || "Insufficient profit or wrong withdrawal code");
+        throw new CustomError(705, error?.message || "Insufficient balance or wrong withdrawal code");
     }
 }
 

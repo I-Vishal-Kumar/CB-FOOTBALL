@@ -16,7 +16,7 @@ import { NextResponse } from "next/server";
  *
  */
 
-const MIN_DEPOSIT = 500;
+const MIN_DEPOSIT = 200;
 
 export async function POST(request) {
     await connect();
