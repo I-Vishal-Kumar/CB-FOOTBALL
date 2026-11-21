@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, useContext } from "react";
+import React, { useState, useEffect, Suspense, useContext, useRef } from "react";
 import { motion } from "framer-motion";
 import { FaRegCopy } from "react-icons/fa6";
 import Image from "next/image";
@@ -21,6 +21,7 @@ function Page() {
     let { extraDetails, getExtraDetails } = useContext(UserContext);
     const [amount, setAmount] = useState();
     const [disabled, setDisabled] = useState(false);
+    const isBusy = useRef(false);
     const [hasUploaded, setUploaded] = useState(false);
 
     const [upiId, updateUpi] = useState([]);
@@ -92,11 +93,13 @@ function Page() {
     };
 
     const btndisbaled = () => {
+        if (isBusy.current) return;
+        isBusy.current = true;
         setDisabled(true);
-
-        if (disabled === false) {
-            submitData();
-        }
+        submitData().finally(() => {
+            isBusy.current = false;
+            setDisabled(false);
+        });
     };
 
     useEffect(() => {

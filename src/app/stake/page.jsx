@@ -63,33 +63,20 @@ function Page() {
 
     const backBtn = async () => {
         setDisabled(true);
-
-        setTimeout(() => {
-            setDisabled(false);
-        }, 1000);
         try {
-            let StakeId = isDltMatch.StakeId;
-            let StartTime = isDltMatch.StartsAt;
-
-            let body = {
-                StakeId,
-                StartsAt: StartTime,
-            };
-
-            let config = {
+            let body = { StakeId: isDltMatch.StakeId, StartsAt: isDltMatch.StartsAt };
+            let res = await fetch(`/api/stake`, {
                 method: "POST",
-                headers: {
-                    "content-type": "applicaiton/json",
-                },
+                headers: { "content-type": "applicaiton/json" },
                 body: JSON.stringify(body),
-            };
-            let res = await fetch(`/api/stake`, config);
+            });
             res = await res.json();
-            getStakeData();
             setShow(false);
-            router.push("/");
+            await getStakeData();
         } catch (error) {
             console.log(error);
+        } finally {
+            setDisabled(false);
         }
     };
 
