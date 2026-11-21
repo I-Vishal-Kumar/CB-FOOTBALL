@@ -114,7 +114,7 @@ function CommissionPopModel({
                     </div>
                 </div>
                 {type !== "commission" && levels.length > 0 && (
-                    <div className="relative px-4 h-[10%] flex items-center gap-x-2 overflow-x-auto">
+                    <div className="relative px-4 flex flex-wrap items-center gap-2 py-2">
                         {levels.map((_, i) => (
                             <label
                                 key={i}

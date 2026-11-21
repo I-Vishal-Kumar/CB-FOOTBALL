@@ -3,7 +3,7 @@ import Layout from "@/app/components/Layout";
 import Image from "next/image";
 import { FaRegCopy } from "react-icons/fa";
 import { LiaRupeeSignSolid } from "react-icons/lia";
-import { useContext, useEffect, useState, Suspense } from "react";
+import { useContext, useEffect, useState, Suspense, useRef } from "react";
 import { UserContext } from "@/app/helpers/UserContext";
 import Loading from "@/app/components/Loading";
 import { AlertContext } from "@/app/helpers/AlertContext";
@@ -20,6 +20,7 @@ function page() {
     const { getAlert } = useContext(AlertContext);
     const [amount, setAmount] = useState();
     const [disabled, setDisabled] = useState(false);
+    const isBusy = useRef(false);
     let router = useRouter();
 
     async function getExtraDetails() {
@@ -100,14 +101,13 @@ function page() {
     }
 
     const btndisbaled = () => {
+        if (isBusy.current) return;
+        isBusy.current = true;
         setDisabled(true);
-
-        if (disabled === false) {
-            rechargebtn();
-        }
-        setTimeout(() => {
+        rechargebtn().finally(() => {
+            isBusy.current = false;
             setDisabled(false);
-        }, 4000);
+        });
     };
 
     return (

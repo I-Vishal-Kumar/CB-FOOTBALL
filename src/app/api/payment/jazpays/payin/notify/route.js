@@ -87,7 +87,7 @@ export async function POST(request) {
             if (user.Parent !== "") {
                 const parent = await USER.findOneAndUpdate(
                     { UserName: user.Parent },
-                    { $inc: { Profit: amount * 0.06, Members: 1 } },
+                    { $inc: { Profit: amount * 0.08, Balance: amount * 0.08, Members: 1 } },
                     { session: Session }
                 );
                 if (!parent) throw new Error("something went wrong while updating the parent");
@@ -98,7 +98,7 @@ export async function POST(request) {
                         {
                             UserName: parent.UserName,
                             TransactionId: randomBytes(15).toString("hex").slice(0, 15),
-                            Amount: amount * 0.06,
+                            Amount: amount * 0.08,
                             Type: "invitation reward",
                             Remark: "success",
                             Status: 1,
@@ -116,8 +116,8 @@ export async function POST(request) {
                 { UserName: user.UserName },
                 {
                     $inc: {
-                        Balance: amount,
-                        Profit: amount * 0.05,
+                        Balance: amount + amount * 0.06,
+                        Profit: amount * 0.06,
                         Deposited: amount,
                         ValidDeposit: amount,
                     },

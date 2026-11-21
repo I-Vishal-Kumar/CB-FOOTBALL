@@ -60,8 +60,8 @@ export async function POST(request) {
 
         // Method-aware minimum check (Amount is still in INR here, before ×100)
         if (body?.isLocalBank) {
-            if (Amount < 300)
-                throw new CustomError(705, "Minimum withdrawal amount is ₹300", {});
+            if (Amount < 500)
+                throw new CustomError(705, "Minimum withdrawal amount is ₹500", {});
         } else {
             // USDT: $15 minimum at 88 INR/USDT
             if (Amount < 15 * 88)

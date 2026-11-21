@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import React, { useState, useEffect, Suspense, useContext } from "react";
+import React, { useState, useEffect, Suspense, useContext, useRef } from "react";
 import Image from "next/image";
 import { FaRegCopy } from "react-icons/fa6";
 import { LiaRupeeSignSolid } from "react-icons/lia";
@@ -18,6 +18,7 @@ function Page() {
     let router = useRouter();
 
     const [disabled, setDisabled] = useState(false);
+    const isBusy = useRef(false);
     const [hasUploaded, setUploaded] = useState(false);
     const [amount, setAmount] = useState();
     const [upiId, updateUpi] = useState([]);
@@ -64,9 +65,6 @@ function Page() {
 
                 let res = await fetch("/api/payment/deposit", config);
                 res = await res.json();
-                if (res) {
-                    setDisabled(false);
-                }
                 if (res?.status === 200) {
                     getAlert("success", "your deposit is under verification");
                     router.push("/");
@@ -93,14 +91,13 @@ function Page() {
     }, [extraDetails]);
 
     const btndisbaled = () => {
+        if (isBusy.current) return;
+        isBusy.current = true;
         setDisabled(true);
-
-        if (disabled === false) {
-            submitDeposit();
-            setTimeout(() => {
-                setDisabled(false);
-            }, 4000);
-        }
+        submitDeposit().finally(() => {
+            isBusy.current = false;
+            setDisabled(false);
+        });
     };
 
     return (

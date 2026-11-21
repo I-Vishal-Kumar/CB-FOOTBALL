@@ -125,8 +125,8 @@ function Page() {
                 );
                 return;
             }
-            if (Amount < 300) {
-                getAlert("opps", "minimum withdrawal amount is 300");
+            if (Amount < 500) {
+                getAlert("opps", "minimum withdrawal amount is 500");
                 return;
             }else if(!withdrawPass){
                 getAlert("opps", "Withdrawal password is required");
@@ -490,7 +490,10 @@ function Page() {
                                         </p>
                                         <div className="flex mt-3 capitalize font-semibold text-[0.6rem] space-x-2 ">
                                             <span className="w-[50%]">
-                                                transfer amount
+                                                transfer amount (INR)
+                                            </span>
+                                            <span className="w-[50%] pl-3">
+                                                after tax of 10% (USD)
                                             </span>
                                         </div>
                                     </div>
@@ -498,7 +501,7 @@ function Page() {
                                         <div className="flex capitalize font-semibold text-[0.65rem] space-x-2 ">
                                             <div className=" flex w-[50%] space-x-2 px-2">
                                                 <span
-                                                    className=" h-full aspect-square rounded-full text-white 
+                                                    className=" h-full aspect-square rounded-full text-white
                         bg-[#333333] flex text-[0.7rem] p-1 justify-center items-center"
                                                 >
                                                     <FaRupeeSign />
@@ -518,7 +521,7 @@ function Page() {
                                             </div>
                                             <div className=" flex w-[50%] space-x-2 px-2">
                                                 <span
-                                                    className=" h-full aspect-square rounded-full text-white 
+                                                    className=" h-full aspect-square rounded-full text-white
            bg-orange-500 flex text-[0.7rem] p-1 justify-center items-center"
                                                 >
                                                     <FaDollarSign />
@@ -526,11 +529,33 @@ function Page() {
                                                 <input
                                                     type="number"
                                                     disabled
-                                                    value={
-                                                        Number(((Amount * 0.9)).toFixed(2))}
+                                                    value={Number(((Amount * 0.9) / 88).toFixed(4))}
                                                     placeholder="0"
                                                     className="w-full h-full outline-none text-green-600"
                                                     name=""
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="ring-[1.5px] mt-3 ring-blue-600 py-2 rounded-md">
+                                        <div className="flex capitalize font-semibold text-[0.65rem] space-x-2 ">
+                                            <div className=" flex w-[50%] space-x-2 px-2">
+                                                <span
+                                                    className=" h-full aspect-square rounded-full text-white
+           bg-[#333333] flex text-[0.7rem] p-1 justify-center items-center"
+                                                >
+                                                    <FaLock />
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    value={withdrawPass}
+                                                    onChange={(e) =>
+                                                        updateWithdrawPass(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Enter withdrawal password"
+                                                    className="w-full h-full bg-transparent outline-none text-gray-600 "
                                                 />
                                             </div>
                                         </div>
@@ -608,37 +633,22 @@ function Page() {
                             </div>
                             <ol className=" pl-8 text-[0.65rem] list-decimal">
                                 <li>
-                                    Each placed stake boosts 20% of the wagered
-                                    amount. Complete five stakes before
-                                    withdrawal. Ensure proper wagering before
-                                    proceeding with withdrawal to meet
-                                    requirements.
+                                     Minimum Withdrawal: ₹500 | Maximum Daily Withdrawal: ₹1 Crore.
                                 </li>
                                 <li>
-                                    During the specified time frame of 10:00 to
-                                    16:00, withdrawals will be processed. Please
-                                    note that the bank is closed on Sundays,
-                                    hence withdrawals cannot be facilitated on
-                                    that day.
+                                    Withdrawal Charges: 10% of the withdrawal amount.
                                 </li>
                                 <li>
-                                    Limit to one withdrawal per day according to
-                                    company policy.
+                                   Withdrawal Timing: 10:00 AM to 4:00 PM (Monday to Friday).
                                 </li>
                                 <li>
-                                    Please review the membership page for
-                                    information regarding your withdrawal
-                                    eligibility range.
+                                    Saturday & Sunday: Withdrawals are closed.
                                 </li>
                                 <li>
-                                    If you encounter any issues, please don't
-                                    hesitate to reach out to our customer
-                                    support team for assistance.
+                                    Only one withdrawal per day per account is allowed.
                                 </li>
                                 <li>
-                                    Kindly allow a processing time of 24 to 48
-                                    hours for withdrawals, as this represents
-                                    the maximum limit.
+                                    Please allow 24 to 48 hours for withdrawal processing.
                                 </li>
                             </ol>
                         </div>
