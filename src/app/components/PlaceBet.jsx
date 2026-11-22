@@ -4,7 +4,7 @@
 
 import { easeInOut, motion } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { FaRupeeSign } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -41,6 +41,14 @@ const PlaceBet = ({ data, togglePopup }) => {
         { score: "3-3", selected: false },
         { score: "4-4", selected: true },
     ]);
+    const percents = useMemo(() =>
+        scoreData.map((_, i) =>
+            i <= 8
+                ? +(Math.random() * 8 + 2).toFixed(2)
+                : +(Math.random() * 1 + 1).toFixed(2)
+        )
+    , []);
+
     let router = useRouter();
 
     function setActive(idx) {
@@ -210,7 +218,7 @@ const PlaceBet = ({ data, togglePopup }) => {
                             setDeactivated={setDeactivated}
                             key={i}
                             placeBet={placeBet}
-                            percent={data?.Percents[i]}
+                            percent={percents[i]}
                             Balance={userBalance}
                         />
                     ))}
