@@ -149,6 +149,7 @@ async function betParser({
                             filter: { UserName: user },
                             update: {
                                 $inc: {
+                                    Balance: Number(give_commission[user]),
                                     Profit: Number(give_commission[user]),
                                     Commission: Number(give_commission[user]),
                                 },
@@ -287,8 +288,8 @@ function settleOne(
                 update: {
                     $inc: {
                         ValidAmount: Math.round(Number(match?.BetAmount) * 0.2),
-                        Balance: Math.round(BetAmount * 100), // Return bet amount to Balance
-                        Profit: Math.round(Profit * 100), // Add profit to Profit field
+                        Balance: Math.round(BetAmount * 100) + Math.round(Profit * 100),
+                        Profit: Math.round(Profit * 100),
                     },
                 },
             },

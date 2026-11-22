@@ -174,9 +174,9 @@ function Page() {
                     </span>
                 </div>
 
-                <div className="h-[58vh] mt-[.6rem]  overflow-y-scroll relative  ">
+                <div className="h-[58vh] mt-[.6rem] overflow-y-auto relative">
                     {swipe ? (
-                        <div className=" h-[100%] absolute top-0 left-0 w-full overflow-y-auto pb-[5rem]  ">
+                        <div className="w-full pb-[5rem]">
                             {pendingMatches?.map((match, idx) => (
                                 <Stake
                                     key={match?.StakeId || idx}
@@ -192,7 +192,7 @@ function Page() {
                             ))}
                         </div>
                     ) : (
-                        <div className=" h-[100%] flex flex-col-reverse absolute top-0 left-0 w-full overflow-y-auto pb-[5rem] ">
+                        <div className="flex flex-col-reverse w-full pb-[5rem]">
                             {settledMatches.map((match, idx) => (
                                 <StakeHistory
                                     data={match}
