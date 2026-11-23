@@ -20,8 +20,7 @@ export default function Home() {
     const { userBalance, userOtherData, getBalance } = useContext(UserContext);
     const [balance, updateBalance] = useState(0);
     const [matches, updateMatches] = useState([]);
-    const [matchLoaded, updateLoaded] = useState(false);
-    const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
     // states for access current data and popup handling //
     const [selectedMatch, setSelectedMatch] = useState(null);
     const [popupVisible, setPopupVisible] = useState(false);
@@ -41,7 +40,8 @@ export default function Home() {
 
     async function getLiveMatches() {
         try {
-            let res = await fetch(`/api/home`);
+            const hourKey = Math.floor(Date.now() / 3600000);
+            let res = await fetch(`/api/home?h=${hourKey}`);
             if (!res.ok) throw new Error("Error while fetching matches");
             res = await res.json();
             if (res?.status === 200) {
@@ -72,12 +72,11 @@ export default function Home() {
     }, [userBalance]);
 
     useEffect(() => {
-        if (!matchLoaded) {
-            getLiveMatches();
-            updateLoaded(true);
-            setLoading(false);
-        }
+        getLiveMatches();
         randomUser();
+        const onFocus = () => getLiveMatches();
+        document.addEventListener("visibilitychange", onFocus);
+        return () => document.removeEventListener("visibilitychange", onFocus);
     }, [matchLoaded]);
 
     const gradients = [

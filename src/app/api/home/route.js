@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { isValidUser } from "@/app/helpers/auth";
 import { USER, MATCH } from "@/app/modals/modal";
 import { connect } from "@/app/modals/dbConfig";
-import { scheduleMatches } from "@/app/api/matchScheduler/route";
 import CustomError from "@/app/helpers/Error";
 import { cookies } from "next/headers";
 import ErrorReport from "@/app/helpers/ErrorReport";
@@ -29,24 +28,22 @@ export async function GET(request) {
 
         await connect();
         let userData = await USER.findOne({ UserName }, { _id: 0, Balance: 1 });
-        let matches = await getLiveBets();
+        if (!userData) throw new CustomError(703, "Login again", {});
 
-        if (!userData || !matches)
-            throw new CustomError(703, "Login again", {});
-
-        const apiMatches = await getUpcomingMatches(20);
-
-        await settleFixDeposit(UserName);
+        const [matches] = await Promise.all([
+            getLiveBets(),
+            settleFixDeposit(UserName),
+        ]);
 
         return NextResponse.json(
             {
                 status: 200,
                 message: "",
-                data: { userData, matches: apiMatches },
+                data: { userData, matches },
             },
             {
                 headers: {
-                    "Cache-Control": "public, max-age=120",
+                    "Cache-Control": "public, max-age=3600",
                 },
             }
         );
@@ -63,67 +60,33 @@ export async function GET(request) {
 
 async function getLiveBets() {
     await connect();
+    const currentHourKey = Math.floor(Date.now() / 3600000);
     try {
-        const apiMatches = await getUpcomingMatches(20);
-        return apiMatches;
-        
-        let current_version = await MATCH.findOne(
+        // Check MongoDB hourly cache
+        const cached = await MATCH.findOne({ _id: MATCH_ID });
+        if (cached?.data) {
+            try {
+                const parsed = JSON.parse(cached.data);
+                if (parsed?.hourKey === currentHourKey && Array.isArray(parsed?.matches) && parsed.matches.length > 0) {
+                    return parsed.matches;
+                }
+            } catch (_) {}
+        }
+
+        // Cache miss or stale — generate fresh matches
+        const freshMatches = await getUpcomingMatches(20);
+
+        // Write back to MongoDB so every subsequent user this hour gets it from DB
+        await MATCH.findOneAndUpdate(
             { _id: MATCH_ID },
-            { _id: 0, version: 1 }
+            { $set: { data: JSON.stringify({ hourKey: currentHourKey, matches: freshMatches }) } },
+            { upsert: true, new: true }
         );
-        let matches = await MATCH.findOne({
-            _id: MATCH_ID,
-            version: current_version?.version || 1,
-        });
 
-        if (!matches || matches?.data?.length < 30) {
-            current_version = await MATCH.findOne(
-                { _id: MATCH_ID },
-                { _id: 0, version: 1 }
-            );
-            matches = await MATCH.findOne({
-                _id: MATCH_ID,
-                version: current_version?.version || 1,
-            });
-        }
-        if (!matches || matches?.data?.length < 30) {
-            await scheduleMatches();
-            matches = await MATCH.findOne({
-                _id: MATCH_ID,
-                version: current_version?.version || 1,
-            });
-        }
-
-        // If still no matches in DB, use hardcoded matches as fallback
-        if (!matches || !matches?.data || matches?.data?.length < 30) {
-            console.log("Database empty, fetching upcoming matches");
-            // Get hardcoded matches for current day (max 20)
-            const apiMatches = await getUpcomingMatches(20);
-
-            if (apiMatches && apiMatches.length > 0) {
-                return apiMatches;
-            }
-        }
-
-        if (matches?.data) {
-            const parsedData = await JSON.parse(matches?.data || `[]`);
-            return Array.isArray(parsedData) ? parsedData : [];
-        } else {
-            return [];
-        }
+        return freshMatches;
     } catch (error) {
-        console.log(error);
-        if (error?.code === 500 || error?.status === 500 || !error?.status) {
-            ErrorReport(error);
-        }
-        // Fallback to upcoming matches if database fails
-        try {
-            const apiMatches = await getUpcomingMatches(20);
-            return apiMatches || [];
-        } catch (fallbackError) {
-            console.error("Fallback to upcoming matches failed:", fallbackError);
-        }
-        return [];
+        ErrorReport(error);
+        return getUpcomingMatches(20);
     }
 }
 
