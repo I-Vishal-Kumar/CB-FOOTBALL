@@ -685,9 +685,22 @@ export function getHardcodedMatches(limit = 20) {
     const futureMatches = matches
         .filter(match => new Date(match.StartsAt) > now)
         .sort((a, b) => new Date(a.StartsAt) - new Date(b.StartsAt));
-    
-    // Return limited number
-    return futureMatches.slice(0, limit);
+
+    // Spread across hours: pick 2-3 matches per hour so the list covers the full day
+    const byHour = {};
+    for (const match of futureMatches) {
+        const h = new Date(match.StartsAt).getHours();
+        if (!byHour[h]) byHour[h] = [];
+        byHour[h].push(match);
+    }
+    const hours = Object.keys(byHour).sort((a, b) => Number(a) - Number(b));
+    const perHour = Math.max(2, Math.ceil(limit / hours.length));
+    const spread = [];
+    for (const h of hours) {
+        spread.push(...byHour[h].slice(0, perHour));
+    }
+    spread.sort((a, b) => new Date(a.StartsAt) - new Date(b.StartsAt));
+    return spread.slice(0, limit);
 }
 
 
