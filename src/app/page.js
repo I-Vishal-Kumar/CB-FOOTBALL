@@ -77,7 +77,7 @@ const [loading, setLoading] = useState(false);
         const onFocus = () => getLiveMatches();
         document.addEventListener("visibilitychange", onFocus);
         return () => document.removeEventListener("visibilitychange", onFocus);
-    }, [matchLoaded]);
+    }, []);
 
     const gradients = [
         {
@@ -141,7 +141,6 @@ const [loading, setLoading] = useState(false);
     useEffect(()=>{
        const timeOut =  setTimeout(()=>{
             setLandingPopup(false);
-            updateLoaded(true);
         }, 1000 * 5);
         return ()=>{
             if(timeOut) clearTimeout(timeOut);
