@@ -51,11 +51,11 @@ function SecondFooter() {
       setStake(false);
     }
 
-    // if (pathname == "/matches") {
-    //   setMatch(true);
-    // } else {
-    //   setMatch(false);
-    // }
+    if (pathname == "/matches") {
+      setMatch(true);
+    } else {
+      setMatch(false);
+    }
     if (
       pathname ==="/profile/recharge/paymentChannelThree"||
       pathname ==="/profile/recharge/usdt"||
@@ -129,7 +129,7 @@ function SecondFooter() {
         </motion.div>
 
         {/*------------match-----------*/}
-        {/* <motion.div
+        <motion.div
           variants={variants}
           animate={match ? "open" : "closed"}
           className="bg-[#00000036] h-[3.62rem] w-[3.62rem] rounded-[100px] flex place-items-center justify-center "
@@ -139,7 +139,6 @@ function SecondFooter() {
             className="flex place-items-center  w-full justify-center h-full "
           >
             <Image
-              // src={match ? "/football.svg" : "/football.svg"}
               src={match ? "/matchOpen.svg" : "/matchClose.svg"}
               alt="matches"
               width={28}
@@ -147,7 +146,7 @@ function SecondFooter() {
             />
             {match ? <p className="ml-2 text-white ">Match</p> : <p></p>}
           </Link>
-        </motion.div> */}
+        </motion.div>
 
         {/*------------profile-----------*/}
         <motion.div

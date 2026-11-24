@@ -41,13 +41,20 @@ const PlaceBet = ({ data, togglePopup }) => {
         { score: "3-3", selected: false },
         { score: "4-4", selected: true },
     ]);
-    const percents = useMemo(() =>
-        scoreData.map((_, i) =>
+    const percents = useMemo(() => {
+        // Seed from StakeId so the same match always shows the same percentages
+        // regardless of which page (home or matches) the bet popup is opened from.
+        let s = (Number(data?.StakeId) || 1) >>> 0;
+        const rng = () => {
+            s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+            return s / 0x100000000;
+        };
+        return scoreData.map((_, i) =>
             i <= 8
-                ? +(Math.random() * 8 + 2).toFixed(2)
-                : +(Math.random() * 1 + 1).toFixed(2)
-        )
-    , []);
+                ? +(rng() * 8 + 2).toFixed(2)
+                : +(rng() * 1 + 1).toFixed(2)
+        );
+    }, [data?.StakeId]);
 
     let router = useRouter();
 
