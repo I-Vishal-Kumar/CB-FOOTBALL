@@ -335,18 +335,16 @@ function Page() {
                             <div className=" relative  flex justify-between flex-row-reverse rounded-full p-1">
                                 <div className="flex  bg-slate-50 ring-1 ring-gray-200 rounded-full py-1 text-xs justify-center items-center px-2 space-x-2">
                                     <span
-                                        className=" h-full font-semibold capitalize  rounded-full 
+                                        className=" h-full font-semibold capitalize  rounded-full
               flex   justify-center items-center"
                                     >
-                                        withdrawable profit
+                                        withdrawable balance
                                     </span>
                                     <div className="flex text-xs text-red-500 font-medium space-x-0">
                                         <span>
-                                            {(
-                                                (userOtherData?.Profit || 0) / 100
-                                            ).toFixed(2)}
+                                            {(userBalance || 0).toFixed(2)}
                                         </span>
-                                       
+
                                     </div>
                                 </div>
 

@@ -193,7 +193,7 @@ function Page() {
                                         ₹{new Intl.NumberFormat("en-US", {
                                             style: "decimal",
                                             maximumFractionDigits: 2,
-                                        }).format(userBalance || 0 + (userOtherData?.Profit || 0) / 100)}
+                                        }).format(userBalance || 0)}
                                     </span>
                                 </div>
                             </div>
