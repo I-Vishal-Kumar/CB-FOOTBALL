@@ -19,7 +19,7 @@ export default function MatchesPage() {
     async function fetchMatches() {
         try {
             const hourKey = Math.floor(Date.now() / 3600000);
-            const res = await fetch(`/api/home?h=${hourKey}`);
+            const res = await fetch(`/api/matches?h=${hourKey}`);
             const data = await res.json();
             if (data?.status === 200) {
                 setMatches(data?.data?.matches || []);
