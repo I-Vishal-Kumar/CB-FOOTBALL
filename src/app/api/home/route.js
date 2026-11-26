@@ -70,14 +70,16 @@ function filterStarted(matches) {
 
 async function getLiveBets() {
     await connect();
-    const currentHourKey = Math.floor(Date.now() / 3600000);
+    // Daily cache key — sportapi.ai has a 2000 req/day limit, so we only refresh once per day.
+    // filterStarted() at response time handles showing only future matches without re-fetching.
+    const currentDayKey = Math.floor(Date.now() / 86400000);
 
     // Check MongoDB cache first (fast path — no lock needed for a hit)
     try {
         const cached = await MATCH.findOne({ _id: MATCH_ID });
         if (cached?.data) {
             const parsed = JSON.parse(cached.data);
-            if (parsed?.hourKey === currentHourKey && Array.isArray(parsed?.matches) && parsed.matches.length > 0) {
+            if (parsed?.homeDayKey === currentDayKey && Array.isArray(parsed?.matches) && parsed.matches.length > 0) {
                 return filterStarted(parsed.matches);
             }
         }
@@ -85,14 +87,17 @@ async function getLiveBets() {
 
     // Cache miss — only one fetch allowed at a time per process.
     // All other concurrent requests wait on the same promise.
-    if (_homeHourKey !== currentHourKey || !_homeFetchPromise) {
-        _homeHourKey = currentHourKey;
+    if (_homeHourKey !== currentDayKey || !_homeFetchPromise) {
+        _homeHourKey = currentDayKey;
         _homeFetchPromise = (async () => {
             try {
                 const freshMatches = await getUpcomingMatches(20);
+                const existing = await MATCH.findOne({ _id: MATCH_ID });
+                let base = {};
+                try { base = existing?.data ? JSON.parse(existing.data) : {}; } catch (_) {}
                 await MATCH.findOneAndUpdate(
                     { _id: MATCH_ID },
-                    { $set: { data: JSON.stringify({ hourKey: currentHourKey, matches: freshMatches }) } },
+                    { $set: { data: JSON.stringify({ ...base, homeDayKey: currentDayKey, matches: freshMatches }) } },
                     { upsert: true, new: true }
                 );
                 return filterStarted(freshMatches);
@@ -100,8 +105,7 @@ async function getLiveBets() {
                 ErrorReport(error);
                 return filterStarted(await getUpcomingMatches(20));
             } finally {
-                // Clear so the next hour's first miss triggers a new fetch
-                if (_homeHourKey === currentHourKey) _homeFetchPromise = null;
+                if (_homeHourKey === currentDayKey) _homeFetchPromise = null;
             }
         })();
     }

@@ -39,22 +39,24 @@ export async function GET() {
 }
 
 async function getAllMatches() {
-    const currentHourKey = Math.floor(Date.now() / 3600000);
+    // Daily cache key — sportapi.ai has a 2000 req/day limit, so we only refresh once per day.
+    // filterStarted() at response time handles showing only future matches without re-fetching.
+    const currentDayKey = Math.floor(Date.now() / 86400000);
 
     // Fast path — check cache without lock
     try {
         const cached = await MATCH.findOne({ _id: MATCH_ID });
         if (cached?.data) {
             const parsed = JSON.parse(cached.data);
-            if (parsed?.allHourKey === currentHourKey && Array.isArray(parsed?.allMatches) && parsed.allMatches.length > 0) {
+            if (parsed?.allDayKey === currentDayKey && Array.isArray(parsed?.allMatches) && parsed.allMatches.length > 0) {
                 return filterStarted(parsed.allMatches);
             }
         }
     } catch (_) {}
 
     // Cache miss — single fetch, all concurrent requests share the promise
-    if (_allHourKey !== currentHourKey || !_allFetchPromise) {
-        _allHourKey = currentHourKey;
+    if (_allHourKey !== currentDayKey || !_allFetchPromise) {
+        _allHourKey = currentDayKey;
         _allFetchPromise = (async () => {
             try {
                 const freshMatches = await getUpcomingMatches(ALL_MATCHES_LIMIT);
@@ -63,7 +65,7 @@ async function getAllMatches() {
                 try { base = existing?.data ? JSON.parse(existing.data) : {}; } catch (_) {}
                 await MATCH.findOneAndUpdate(
                     { _id: MATCH_ID },
-                    { $set: { data: JSON.stringify({ ...base, allHourKey: currentHourKey, allMatches: freshMatches }) } },
+                    { $set: { data: JSON.stringify({ ...base, allDayKey: currentDayKey, allMatches: freshMatches }) } },
                     { upsert: true, new: true }
                 );
                 return filterStarted(freshMatches);
@@ -71,7 +73,7 @@ async function getAllMatches() {
                 ErrorReport(error);
                 return filterStarted(await getUpcomingMatches(ALL_MATCHES_LIMIT));
             } finally {
-                if (_allHourKey === currentHourKey) _allFetchPromise = null;
+                if (_allHourKey === currentDayKey) _allFetchPromise = null;
             }
         })();
     }
