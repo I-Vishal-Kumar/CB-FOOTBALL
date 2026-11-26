@@ -7,7 +7,15 @@ import ErrorReport from "@/app/helpers/ErrorReport";
 import { getUpcomingMatches } from "@/app/helpers/fetchMatches";
 
 const MATCH_ID = process.env.NEXT_PUBLIC_MATCH_ID;
-const ALL_MATCHES_LIMIT = 50;
+const ALL_MATCHES_LIMIT = 9999; // no practical limit — return all fixtures from the API
+
+let _allHourKey = -1;
+let _allFetchPromise = null;
+
+function filterStarted(matches) {
+    const now = Date.now();
+    return matches.filter((m) => m?.StartsAt && new Date(m.StartsAt).getTime() > now);
+}
 
 export async function GET() {
     const token = cookies().get("token")?.value || "";
@@ -32,34 +40,41 @@ export async function GET() {
 
 async function getAllMatches() {
     const currentHourKey = Math.floor(Date.now() / 3600000);
-    const cacheKey = `all_${currentHourKey}`;
+
+    // Fast path — check cache without lock
     try {
         const cached = await MATCH.findOne({ _id: MATCH_ID });
         if (cached?.data) {
-            try {
-                const parsed = JSON.parse(cached.data);
-                if (parsed?.allHourKey === currentHourKey && Array.isArray(parsed?.allMatches) && parsed.allMatches.length > 0) {
-                    return parsed.allMatches;
-                }
-            } catch (_) {}
+            const parsed = JSON.parse(cached.data);
+            if (parsed?.allHourKey === currentHourKey && Array.isArray(parsed?.allMatches) && parsed.allMatches.length > 0) {
+                return filterStarted(parsed.allMatches);
+            }
         }
+    } catch (_) {}
 
-        const freshMatches = await getUpcomingMatches(ALL_MATCHES_LIMIT);
-
-        // Merge into the existing MATCH document alongside the home-page cache
-        const existing = await MATCH.findOne({ _id: MATCH_ID });
-        let base = {};
-        try { base = existing?.data ? JSON.parse(existing.data) : {}; } catch (_) {}
-
-        await MATCH.findOneAndUpdate(
-            { _id: MATCH_ID },
-            { $set: { data: JSON.stringify({ ...base, allHourKey: currentHourKey, allMatches: freshMatches }) } },
-            { upsert: true, new: true }
-        );
-
-        return freshMatches;
-    } catch (error) {
-        ErrorReport(error);
-        return getUpcomingMatches(ALL_MATCHES_LIMIT);
+    // Cache miss — single fetch, all concurrent requests share the promise
+    if (_allHourKey !== currentHourKey || !_allFetchPromise) {
+        _allHourKey = currentHourKey;
+        _allFetchPromise = (async () => {
+            try {
+                const freshMatches = await getUpcomingMatches(ALL_MATCHES_LIMIT);
+                const existing = await MATCH.findOne({ _id: MATCH_ID });
+                let base = {};
+                try { base = existing?.data ? JSON.parse(existing.data) : {}; } catch (_) {}
+                await MATCH.findOneAndUpdate(
+                    { _id: MATCH_ID },
+                    { $set: { data: JSON.stringify({ ...base, allHourKey: currentHourKey, allMatches: freshMatches }) } },
+                    { upsert: true, new: true }
+                );
+                return filterStarted(freshMatches);
+            } catch (error) {
+                ErrorReport(error);
+                return filterStarted(await getUpcomingMatches(ALL_MATCHES_LIMIT));
+            } finally {
+                if (_allHourKey === currentHourKey) _allFetchPromise = null;
+            }
+        })();
     }
+
+    return _allFetchPromise;
 }

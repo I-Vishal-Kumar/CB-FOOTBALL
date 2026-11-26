@@ -16,6 +16,11 @@ import { getUpcomingMatches } from "@/app/helpers/fetchMatches";
 
 const MATCH_ID = process.env.NEXT_PUBLIC_MATCH_ID;
 
+// In-process lock: all concurrent cache-miss requests share one fetch promise
+// so only 1 sportapi.ai call fires per hour regardless of concurrent users.
+let _homeHourKey = -1;
+let _homeFetchPromise = null;
+
 export async function GET(request) {
     const { session, token } = await getCookieData();
     try {
@@ -58,36 +63,50 @@ export async function GET(request) {
     }
 }
 
+function filterStarted(matches) {
+    const now = Date.now();
+    return matches.filter((m) => m?.StartsAt && new Date(m.StartsAt).getTime() > now);
+}
+
 async function getLiveBets() {
     await connect();
     const currentHourKey = Math.floor(Date.now() / 3600000);
+
+    // Check MongoDB cache first (fast path — no lock needed for a hit)
     try {
-        // Check MongoDB hourly cache
         const cached = await MATCH.findOne({ _id: MATCH_ID });
         if (cached?.data) {
-            try {
-                const parsed = JSON.parse(cached.data);
-                if (parsed?.hourKey === currentHourKey && Array.isArray(parsed?.matches) && parsed.matches.length > 0) {
-                    return parsed.matches;
-                }
-            } catch (_) {}
+            const parsed = JSON.parse(cached.data);
+            if (parsed?.hourKey === currentHourKey && Array.isArray(parsed?.matches) && parsed.matches.length > 0) {
+                return filterStarted(parsed.matches);
+            }
         }
+    } catch (_) {}
 
-        // Cache miss or stale — generate fresh matches
-        const freshMatches = await getUpcomingMatches(20);
-
-        // Write back to MongoDB so every subsequent user this hour gets it from DB
-        await MATCH.findOneAndUpdate(
-            { _id: MATCH_ID },
-            { $set: { data: JSON.stringify({ hourKey: currentHourKey, matches: freshMatches }) } },
-            { upsert: true, new: true }
-        );
-
-        return freshMatches;
-    } catch (error) {
-        ErrorReport(error);
-        return getUpcomingMatches(20);
+    // Cache miss — only one fetch allowed at a time per process.
+    // All other concurrent requests wait on the same promise.
+    if (_homeHourKey !== currentHourKey || !_homeFetchPromise) {
+        _homeHourKey = currentHourKey;
+        _homeFetchPromise = (async () => {
+            try {
+                const freshMatches = await getUpcomingMatches(20);
+                await MATCH.findOneAndUpdate(
+                    { _id: MATCH_ID },
+                    { $set: { data: JSON.stringify({ hourKey: currentHourKey, matches: freshMatches }) } },
+                    { upsert: true, new: true }
+                );
+                return filterStarted(freshMatches);
+            } catch (error) {
+                ErrorReport(error);
+                return filterStarted(await getUpcomingMatches(20));
+            } finally {
+                // Clear so the next hour's first miss triggers a new fetch
+                if (_homeHourKey === currentHourKey) _homeFetchPromise = null;
+            }
+        })();
     }
+
+    return _homeFetchPromise;
 }
 
 async function getExtractedMatches(matches) {

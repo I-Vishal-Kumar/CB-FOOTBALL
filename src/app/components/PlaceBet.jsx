@@ -422,8 +422,8 @@ async function isValidMatch(inputDateString) {
     // Calculate the difference between the input date and the current time in minutes
     const diffInMinutes = (inputDate - now) / 60000;
 
-    // Check if the difference is less than 5 minutes
-    if (Math.abs(diffInMinutes) < 5) {
+    // Block if match has already started or is within 5 minutes of kick-off
+    if (diffInMinutes < 5) {
         return false;
     } else {
         return true;

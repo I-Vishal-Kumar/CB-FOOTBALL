@@ -18,6 +18,12 @@ const usdtBank = [
     type: "text",
     label: "application name",
   },
+  {
+    name: "WithdrawCode",
+    alt: "Withdrawal code",
+    type: "text",
+    label: "Withdrawal code",
+  },
 ];
 
 const localBank = [
@@ -73,6 +79,7 @@ const AddBank = ({ closePopup, localEditable, usdtEditable , isUpdatingBank }) =
   const [usdtBankCredentials, updateUsdtBank] = useState({
     UsdtAddress: "",
     AppName: "",
+    WithdrawCode: "",
   });
   const [isLocalBank, updateBank] = useState(localEditable);
 
@@ -167,20 +174,37 @@ const AddBank = ({ closePopup, localEditable, usdtEditable , isUpdatingBank }) =
               <input
                 type="radio"
                 name="Editbank"
-                onChange={() => {
-                  if (localEditable && usdtEditable) {
-                    updateBank((prev) => !prev);
-                  } else {
-                    updateBank(localEditable);
-                  }
-                }}
+                onChange={() => updateBank(true)}
                 checked={isLocalBank}
                 value={"local"}
                 className="size-5"
+                disabled={!localEditable}
               />
             </div>
           </div>
-      
+
+          {/* USDT radio */}
+          <div className="flex px-3 py-2 shadow-sm bg-white rounded-md items-center">
+            <div className="mr-2">
+              <svg width="24" height="24" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="15" cy="15" r="13" stroke="#1a9c5b" strokeWidth="2"/>
+                <text x="15" y="20" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1a9c5b">₮</text>
+              </svg>
+            </div>
+            <div className="flex-[3] capitalize font-semibold text-[0.6rem]">USDT transfer (TRC20)</div>
+            <div className="flex-[1] flex justify-end items-center">
+              <input
+                type="radio"
+                name="Editbank"
+                onChange={() => updateBank(false)}
+                checked={!isLocalBank}
+                value={"usdt"}
+                className="size-5"
+                disabled={!usdtEditable}
+              />
+            </div>
+          </div>
+
         </div>
         <div className="mt-2 px-5 capitalize font-extrabold text-sm">
           <p>please fill bank details :-</p>
@@ -189,9 +213,9 @@ const AddBank = ({ closePopup, localEditable, usdtEditable , isUpdatingBank }) =
           {isLocalBank
             ? localBank.map((ele, idx) => (
                 <div key={idx} className="text-sm">
-                  <div className="flex  items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <label
-                      htmlFor="AccountHolderName"
+                      htmlFor={ele.name}
                       className="block text-[0.6rem] capitalize font-semibold p-1 text-black"
                     >
                       {ele.label}
@@ -209,29 +233,28 @@ const AddBank = ({ closePopup, localEditable, usdtEditable , isUpdatingBank }) =
                   />
                 </div>
               ))
-            : null
-            // usdtBank.map((ele, idx) => (
-            //     <div key={idx} className="text-sm">
-            //       <div className="flex  items-center justify-between">
-            //         <label
-            //           htmlFor="AccountHolderName"
-            //           className="block text-[0.6rem] capitalize font-semibold p-1 text-black"
-            //         >
-            //           {ele.label}
-            //         </label>
-            //       </div>
-            //       <Input
-            //         credentials={usdtBankCredentials}
-            //         inputType={ele.type}
-            //         id={ele.name}
-            //         name={ele.name}
-            //         alt={ele.alt}
-            //         length={50}
-            //         image="user.png"
-            //         update={updateUsdt}
-            //       />
-            //     </div>
-            //   ))
+            : usdtBank.map((ele, idx) => (
+                <div key={idx} className="text-sm">
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor={ele.name}
+                      className="block text-[0.6rem] capitalize font-semibold p-1 text-black"
+                    >
+                      {ele.label}
+                    </label>
+                  </div>
+                  <Input
+                    credentials={usdtBankCredentials}
+                    inputType={ele.type}
+                    id={ele.name}
+                    name={ele.name}
+                    alt={ele.alt}
+                    length={50}
+                    image="user.png"
+                    update={updateUsdt}
+                  />
+                </div>
+              ))
               }
         </div>
 

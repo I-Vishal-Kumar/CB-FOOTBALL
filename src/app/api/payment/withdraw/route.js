@@ -63,9 +63,11 @@ export async function POST(request) {
             if (Amount < 500)
                 throw new CustomError(705, "Minimum withdrawal amount is ₹500", {});
         } else {
-            // USDT: $15 minimum at 88 INR/USDT
-            if (Amount < 15 * 88)
-                throw new CustomError(705, "Minimum USDT withdrawal is $15 (₹1320)", {});
+            // USDT: 50 USDT minimum at 88 INR/USDT
+            if (Amount < 50 * 88)
+                throw new CustomError(705, "Minimum USDT withdrawal is 50 USDT (₹4,400)", {});
+            if (Amount > 100000 * 88)
+                throw new CustomError(705, "Maximum USDT withdrawal is 100,000 USDT", {});
         }
 
         // if (!(await vipVerified(UserName, body?.Amount)))

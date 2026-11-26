@@ -284,6 +284,27 @@ function Page() {
                             </div>
                         </div>
 
+                        <div
+                            onClick={() => router.push("/profile/withdrawal/usdt")}
+                            style={{
+                                boxShadow: "0px 2px 8px 1px rgb(0,0,0,0.1) ",
+                            }}
+                            className="flex items-center py-2 rounded-[19px] px-2 bg-[#fff]"
+                        >
+                            <div className="h-full w-full flex justify-center items-center flex-[1]">
+                                <svg width="25" height="25" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="15" cy="15" r="13" stroke="#1a9c5b" strokeWidth="2"/>
+                                    <text x="15" y="20" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1a9c5b">₮</text>
+                                </svg>
+                            </div>
+                            <div className="h-full w-full flex-[4] capitalize font-bold text-[0.75rem]">
+                                USDT withdrawal
+                            </div>
+                            <div className="h-full w-full flex justify-center items-center flex-[1]">
+                                <LiaAngleRightSolid />
+                            </div>
+                        </div>
+
                         {/* <div
                             onClick={() => router.push("/profile/editpassword")}
                             style={{

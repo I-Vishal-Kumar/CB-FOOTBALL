@@ -204,6 +204,15 @@ export async function POST(request) {
                 {}
             );
 
+        // Server-side match time guard — reject bets on matches that have started
+        // or are within 5 minutes of kick-off (matches the client-side check)
+        const kickoff = new Date(StartsAt);
+        const nowUtc = new Date();
+        const minsToKickoff = (kickoff - nowUtc) / 60000;
+        if (minsToKickoff < 5) {
+            throw new CustomError(705, "Betting is closed — this match has already started or is about to begin.");
+        }
+
         if (BetAmount < 200) {
             throw new CustomError(
                 705,

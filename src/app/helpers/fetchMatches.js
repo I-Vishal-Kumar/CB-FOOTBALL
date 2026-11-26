@@ -286,24 +286,18 @@ export async function fetchUpcomingMatches(limit = 20) {
     }
 }
 
-// Big leagues are picked first when there are more fixtures than the limit
-// (Premier League, La Liga, Serie A, Bundesliga, Ligue 1, UCL, UEL, Conference League,
-// Eredivisie, Primeira Liga, Scottish Premiership, MLS, Saudi Pro League, ISL)
-const PRIORITY_LEAGUE_IDS = [39, 140, 135, 78, 61, 2, 3, 848, 88, 94, 179, 253, 307, 323];
-
 /**
- * Fetches upcoming (not started) matches from API-Football (api-sports.io), all leagues
- * Free plan: 100 requests/day and no "next" parameter, so fixtures are fetched by date
- * (today + tomorrow) and each response is cached for a day (~2 requests/day).
- * @param {number} limit - Maximum number of matches to fetch (default: 20)
+ * Fetches upcoming (Scheduled) matches from sportapi.ai for today and tomorrow.
+ * Free plan: 2,000 requests/day. We call 2 requests per cache cycle (one per date).
+ * @param {number} limit - Maximum number of matches to return
  * @returns {Promise<Array>} Array of matches in application schema format
  */
-export async function fetchUpcomingMatchesFromApiFootball(limit = 20) {
-    const API_KEY = process.env.API_FOOTBALL_KEY;
-    const API_BASE = "https://v3.football.api-sports.io";
+export async function fetchUpcomingMatchesFromSportAPI(limit = 20) {
+    const API_KEY = process.env.SPORTAPI_KEY;
+    const API_BASE = "https://sportapi.ai/api";
 
     if (!API_KEY) {
-        console.error("API-Football key not configured (API_FOOTBALL_KEY)");
+        console.error("sportapi.ai key not configured (SPORTAPI_KEY)");
         return [];
     }
 
@@ -314,33 +308,32 @@ export async function fetchUpcomingMatchesFromApiFootball(limit = 20) {
 
         const fixtures = [];
         for (const date of dates) {
-            const params = new URLSearchParams({ date, status: "NS" });
-            const response = await fetch(`${API_BASE}/fixtures?${params}`, {
+            const response = await fetch(`${API_BASE}/fixtures/date/${date}`, {
                 method: "GET",
-                headers: { "x-apisports-key": API_KEY },
-                // fixtures for a date are fetched once a day; started matches are dropped
-                // by the kick-off filter in mapApiFootballResponse on every request
-                next: { revalidate: 86400 },
+                headers: { "X-Api-Key": API_KEY },
+                next: { revalidate: 3600 },
             });
 
             if (!response.ok) {
-                console.error(`Failed to fetch fixtures from API-Football for ${date}: ${response.status}`);
+                if (response.status === 429) {
+                    console.error("sportapi.ai rate limit reached");
+                } else {
+                    console.error(`sportapi.ai fixtures failed for ${date}: ${response.status}`);
+                }
                 continue;
             }
 
             const data = await response.json();
-            // API-Football reports plan/key/rate-limit problems in "errors" with HTTP 200
-            const errors = data?.errors;
-            if (errors && (Array.isArray(errors) ? errors.length : Object.keys(errors).length)) {
-                console.error("API-Football errors:", errors);
+            if (!data?.success) {
+                console.error("sportapi.ai error:", data?.error);
                 continue;
             }
-            fixtures.push(...(data?.response || []));
+            fixtures.push(...(Array.isArray(data?.data) ? data.data : []));
         }
 
-        return mapApiFootballResponse(fixtures, limit);
+        return mapSportAPIResponse(fixtures, limit);
     } catch (error) {
-        console.error("Error in fetchUpcomingMatchesFromApiFootball:", error);
+        console.error("Error in fetchUpcomingMatchesFromSportAPI:", error);
         if (error?.code === 500 || error?.status === 500 || !error?.status) {
             ErrorReport(error);
         }
@@ -348,74 +341,52 @@ export async function fetchUpcomingMatchesFromApiFootball(limit = 20) {
     }
 }
 
-// kept for existing imports — SportMonks has been replaced by API-Football
-export const fetchUpcomingMatchesFromSportMonks = fetchUpcomingMatchesFromApiFootball;
+// kept for existing imports
+export const fetchUpcomingMatchesFromSportMonks = fetchUpcomingMatchesFromSportAPI;
+export const fetchUpcomingMatchesFromApiFootball = fetchUpcomingMatchesFromSportAPI;
 
 /**
- * Maps API-Football fixtures to application schema
- * @param {Array} fixtures - API-Football "response" items
- * @param {number} limit - Maximum number of matches to return
- * @returns {Array} Array of matches in application schema format, sorted by start time
+ * Maps sportapi.ai fixtures to application schema
  */
-function mapApiFootballResponse(fixtures, limit) {
+function mapSportAPIResponse(fixtures, limit) {
     const now = new Date();
 
     const upcoming = fixtures.filter(
         (f) =>
-            f?.fixture?.status?.short === "NS" &&
-            f?.fixture?.date &&
-            new Date(f.fixture.date) > now &&
-            f?.teams?.home?.name &&
-            f?.teams?.away?.name
+            f?.status === "Scheduled" &&
+            f?.kickoff_utc &&
+            new Date(f.kickoff_utc) > now &&
+            f?.home_team &&
+            f?.away_team
     );
 
-    const isPriority = (f) => PRIORITY_LEAGUE_IDS.includes(f?.league?.id);
-    const byStart = (a, b) => new Date(a.fixture.date) - new Date(b.fixture.date);
+    upcoming.sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
 
-    // big leagues first, then fill with the earliest remaining fixtures; show in kick-off order
-    const selected = [
-        ...upcoming.filter(isPriority).sort(byStart),
-        ...upcoming.filter((f) => !isPriority(f)).sort(byStart),
-    ]
-        .slice(0, limit)
-        .sort(byStart);
-
-    return selected.map((element) => {
-        // seeded by fixture id so a match keeps the same score/percents on every request and for every user
-        const random = seededRandom(Number(element?.fixture?.id) || 1);
+    return upcoming.slice(0, limit).map((f) => {
+        const random = seededRandom(Number(f?.id) || 1);
         let SCORE = scores[Math.floor(random() * scores.length)];
 
-        // For score 3-3, always use 1.5%, otherwise random
-        const isScore33 = SCORE === "3-3";
-        const fixedPercent = isScore33
+        const fixedPercent = SCORE === "3-3"
             ? "1.50"
             : (random() * 6 + 1.5).toFixed(2);
 
-        let match = {
-            Team_a: element?.teams?.home?.name || "",
-            Team_b: element?.teams?.away?.name || "",
-            StakeId: element?.fixture?.id?.toString() || "",
-            LeagueName: element?.league?.name || "",
-            Team_a_logo: element?.teams?.home?.logo || "",
-            Team_b_logo: element?.teams?.away?.logo || "",
-            StartsAt: new Date(element.fixture.date).toISOString(),
+        const match = {
+            Team_a: f.home_team,
+            Team_b: f.away_team,
+            StakeId: f.id,
+            LeagueName: f.league_name || "",
+            // logos are proxied through our own route so the API key stays server-side
+            Team_a_logo: f.home_id ? `/api/team-logo/${f.home_id}` : "",
+            Team_b_logo: f.away_id ? `/api/team-logo/${f.away_id}` : "",
+            StartsAt: new Date(f.kickoff_utc).toISOString(),
             Percents: [],
             Score_a: parseInt(SCORE.split("-")[0]) || 0,
             Score_b: parseInt(SCORE.split("-")[1]) || 0,
             FixedPercent: fixedPercent,
         };
 
-        // Generate Percents array (17 values)
-        // Index 15 corresponds to score "3-3" which should always be 1.5%
         for (let i = 0; i < 17; i++) {
-            if (i === 15) {
-                // Index 15 is for score "3-3" - always use 1.5%
-                match["Percents"].push("1.50");
-            } else {
-                match["Percents"].push(
-                    (random() * (2.5 - 3) + 3).toFixed(2)
-                );
-            }
+            match.Percents.push(i === 15 ? "1.50" : (random() * (2.5 - 3) + 3).toFixed(2));
         }
 
         return match;
@@ -429,9 +400,9 @@ function mapApiFootballResponse(fixtures, limit) {
  * @returns {Promise<Array>} Array of matches in application schema format
  */
 export async function getUpcomingMatches(limit = 20) {
-    const apiMatches = await fetchUpcomingMatchesFromApiFootball(limit);
+    const apiMatches = await fetchUpcomingMatchesFromSportAPI(limit);
     if (apiMatches.length > 0) return apiMatches;
-    console.log("API-Football returned no matches, using hardcoded matches");
+    console.log("sportapi.ai returned no matches, using hardcoded matches");
     return getHardcodedMatches(limit);
 }
 
