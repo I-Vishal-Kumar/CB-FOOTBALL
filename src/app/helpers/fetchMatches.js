@@ -311,7 +311,7 @@ export async function fetchUpcomingMatchesFromSportAPI(limit = 20) {
             const response = await fetch(`${API_BASE}/fixtures/date/${date}`, {
                 method: "GET",
                 headers: { "X-Api-Key": API_KEY },
-                next: { revalidate: 3600 },
+                cache: "no-store",
             });
 
             if (!response.ok) {
