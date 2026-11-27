@@ -165,8 +165,10 @@ export async function POST(request, response) {
                 Deposited: amm_updated,
                 ValidDeposit: amm_updated,
             },
-            FirstDeposit: false,
-            VipLevel: vip_level,
+            $set: {
+                FirstDeposit: false,
+                VipLevel: vip_level,
+            },
         },
         { session: Session }
     );

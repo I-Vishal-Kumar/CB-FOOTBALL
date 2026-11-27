@@ -141,8 +141,10 @@ async function settleDeposit(data) {
                         Deposited: amm_updated,
                         ValidDeposit: amm_updated,
                     },
-                    FirstDeposit: false,
-                    VipLevel: vip_level,
+                    $set: {
+                        FirstDeposit: false,
+                        VipLevel: vip_level,
+                    },
                 },
                 { session: Session }
             );
@@ -178,7 +180,9 @@ async function settleDeposit(data) {
                         Deposited: amm_updated,
                         // ValidDeposit: amm_updated,
                     },
-                    VipLevel: vip_level,
+                    $set: {
+                        VipLevel: vip_level,
+                    },
                 },
                 { session: Session }
             );
