@@ -75,13 +75,20 @@ async function getAllTransactions() {
         const endOfToday = new Date(today);
         endOfToday.setHours(23, 59, 59, 999);
 
-        // Fetch transactions for the last three days using createdAt
+        // Manual deposits (all statuses) + pending gateway orders (JazPays / WatchPay)
         const data = await TRANSACTION.find({
-            Type: "deposit",
-            createdAt: {
-                $gte: threeDaysAgo,
-                $lte: endOfToday
-            }
+            $or: [
+                {
+                    Type: "deposit",
+                    createdAt: { $gte: threeDaysAgo, $lte: endOfToday },
+                },
+                {
+                    Type: "gateway",
+                    Method: { $in: ["JazPays", "WatchPay"] },
+                    Status: 0,
+                    createdAt: { $gte: threeDaysAgo, $lte: endOfToday },
+                },
+            ],
         }).sort({ createdAt: -1 });
 
         return data;

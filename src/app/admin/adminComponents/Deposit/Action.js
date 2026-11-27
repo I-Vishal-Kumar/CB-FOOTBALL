@@ -88,6 +88,7 @@ async function settleDeposit(data) {
                     { UserName: isFirstDeposit?.Parent },
                     {
                         $inc: {
+                            Balance : amm_updated * 0.08,
                             Profit: amm_updated * 0.08,
                             Members: isFirstDeposit?.FirstDeposit ? 1 : 0,
                         },

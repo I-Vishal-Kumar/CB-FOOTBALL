@@ -11,6 +11,8 @@ const initialState = {
 };
 
 const DepositCard = ({ data, idx }) => {
+  const isGateway = data?.Type === "gateway"; // JazPays / WatchPay pending order
+
   const [isDocEditable, toggleEditable] = useState(false);
   const [ReferanceNo, updateReferance] = useState("");
   const [Amount, updateAmount] = useState(0);
@@ -94,7 +96,9 @@ const DepositCard = ({ data, idx }) => {
                 }}
                 className="py-0.5 px-2 bg-yellow-400 font-bold rounded-md text-white"
               >
-                {Status === 1
+                {isGateway
+                  ? `${data?.Method} · pending`
+                  : Status === 1
                   ? "success"
                   : Status === 2
                   ? "canceled"
@@ -190,12 +194,13 @@ const DepositCard = ({ data, idx }) => {
                       />{" "}
                     </p>
                     <input
-                      checked={Status === 2}
+                      checked={isGateway ? true : Status === 2}
                       onChange={(e) => updateStatus(2)}
                       type="radio"
                       name="stat_2"
                     />
                   </div>
+                  {!isGateway && (
                   <div className="space-y-1">
                     <p>
                       <Image
@@ -212,6 +217,7 @@ const DepositCard = ({ data, idx }) => {
                       name="stat_1"
                     />
                   </div>
+                  )}
                 </div>
               </div>
               {/* controll buttons */}
