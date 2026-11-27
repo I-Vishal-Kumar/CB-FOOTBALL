@@ -64,7 +64,16 @@ async function settleDeposit(data) {
         Session = await mongoose.startSession();
         await Session.startTransaction();
         transactionStarted = true;
-        let amm_updated = data?.Amount;
+        // Always read amount from the pending DB transaction so a disabled
+        // form field (Amount is disabled when admin hasn't clicked Edit)
+        // doesn't silently submit 0 and credit nothing.
+        const pendingTx = await TRANSACTION.findOne({
+            UserName: data?.UserName,
+            TransactionId: data?.prevTransactionId,
+            Status: 0,
+        });
+        if (!pendingTx) return "transaction not found or already processed";
+        const amm_updated = pendingTx.Amount; // already in paise (×100)
         // const vip_level = getVipLevel(Number(amm_updated) / 100);
         const vip_level = 0;
         //  if first deposit give 2% reward to the parent;
