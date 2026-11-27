@@ -11,11 +11,13 @@ import { useContext } from "react";
 import { AlertContext } from "@/app/helpers/AlertContext";
 import { UserContext } from "@/app/helpers/UserContext";
 
-// JazPays (UPI) gateway — "Payment link 1". Disabled for now; to turn it back on set this
-// to true and JAZPAYS_PAYIN_ENABLED=true on the server.
+// JazPays (UPI) gateway — "Payment link 1".
 const JAZPAYS_ENABLED = true;
-// JazPays limit per order
 const JAZPAYS_MAX_DEPOSIT = 50000;
+
+// WatchPay (UPI) gateway — "Payment link 5".
+const WATCHPAY_ENABLED = true;
+const WATCHPAY_MAX_DEPOSIT = 50000;
 
 
 function Page() {
@@ -45,10 +47,30 @@ function Page() {
 
   // implementing condtion based redireacting
   const [selectedOption, setSelectedOption] = useState(
-    JAZPAYS_ENABLED ? "option1" : "option2"
+    WATCHPAY_ENABLED ? "option5" : JAZPAYS_ENABLED ? "option1" : "option2"
   );
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
+  };
+
+  const payWithWatchpay = async () => {
+    try {
+      const res = await fetch("/api/payment/watchpay/payin", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ Amount: inputValue }),
+      });
+      const resBody = await res.json();
+      if (resBody?.status === 200 && resBody?.data?.pay_url) {
+        window.location.href = resBody.data.pay_url;
+      } else if (resBody?.status === 302) {
+        getAlert("redirect", resBody?.message || "session time out");
+      } else {
+        getAlert("opps", resBody?.message || "something went wrong");
+      }
+    } catch (error) {
+      getAlert("opps", "something went wrong");
+    }
   };
 
   // creates a JazPays order on our server and sends the user to the UPI cashier page;
@@ -80,7 +102,13 @@ function Page() {
       } else if (inputValue < 200  ){
         getAlert("opps", "Minimum deposit amount 200");
       } else {
-        if (selectedOption === "option1") {
+        if (selectedOption === "option5") {
+          if (Number(inputValue) > WATCHPAY_MAX_DEPOSIT) {
+            getAlert("opps", `Maximum amount for Payment link 5 is ₹${WATCHPAY_MAX_DEPOSIT}`);
+          } else {
+            payWithWatchpay();
+          }
+        } else if (selectedOption === "option1") {
           if (Number(inputValue) > JAZPAYS_MAX_DEPOSIT) {
             getAlert("opps", `Maximum amount for Payment link 1 is ${JAZPAYS_MAX_DEPOSIT}`);
           } else {
@@ -216,6 +244,25 @@ function Page() {
                   className=" py-2 w-[80%] ml-2 bg-transparent outline-none focus-within text-[.65rem] "
                 />{" "}
               </div>
+              {WATCHPAY_ENABLED && (
+              <div
+                style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
+                className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
+              >
+                <p className="text-[0.7rem] ">Payment link 5 (UPI · instant)</p>
+                <input
+                  type="radio"
+                  name="link"
+                  value="option5"
+                  checked={selectedOption === "option5"}
+                  onChange={handleOptionChange}
+                />
+              </div>
+              )}
+              {WATCHPAY_ENABLED && selectedOption === "option5" && (
+                <p className="text-gray-600 text-xs pl-3">You will be taken to a secure UPI payment page. Your balance updates automatically once the payment succeeds.</p>
+              )}
+
               {JAZPAYS_ENABLED && (
               <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
