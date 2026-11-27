@@ -37,10 +37,13 @@ const WithdrawCard = ({ data, idx }) => {
         }
     }, [data]);
 
-    const initiatePayout = async () => {
+    const initiatePayout = async (gateway = "jazpays") => {
         try {
             setLoading(true);
-            const res = await fetch("/api/payment/jazpays/payout", {
+            const url = gateway === "watchpay"
+                ? "/api/payment/watchpay/payout"
+                : "/api/payment/jazpays/payout";
+            const res = await fetch(url, {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ transactionId: ReferanceNo }),
@@ -299,11 +302,19 @@ const WithdrawCard = ({ data, idx }) => {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={initiatePayout}
+                                    onClick={() => initiatePayout("jazpays")}
                                     disabled={!isDocEditable || loading}
-                                    className="bg-purple-600 disabled:bg-purple-400 px-2 py-0.5 rounded-md text-white"
+                                    className="bg-purple-600 disabled:bg-purple-400 px-2 py-0.5 rounded-md text-white text-xs"
                                 >
-                                    Approve payout
+                                    JazPays
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => initiatePayout("watchpay")}
+                                    disabled={!isDocEditable || loading}
+                                    className="bg-blue-600 disabled:bg-blue-400 px-2 py-0.5 rounded-md text-white text-xs"
+                                >
+                                    WatchPay
                                 </button>
                                 <Button
                                     isDisabled={

@@ -11,14 +11,8 @@ import { useContext } from "react";
 import { AlertContext } from "@/app/helpers/AlertContext";
 import { UserContext } from "@/app/helpers/UserContext";
 
-// JazPays (UPI) gateway — "Payment link 1".
-const JAZPAYS_ENABLED = true;
-const JAZPAYS_MAX_DEPOSIT = 50000;
-
-// WatchPay (UPI) gateway — "Payment link 5".
-const WATCHPAY_ENABLED = true;
+const JAZPAYS_MAX_DEPOSIT  = 50000;
 const WATCHPAY_MAX_DEPOSIT = 50000;
-
 
 function Page() {
   //--------------------------------- popup handler ------------------------------------//
@@ -26,6 +20,9 @@ function Page() {
   const { getExtraDetails } = useContext(UserContext);
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
+
+  const [jazpaysEnabled,  setJazpaysEnabled]  = useState(false);
+  const [watchpayEnabled, setWatchpayEnabled] = useState(false);
 
   // change the value of input box whenever user click any div
   const [inputValue, setInputValue] = useState("");
@@ -43,12 +40,20 @@ function Page() {
 
   useEffect(() => {
     getExtraDetails();
+    fetch("/api/payment/gateway-status")
+      .then((r) => r.json())
+      .then((body) => {
+        const wp = !!body?.data?.watchpayPayin;
+        const jp = !!body?.data?.jazpaysPayin;
+        setWatchpayEnabled(wp);
+        setJazpaysEnabled(jp);
+        setSelectedOption(wp ? "option5" : jp ? "option1" : "option2");
+      })
+      .catch(() => {});
   }, []);
 
   // implementing condtion based redireacting
-  const [selectedOption, setSelectedOption] = useState(
-    WATCHPAY_ENABLED ? "option5" : JAZPAYS_ENABLED ? "option1" : "option2"
-  );
+  const [selectedOption, setSelectedOption] = useState("option2");
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
   };
@@ -103,13 +108,17 @@ function Page() {
         getAlert("opps", "Minimum deposit amount 200");
       } else {
         if (selectedOption === "option5") {
-          if (Number(inputValue) > WATCHPAY_MAX_DEPOSIT) {
+          if (!watchpayEnabled) {
+            getAlert("opps", "This payment channel is currently unavailable");
+          } else if (Number(inputValue) > WATCHPAY_MAX_DEPOSIT) {
             getAlert("opps", `Maximum amount for Payment link 5 is ₹${WATCHPAY_MAX_DEPOSIT}`);
           } else {
             payWithWatchpay();
           }
         } else if (selectedOption === "option1") {
-          if (Number(inputValue) > JAZPAYS_MAX_DEPOSIT) {
+          if (!jazpaysEnabled) {
+            getAlert("opps", "This payment channel is currently unavailable");
+          } else if (Number(inputValue) > JAZPAYS_MAX_DEPOSIT) {
             getAlert("opps", `Maximum amount for Payment link 1 is ${JAZPAYS_MAX_DEPOSIT}`);
           } else {
             payWithJazpays();
@@ -244,7 +253,7 @@ function Page() {
                   className=" py-2 w-[80%] ml-2 bg-transparent outline-none focus-within text-[.65rem] "
                 />{" "}
               </div>
-              {WATCHPAY_ENABLED && (
+              {watchpayEnabled && (
               <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
@@ -259,11 +268,11 @@ function Page() {
                 />
               </div>
               )}
-              {WATCHPAY_ENABLED && selectedOption === "option5" && (
+              {watchpayEnabled && selectedOption === "option5" && (
                 <p className="text-gray-600 text-xs pl-3">You will be taken to a secure UPI payment page. Your balance updates automatically once the payment succeeds.</p>
               )}
 
-              {JAZPAYS_ENABLED && (
+              {jazpaysEnabled && (
               <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
                 className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
@@ -280,7 +289,7 @@ function Page() {
             </div>
               )}
             {
-              JAZPAYS_ENABLED && selectedOption === "option1" &&
+              jazpaysEnabled && selectedOption === "option1" &&
               (
                 <p className="text-gray-600 text-xs pl-3">You will be taken to a secure UPI payment page. Your balance updates automatically once the payment succeeds.</p>
               )

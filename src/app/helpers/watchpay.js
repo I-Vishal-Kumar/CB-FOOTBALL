@@ -13,9 +13,10 @@ export const WATCHPAY_MAX_AMOUNT = 50000;
 
 export function watchpayConfig() {
     return {
-        merchantId: process.env.WATCHPAY_MERCHANT_ID || "",
-        payinKey:   process.env.WATCHPAY_PAYIN_KEY || "",
-        appUrl:     (process.env.APP_URL || "https://chelseafootball.online").replace(/\/$/, ""),
+        merchantId:   process.env.WATCHPAY_MERCHANT_ID || "",
+        payinKey:     process.env.WATCHPAY_PAYIN_KEY || "",
+        payoutKey:    process.env.WATCHPAY_PAYOUT_KEY || "",
+        appUrl:       (process.env.APP_URL || "https://chelseafootball.online").replace(/\/$/, ""),
         payinEnabled: process.env.WATCHPAY_PAYIN_ENABLED === "true",
     };
 }
@@ -79,6 +80,28 @@ export function createWatchpayPayin({ orderNo, amount, customerName, customerPho
 
 export function queryWatchpayPayin(orderNo) {
     return watchpayPost("/payin/query", { order_no: orderNo }, watchpayConfig().payinKey);
+}
+
+export function createWatchpayPayout({ orderNo, amount, accountName, accountNo, ifsc, bankName }) {
+    const { payoutKey, appUrl } = watchpayConfig();
+    return watchpayPost(
+        "/payout/create",
+        {
+            order_no:     orderNo,
+            amount:       Number(Math.floor(amount)).toFixed(2),
+            method:       "bank",
+            account_name: accountName,
+            account_no:   String(accountNo),
+            ifsc:         String(ifsc || "").toUpperCase(),
+            bank_name:    bankName || "",
+            notify_url:   `${appUrl}/api/payment/watchpay/payout/notify`,
+        },
+        payoutKey
+    );
+}
+
+export function queryWatchpayPayout(orderNo) {
+    return watchpayPost("/payout/query", { order_no: orderNo }, watchpayConfig().payoutKey);
 }
 
 // callbacks are JSON (spec), but accept form-urlencoded as a fallback

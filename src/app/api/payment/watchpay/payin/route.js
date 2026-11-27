@@ -9,7 +9,7 @@ import {
     watchpayConfig,
 } from "@/app/helpers/watchpay";
 import { connect } from "@/app/modals/dbConfig";
-import { TRANSACTION, USER } from "@/app/modals/modal";
+import { ADMIN, TRANSACTION, USER } from "@/app/modals/modal";
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -29,7 +29,9 @@ export async function POST(request) {
         if (!UserName)
             return NextResponse.json({ status: 302, message: "Session Expired login again" });
 
-        if (!watchpayConfig().payinEnabled)
+        const adminDoc = await ADMIN.findOne({});
+        const dbEnabled = adminDoc?.GatewaySettings?.WatchpayPayin !== false;
+        if (!watchpayConfig().payinEnabled || !dbEnabled)
             throw new CustomError(
                 705,
                 "This payment channel is currently unavailable, please use another channel.",

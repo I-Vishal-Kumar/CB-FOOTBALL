@@ -147,6 +147,10 @@ const AdminData = new Schema({
             Ifsc: "",
         },
     },
+    GatewaySettings: {
+        JazpaysPayin:  { type: Boolean, default: true },
+        WatchpayPayin: { type: Boolean, default: true },
+    },
 });
 
 const FixedDeposit = new Schema(

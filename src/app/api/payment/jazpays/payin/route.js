@@ -4,7 +4,7 @@ import { isValidUser } from "@/app/helpers/auth";
 import { getFormattedDate } from "@/app/helpers/formattedDate";
 import { JAZPAYS_MAX_AMOUNT, createPayin, jazpaysConfig } from "@/app/helpers/jazpays";
 import { connect } from "@/app/modals/dbConfig";
-import { TRANSACTION, USER } from "@/app/modals/modal";
+import { ADMIN, TRANSACTION, USER } from "@/app/modals/modal";
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -31,7 +31,9 @@ export async function POST(request) {
                 message: "Session Expired login again",
             });
 
-        if (!(jazpaysConfig().payinEnabled))
+        const adminDoc = await ADMIN.findOne({});
+        const dbEnabled = adminDoc?.GatewaySettings?.JazpaysPayin !== false;
+        if (!(jazpaysConfig().payinEnabled) || !dbEnabled)
             throw new CustomError(
                 705,
                 "This payment channel is currently unavailable, please use another channel.",
