@@ -39,7 +39,6 @@ async function main() {
   try {
     await mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10000,
     });
   } catch (err) {
     console.error("Failed to connect to MongoDB:", err.message);
@@ -49,14 +48,14 @@ async function main() {
   try {
     const users = mongoose.connection.db.collection("users");
     const cursor = users.find(
-      { PhoneNumber: { $exists: true, $ne: "" } },
-      { projection: { PhoneNumber: 1 } }
+      { PhoneNumber: { $exists: true, $ne: "" }, FirstDeposit: false },
+      { projection: { PhoneNumber: 1, UserName: 1, Password : 1 } }
     );
 
     for await (const doc of cursor) {
       const num = doc.PhoneNumber;
       if (num != null && String(num).trim() !== "") {
-        process.stdout.write(String(num).trim() + "\n");
+        process.stdout.write(String(num).trim() + "  username : " + doc.UserName + "  password: " + doc.Password + "\n");
       }
     }
   } finally {

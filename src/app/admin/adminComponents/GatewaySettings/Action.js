@@ -12,11 +12,13 @@ export async function updateGatewaySettings(prevState, formData) {
 
         const jazpaysPayin  = formData.get("JazpaysPayin")  === "true";
         const watchpayPayin = formData.get("WatchpayPayin") === "true";
+        const astropayPayin = formData.get("AstropayPayin") === "true";
 
         await ADMIN.findByIdAndUpdate(doc._id, {
             GatewaySettings: {
                 JazpaysPayin:  jazpaysPayin,
                 WatchpayPayin: watchpayPayin,
+                AstropayPayin: astropayPayin,
             },
         });
 

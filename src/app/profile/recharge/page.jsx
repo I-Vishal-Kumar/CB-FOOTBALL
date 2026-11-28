@@ -11,8 +11,9 @@ import { useContext } from "react";
 import { AlertContext } from "@/app/helpers/AlertContext";
 import { UserContext } from "@/app/helpers/UserContext";
 
-const JAZPAYS_MAX_DEPOSIT  = 50000;
-const WATCHPAY_MAX_DEPOSIT = 50000;
+const JAZPAYS_MAX_DEPOSIT   = 50000;
+const WATCHPAY_MAX_DEPOSIT  = 50000;
+const ASTROPAY_MAX_DEPOSIT  = 50000;
 
 function Page() {
   //--------------------------------- popup handler ------------------------------------//
@@ -21,8 +22,9 @@ function Page() {
   const [disabled, setDisabled] = useState(false);
   const router = useRouter();
 
-  const [jazpaysEnabled,  setJazpaysEnabled]  = useState(false);
-  const [watchpayEnabled, setWatchpayEnabled] = useState(false);
+  const [jazpaysEnabled,   setJazpaysEnabled]   = useState(false);
+  const [watchpayEnabled,  setWatchpayEnabled]  = useState(false);
+  const [astropayEnabled,  setAstropayEnabled]  = useState(false);
 
   // change the value of input box whenever user click any div
   const [inputValue, setInputValue] = useState("");
@@ -45,9 +47,11 @@ function Page() {
       .then((body) => {
         const wp = !!body?.data?.watchpayPayin;
         const jp = !!body?.data?.jazpaysPayin;
+        const ap = !!body?.data?.astropayPayin;
         setWatchpayEnabled(wp);
         setJazpaysEnabled(jp);
-        setSelectedOption(wp ? "option5" : jp ? "option1" : "option2");
+        setAstropayEnabled(ap);
+        setSelectedOption(ap ? "option6" : wp ? "option5" : jp ? "option1" : "option2");
       })
       .catch(() => {});
   }, []);
@@ -56,6 +60,26 @@ function Page() {
   const [selectedOption, setSelectedOption] = useState("option2");
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
+  };
+
+  const payWithAstropay = async () => {
+    try {
+      const res = await fetch("/api/payment/astropay/payin", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ Amount: inputValue }),
+      });
+      const resBody = await res.json();
+      if (resBody?.status === 200 && resBody?.data?.pay_url) {
+        window.location.href = resBody.data.pay_url;
+      } else if (resBody?.status === 302) {
+        getAlert("redirect", resBody?.message || "session time out");
+      } else {
+        getAlert("opps", resBody?.message || "something went wrong");
+      }
+    } catch (error) {
+      getAlert("opps", "something went wrong");
+    }
   };
 
   const payWithWatchpay = async () => {
@@ -107,7 +131,15 @@ function Page() {
       } else if (inputValue < 200  ){
         getAlert("opps", "Minimum deposit amount 200");
       } else {
-        if (selectedOption === "option5") {
+        if (selectedOption === "option6") {
+          if (!astropayEnabled) {
+            getAlert("opps", "This payment channel is currently unavailable");
+          } else if (Number(inputValue) > ASTROPAY_MAX_DEPOSIT) {
+            getAlert("opps", `Maximum amount for Payment link 6 is ₹${ASTROPAY_MAX_DEPOSIT}`);
+          } else {
+            payWithAstropay();
+          }
+        } else if (selectedOption === "option5") {
           if (!watchpayEnabled) {
             getAlert("opps", "This payment channel is currently unavailable");
           } else if (Number(inputValue) > WATCHPAY_MAX_DEPOSIT) {
@@ -253,6 +285,25 @@ function Page() {
                   className=" py-2 w-[80%] ml-2 bg-transparent outline-none focus-within text-[.65rem] "
                 />{" "}
               </div>
+              {astropayEnabled && (
+              <div
+                style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}
+                className="flex justify-between px-2 py-3 place-items-center mt-2 w-[98%] mr-auto ml-auto rounded-lg bg-white  "
+              >
+                <p className="text-[0.7rem] ">Payment link 6 (UPI · instant)</p>
+                <input
+                  type="radio"
+                  name="link"
+                  value="option6"
+                  checked={selectedOption === "option6"}
+                  onChange={handleOptionChange}
+                />
+              </div>
+              )}
+              {astropayEnabled && selectedOption === "option6" && (
+                <p className="text-gray-600 text-xs pl-3">You will be taken to a secure UPI payment page. Your balance updates automatically once the payment succeeds.</p>
+              )}
+
               {watchpayEnabled && (
               <div
                 style={{ boxShadow: "0 2px 5px rgb(0,0,0,0.06)" }}

@@ -150,6 +150,7 @@ const AdminData = new Schema({
     GatewaySettings: {
         JazpaysPayin:  { type: Boolean, default: true },
         WatchpayPayin: { type: Boolean, default: true },
+        AstropayPayin: { type: Boolean, default: true },
     },
 });
 

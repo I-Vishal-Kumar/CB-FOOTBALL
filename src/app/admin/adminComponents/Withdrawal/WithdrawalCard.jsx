@@ -42,6 +42,8 @@ const WithdrawCard = ({ data, idx }) => {
             setLoading(true);
             const url = gateway === "watchpay"
                 ? "/api/payment/watchpay/payout"
+                : gateway === "astropay"
+                ? "/api/payment/astropay/payout"
                 : "/api/payment/jazpays/payout";
             const res = await fetch(url, {
                 method: "POST",
@@ -315,6 +317,14 @@ const WithdrawCard = ({ data, idx }) => {
                                     className="bg-blue-600 disabled:bg-blue-400 px-2 py-0.5 rounded-md text-white text-xs"
                                 >
                                     WatchPay
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => initiatePayout("astropay")}
+                                    disabled={!isDocEditable || loading}
+                                    className="bg-green-600 disabled:bg-green-400 px-2 py-0.5 rounded-md text-white text-xs"
+                                >
+                                    AstroPay
                                 </button>
                                 <Button
                                     isDisabled={

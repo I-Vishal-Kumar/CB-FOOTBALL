@@ -1,0 +1,283 @@
+- generic [ref=f1e5]:
+  - generic [ref=f1e6]:
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8] [cursor=pointer]: 
+      - generic [ref=f1e10]: AstroPay API Documentation
+    - generic [ref=f1e11]:
+      - generic [ref=f1e12] [cursor=pointer]: 
+      - generic [ref=f1e14] [cursor=pointer]: 
+      - generic [ref=f1e16] [cursor=pointer]: 
+      - generic [ref=f1e19] [cursor=pointer]:
+        - generic [ref=f1e20]: 
+        - generic [ref=f1e21]: EN
+      - generic [ref=f1e22] [cursor=pointer]: 
+  - generic [ref=f1e24]:
+    - generic [ref=f1e26]:
+      - generic [ref=f1e27]:
+        - generic [ref=f1e28]: 
+        - textbox "Enter keywords and press Enter to search" [ref=f1e30]
+      - tree [ref=f1e32]:
+        - generic:
+          - textbox "for screen reader"
+        - generic [ref=f1e36]:
+          - generic [ref=f1e37]:
+            - generic [ref=f1e38] [cursor=pointer]: 
+            - generic [ref=f1e43] [cursor=pointer]:
+              - generic [ref=f1e44]: 
+              - generic "English | 英语" [ref=f1e46]
+          - generic [ref=f1e47]:
+            - generic [ref=f1e49] [cursor=pointer]: 
+            - generic [ref=f1e54] [cursor=pointer]:
+              - generic [ref=f1e55]: 
+              - generic "Getting Started" [ref=f1e57]
+          - generic [ref=f1e67]:
+            - generic [ref=f1e69] [cursor=pointer]: 
+            - generic [ref=f1e74] [cursor=pointer]:
+              - generic [ref=f1e75]: 
+              - generic "Collection" [ref=f1e77]
+          - generic [ref=f1e96]:
+            - generic [ref=f1e98] [cursor=pointer]: 
+            - generic [ref=f1e103] [cursor=pointer]:
+              - generic [ref=f1e104]: 
+              - generic "Payment" [ref=f1e106]
+          - generic [ref=f1e295]:
+            - generic [ref=f1e297] [cursor=pointer]
+            - generic [ref=f1e300] [cursor=pointer]:
+              - generic [ref=f1e301]: 
+              - generic "Create Withdrawal Order" [ref=f1e303]
+          - generic [ref=f1e304]:
+            - generic [ref=f1e306] [cursor=pointer]
+            - generic [ref=f1e309] [cursor=pointer]:
+              - generic [ref=f1e310]: 
+              - generic "Query Withdrawal Status" [ref=f1e312]
+          - generic [ref=f1e107]:
+            - generic [ref=f1e109] [cursor=pointer]: 
+            - generic [ref=f1e114] [cursor=pointer]:
+              - generic [ref=f1e115]: 
+              - generic "Account" [ref=f1e117]
+          - generic [ref=f1e118]:
+            - generic [ref=f1e120] [cursor=pointer]: 
+            - generic [ref=f1e125] [cursor=pointer]:
+              - generic [ref=f1e126]: 
+              - generic "UPI Tools" [ref=f1e128]
+          - generic [ref=f1e129]:
+            - generic [ref=f1e131] [cursor=pointer]: 
+            - generic [ref=f1e136] [cursor=pointer]:
+              - generic [ref=f1e137]: 
+              - generic "Webhooks" [ref=f1e139]
+          - generic [ref=f1e376]:
+            - generic [ref=f1e378] [cursor=pointer]
+            - generic [ref=f1e381] [cursor=pointer]:
+              - generic [ref=f1e382]: 
+              - generic "Callback Notifications and Signature Verification" [ref=f1e384]
+          - generic [ref=f1e140]:
+            - generic [ref=f1e142] [cursor=pointer]: 
+            - generic [ref=f1e147] [cursor=pointer]:
+              - generic [ref=f1e148]: 
+              - generic "Reference" [ref=f1e150]
+          - generic [ref=f1e151]:
+            - generic [ref=f1e152] [cursor=pointer]: 
+            - generic [ref=f1e157] [cursor=pointer]:
+              - generic [ref=f1e158]: 
+              - generic "Chinese | 中文" [ref=f1e160]
+    - generic [ref=f1e162]:
+      - generic [ref=f1e163]:
+        - generic [ref=f1e164]:
+          - generic [ref=f1e165] [cursor=pointer]: 
+          - generic [ref=f1e166] [cursor=pointer]: 
+        - generic [ref=f1e167]: Create Withdrawal Order
+      - generic [ref=f1e169]:
+        - generic [ref=f1e387]:
+          - heading "Create Withdrawal Order" [level=1] [ref=f1e388]:  Create Withdrawal Order
+          - paragraph [ref=f1e389]:
+            - code [ref=f1e390]: POST /v1/payouts/create
+          - paragraph [ref=f1e391]:
+            - text: Creates a payment order that sends money out of your AstroPay balance to a bank account, mobile wallet, or USDT address, depending on
+            - code [ref=f1e392]: accountType
+            - text: .
+          - paragraph [ref=f1e393]:
+            - strong [ref=f1e394]: This endpoint enforces the IP whitelist strictly
+            - text: — make sure the server IP you call from is on file with support before going live.
+          - blockquote [ref=f1e395]:
+            - paragraph [ref=f1e396]:
+              - strong [ref=f1e397]:
+                - text: For INR, use
+                - code [ref=f1e398]: BANK
+                - text: .
+              - text: Bank transfer (account number + IFSC) is the primary, fully supported INR payout method and the one to build your integration against.
+              - code [ref=f1e399]: UPI
+              - text: is a secondary option whose availability is not guaranteed — see
+              - strong [ref=f1e400]: Reference → Payment Method Codes
+              - text: .
+          - heading [level=2] [ref=f1e401]:
+            - text:  Request (INR
+            - code [ref=f1e402]: BANK
+            - text: — primary method)
+          - code [ref=f1e404]: "{ \"merchantKey\": \"your_merchant_key\", \"secretKey\": \"your_secret_key\", \"orderId\": \"YOUR-UNIQUE-ORDER-ID\", \"amount\": \"200.00\", \"callbackUrl\": \"https://your-server.com/webhooks/astropay/withdraw\", \"accountType\": \"BANK\", \"account\": \"1234567890\", \"bank_code\": \"HDFC0000123\", \"accountPhone\": \"9876543210\", \"personName\": \"Beneficiary Name\" }"
+          - table [ref=f1e406]:
+            - rowgroup [ref=f1e407]:
+              - row [ref=f1e408]:
+                - columnheader "field" [ref=f1e409]
+                - columnheader "required" [ref=f1e410]
+                - columnheader "notes" [ref=f1e411]
+            - rowgroup [ref=f1e412]:
+              - row [ref=f1e413]:
+                - cell [ref=f1e414]:
+                  - code [ref=f1e415]: merchantKey
+                  - text: ","
+                  - code [ref=f1e416]: secretKey
+                - cell "yes" [ref=f1e417]
+                - cell "your credentials" [ref=f1e418]
+              - row [ref=f1e419]:
+                - cell [ref=f1e420]:
+                  - code [ref=f1e421]: orderId
+                - cell "yes" [ref=f1e422]
+                - cell "your own unique order reference" [ref=f1e423]
+              - row [ref=f1e424]:
+                - cell [ref=f1e425]:
+                  - code [ref=f1e426]: amount
+                - cell "yes" [ref=f1e427]
+                - cell "the amount the beneficiary receives (before our commission — we add our fee on top of this and deduct the total from your balance)" [ref=f1e428]
+              - row [ref=f1e429]:
+                - cell [ref=f1e430]:
+                  - code [ref=f1e431]: callbackUrl
+                - cell "yes" [ref=f1e432]
+                - cell "where we POST the settlement webhook" [ref=f1e433]
+              - row [ref=f1e434]:
+                - cell [ref=f1e435]:
+                  - code [ref=f1e436]: account
+                - cell "yes" [ref=f1e437]
+                - cell [ref=f1e438]:
+                  - text: for INR
+                  - code [ref=f1e439]: BANK
+                  - text: ", the beneficiary’s bank account number. Meaning depends on method — see"
+                  - strong [ref=f1e440]: Reference → Payment Method Codes
+              - row [ref=f1e441]:
+                - cell [ref=f1e442]:
+                  - code [ref=f1e443]: bank_code
+                - cell [ref=f1e444]:
+                  - text: yes for INR
+                  - code [ref=f1e445]: BANK
+                  - text: ", otherwise send"
+                  - code [ref=f1e446]: "\"\""
+                - cell [ref=f1e447]:
+                  - text: the beneficiary’s IFSC code — see
+                  - strong [ref=f1e448]: Reference → Payment Method Codes
+              - row [ref=f1e449]:
+                - cell [ref=f1e450]:
+                  - code [ref=f1e451]: accountPhone
+                - cell "yes" [ref=f1e452]
+                - cell [ref=f1e453]:
+                  - text: phone number tied to the account — see
+                  - strong [ref=f1e454]: Reference → Payment Method Codes
+              - row [ref=f1e455]:
+                - cell [ref=f1e456]:
+                  - code [ref=f1e457]: personName
+                - cell "yes" [ref=f1e458]
+                - cell "beneficiary name" [ref=f1e459]
+              - row [ref=f1e460]:
+                - cell [ref=f1e461]:
+                  - code [ref=f1e462]: accountType
+                - cell "no" [ref=f1e463]
+                - cell [ref=f1e464]:
+                  - text: use
+                  - code [ref=f1e465]: BANK
+                  - text: for INR. See
+                  - strong [ref=f1e466]: Reference → Payment Method Codes
+                  - text: —
+                  - strong [ref=f1e467]: omit this field entirely for USDT
+          - paragraph [ref=f1e468]:
+            - strong [ref=f1e469]: This example is INR-specific.
+            - text: Before integrating UPI, EASYPAISA, JAZZCASH, BKASH, NAGAD, or USDT, see
+            - strong [ref=f1e470]: Reference → Payment Method Codes
+            - text: for what belongs in each field per method.
+          - heading "Example — INR / UPI payout (secondary)" [level=3] [ref=f1e471]:  Example — INR / UPI payout (secondary)
+          - paragraph [ref=f1e472]:
+            - text: Use this only when a UPI VPA is all you hold for the beneficiary. UPI payout availability is
+            - strong [ref=f1e473]: not guaranteed
+            - text: ": while UPI channels are under maintenance the request is rejected with"
+            - code [ref=f1e474]: "503"
+            - text: and
+            - strong [ref=f1e475]: no order is created
+            - text: .
+            - code [ref=f1e476]: BANK
+            - text: payouts are unaffected, so prefer
+            - code [ref=f1e477]: BANK
+            - text: wherever you have an account number and IFSC.
+          - code [ref=f1e479]: "{ \"merchantKey\": \"your_merchant_key\", \"secretKey\": \"your_secret_key\", \"orderId\": \"YOUR-UNIQUE-ORDER-ID\", \"amount\": \"200.00\", \"callbackUrl\": \"https://your-server.com/webhooks/astropay/withdraw\", \"accountType\": \"UPI\", \"account\": \"beneficiary@axisbank\", \"bank_code\": \"\", \"accountPhone\": \"9876543210\", \"personName\": \"Beneficiary Name\" }"
+          - heading "Example — PKR / JAZZCASH payout" [level=3] [ref=f1e480]:  Example — PKR / JAZZCASH payout
+          - code [ref=f1e482]: "{ \"merchantKey\": \"your_merchant_key\", \"secretKey\": \"your_secret_key\", \"orderId\": \"YOUR-UNIQUE-ORDER-ID\", \"amount\": \"5000.00\", \"callbackUrl\": \"https://your-server.com/webhooks/astropay/withdraw\", \"accountType\": \"JAZZCASH\", \"account\": \"03001234567\", \"bank_code\": \"\", \"accountPhone\": \"03001234567\", \"personName\": \"Beneficiary Name\" }"
+          - paragraph [ref=f1e483]:
+            - text: The same shape applies to
+            - code [ref=f1e484]: EASYPAISA
+            - text: (PKR) and
+            - code [ref=f1e485]: BKASH
+            - text: /
+            - code [ref=f1e486]: NAGAD
+            - text: (BDT) — just swap
+            - code [ref=f1e487]: accountType
+            - text: and use the wallet’s own mobile number for
+            - code [ref=f1e488]: account
+            - text: /
+            - code [ref=f1e489]: accountPhone
+            - text: .
+          - heading "Example — USDT payout" [level=3] [ref=f1e490]:  Example — USDT payout
+          - code [ref=f1e492]: "{ \"merchantKey\": \"your_merchant_key\", \"secretKey\": \"your_secret_key\", \"orderId\": \"YOUR-UNIQUE-ORDER-ID\", \"amount\": \"200.00\", \"callbackUrl\": \"https://your-server.com/webhooks/astropay/withdraw\", \"account\": \"TXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" }"
+          - paragraph [ref=f1e493]:
+            - text: Note
+            - code [ref=f1e494]: accountType
+            - text: is not present at all in the body —
+            - code [ref=f1e495]: bank_code
+            - text: ","
+            - code [ref=f1e496]: accountPhone
+            - text: ", and"
+            - code [ref=f1e497]: personName
+            - text: can also be safely omitted for USDT.
+          - paragraph [ref=f1e498]:
+            - text: The request fails with
+            - code [ref=f1e499]: "400"
+            - text: (“insufficient balance”) if
+            - code [ref=f1e500]: amount
+            - text: + our commission exceeds your current available balance — check
+            - strong [ref=f1e501]: Account → Balance and Dashboard Summary
+            - text: first if you’re unsure.
+          - heading "Response (success)" [level=2] [ref=f1e502]:  Response (success)
+          - code [ref=f1e504]: "{ \"code\": 1000, \"data\": { \"orderId\": \"YOUR-UNIQUE-ORDER-ID\", \"amount\": \"200.00\", \"commission\": 14, \"netAmount\": 214, \"utr\": \"\", \"status\": 1 }, \"msg\": \"success\" }"
+          - paragraph [ref=f1e505]:
+            - code [ref=f1e506]: status
+            - text: is always
+            - code [ref=f1e507]: "1"
+            - text: (pending) at creation — the order settles asynchronously and you’ll be notified via the webhook (or poll
+            - strong [ref=f1e508]: Query Withdrawal Status
+            - text: ).
+            - code [ref=f1e509]: utr
+            - text: is usually empty at creation and gets filled in once the payment actually clears the bank/network.
+        - generic [ref=f1e251]:
+          - generic [ref=f1e252]: Is this document helpful to you?
+          - generic [ref=f1e253]:
+            - generic [ref=f1e258] [cursor=pointer]:
+              - generic [ref=f1e259]: 
+              - text: Helpful (1)
+            - generic [ref=f1e264] [cursor=pointer]:
+              - generic [ref=f1e265]: 
+              - text: Not Helpful (0)
+        - generic [ref=f1e267]:
+          - generic [ref=f1e268]: Comments
+          - generic [ref=f1e510]: No comments yet, leave the first comment~
+          - generic [ref=f1e270]:
+            - text: Login to comment
+            - generic [ref=f1e271]: Login Now
+    - generic [ref=f1e511]:
+      - generic [ref=f1e512] [cursor=pointer]: 
+      - generic [ref=f1e514]:
+        - generic [ref=f1e515]:
+          - generic [ref=f1e516]: Catalog
+          - generic [ref=f1e517] [cursor=pointer]: 
+        - generic [ref=f1e518]:
+          - generic [ref=f1e519] [cursor=pointer]: Create Withdrawal Order
+          - generic [ref=f1e520] [cursor=pointer]: Request (INR BANK — primary method)
+          - generic [ref=f1e521] [cursor=pointer]: Example — INR / UPI payout (secondary)
+          - generic [ref=f1e522] [cursor=pointer]: Example — PKR / JAZZCASH payout
+          - generic [ref=f1e523] [cursor=pointer]: Example — USDT payout
+          - generic [ref=f1e524] [cursor=pointer]: Response (success)
+  - text: 

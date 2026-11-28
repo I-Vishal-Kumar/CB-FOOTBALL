@@ -18,10 +18,13 @@ export async function GET() {
                               (dbSettings?.JazpaysPayin !== false);
         const watchpayPayin = !!(process.env.WATCHPAY_PAYIN_KEY) &&
                               (dbSettings?.WatchpayPayin !== false);
+        const astropayPayin = !!(process.env.ASTROPAY_MERCHANT_KEY) &&
+                              process.env.ASTROPAY_PAYIN_ENABLED === "true" &&
+                              (dbSettings?.AstropayPayin !== false);
 
-        return NextResponse.json({ status: 200, data: { jazpaysPayin, watchpayPayin } });
+        return NextResponse.json({ status: 200, data: { jazpaysPayin, watchpayPayin, astropayPayin } });
     } catch {
-        return NextResponse.json({ status: 200, data: { jazpaysPayin: true, watchpayPayin: true } });
+        return NextResponse.json({ status: 200, data: { jazpaysPayin: true, watchpayPayin: true, astropayPayin: false } });
     }
 }
 

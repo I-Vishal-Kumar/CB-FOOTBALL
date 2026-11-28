@@ -84,7 +84,7 @@ async function getAllTransactions() {
                 },
                 {
                     Type: "gateway",
-                    Method: { $in: ["JazPays", "WatchPay"] },
+                    Method: { $in: ["JazPays", "WatchPay", "AstroPay"] },
                     Status: 0,
                     createdAt: { $gte: threeDaysAgo, $lte: endOfToday },
                 },

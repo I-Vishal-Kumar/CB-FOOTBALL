@@ -50,6 +50,11 @@ const GatewaySettings = ({ settings = {} }) => {
                 name="WatchpayPayin"
                 defaultChecked={settings?.WatchpayPayin !== false}
             />
+            <Toggle
+                label="AstroPay (Payment link 6)"
+                name="AstropayPayin"
+                defaultChecked={settings?.AstropayPayin !== false}
+            />
             <button
                 type="submit"
                 className="mt-3 w-full py-1.5 rounded-md bg-blue-600 text-white text-sm font-semibold"
